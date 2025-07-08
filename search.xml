@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>LeetDay2</title>
-    <url>/2025/04/02/LeetDay2/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>LeetDay3</title>
-    <url>/2025/04/02/LeetDay3/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>LeetDay4</title>
-    <url>/2025/04/02/LeetDay4/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>LeetDay5</title>
-    <url>/2025/04/02/LeetDay5/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>LeetDay6</title>
-    <url>/2025/04/02/LeetDay6/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Hello World</title>
     <url>/2025/03/17/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
@@ -41,6 +16,69 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/07/08/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/</url>
+    <content><![CDATA[<hr>
+<h2 id="title-计算机网络复习-绪论"><a href="#title-计算机网络复习-绪论" class="headerlink" title="title:计算机网络复习-绪论"></a>title:计算机网络复习-绪论</h2><h1 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h1><h2 id="什么是Internet"><a href="#什么是Internet" class="headerlink" title="什么是Internet"></a>什么是Internet</h2><ul>
+<li>当前全球最大的、开放的、由众多网络和路由器互连而成的特定计算机网络，它采用TCP&#x2F;IP协议族作为通信的规则，其前身是美国的ARPANET</li>
+</ul>
+<h2 id="计算机网络的组成"><a href="#计算机网络的组成" class="headerlink" title="计算机网络的组成"></a>计算机网络的组成</h2><ul>
+<li>组成部分：<ul>
+<li>硬件：主要有主机（也被称作端系统）、通信链路（如光纤）、交换设备（如路由器、交换机）和通信处理机（如网卡）等组成</li>
+<li>软件：主要包括各种实现资源共享的软件和方便用户使用的各种工具软件</li>
+<li>协议：是计算机网络的核心，规定了网络传输数据时所遵循的规范</li>
+</ul>
+</li>
+<li>工作方式：可以分为边缘部分和核心部分<ul>
+<li>边缘部分：所有连接到互联网上的供用户直接使用的主机组成，用来进行通信（如传输数据、音频和视频）和资源共享</li>
+<li>核心部分：由大量网络和连接这些网络的路由器组成，为边缘部分提供连通性和交换服务</li>
+</ul>
+</li>
+<li>功能组成<ul>
+<li>通信子网：由各种传输介质、通信设备和相应的网络协议组成，使网络具有数据传输、交换、控制和存储的能力，实现联网计算机间的数据通信</li>
+<li>资源子网：实现资源共享功能的设备及软件的集合，向网络用户提供共享其他计算机的硬件资源、软件资源和数据资源的服务</li>
+</ul>
+</li>
+</ul>
+<h2 id="计算机网络的功能"><a href="#计算机网络的功能" class="headerlink" title="计算机网络的功能"></a>计算机网络的功能</h2><ul>
+<li>数据通信：是最基本和最重要的功能，用来实现联网计算机间各种信息的传输。</li>
+<li>资源共享：既可以是软件或数据的共享，也可以是硬件的共享。使计算机中的资源互通有无、分工协作，极大提高了硬件资源、软件资源和数据资源的利用率</li>
+<li>分布式处理：当某个计算机系统负荷过重时，可将其处理的复杂任务分配给网络中其他计算机系统，从而利用空闲计算机资源提高整个系统的利用率</li>
+<li>提高可靠性：计算机网络中各台计算机可以通过网络互为替代机</li>
+<li>负载均衡：将工作任务均衡分配给计算机网络中各台计算机</li>
+</ul>
+<h2 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h2><p>分为三步：</p>
+<ul>
+<li>建立连接：进行数据传输前，两个用户必须先建立一条专用的物理通信路径，由通信双方之间的交换设备和链路逐段连接而成</li>
+<li>传输数据：在数据传输过程中，这一物理通信路径始终被两用户独占</li>
+<li>释放连接：通信结束后释放通信资源<br>整个通信阶段，比特流连续地从源节点直达目的节点，好像在一个管道中传送，不存在存储转发所耗费的时间</li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>通信时延小：通信线路为通信双方专用，数据直达，传输速率高</li>
+<li>有序传输：通信时按发送顺序传输数据，不存在失序问题</li>
+<li>没有冲突：不同的通信双方有不同的信道</li>
+<li>实时性强：一旦建立连接，可以随时通信<br>缺点：</li>
+<li>建立连接时间长</li>
+<li>线路利用率低：线路被独占，即使空闲也不能供其他用户使用</li>
+<li>灵活性差：物理通路中任何一点出现故障，必须重新建立连接</li>
+<li>难以实现差错控制：中间节点不具备存储和检验数据的能力，无法发现并纠正错误<br>计算机间的数据传送往往是突发（高频、少量）的，使用电路交换来传送数据时，被用户占用的通信资源在绝大部分时间是空闲的，利用率往往不到10%乃至1%</li>
+</ul>
+<h2 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h2><p>数据交换的单位是报文，用户数据+原地址+目的地址等信息封装为报文。</p>
+<p>采用存储转发的技术，整个报文先传送到相邻的节点，全部存储后查找转发表，转发到下一个节点，如此重复直到目的节点。每个报文可以单独选择到达目的端的路径</p>
+<p>优点：</p>
+<ul>
+<li>无建立连接时延：通信前无需建立连接，用户可以随时发生报文</li>
+<li>灵活分配线路：交换节点存储整个报文后，选择一条合适的空闲线路，转发报文。若某条路径故障，可重新选择另一条路径传输</li>
+<li>线路利用率高：报文在一段链路上传送时才占用这段链路的通信资源</li>
+<li>支持差错控制：交换节点可以对缓存下来的报文进行差错检验<br>缺点：</li>
+<li>转发时延高：交换节点要收到所有报文后，才查找转发表进行转发</li>
+<li>缓存开销大：报文大小没有限制，要求交换节点有较大的缓存空间</li>
+<li>错误处理低效：报文较长时，发生错误概率相对更高，重传整个报文的代价也很大</li>
+</ul>
 ]]></content>
   </entry>
 </search>
