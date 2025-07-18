@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2025/03/17/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>变量和基本类型</title>
     <url>/2025/07/18/C++primer%E7%AC%AC2%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/</url>
     <content><![CDATA[<p>本文为阅读C++ primer第二章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。</p>
@@ -16,10 +34,15 @@
 <p>因为 char 是否有符号并不确定，因此可以使用 signed char 或 unsigned char 来指定是否有符号。</p>
 <p>C++ 提供了几种字符类型：</p>
 <ol>
-<li>char：一个 char 的空间应确保可以存放机器基本字符集中任意字符对于的数字值，即一个 char 的大小和一个机器字节一样。</li>
-<li>wchar_t：宽字符，用于扩展字符集，wchar_t 确保可以存放机器最大扩展字符集中的任意一个字符。</li>
-<li>char16_t 和 char32_t：为 Unicode 字符集服务。<br>下为书中列出的表格：<br>![C++ Arithmetic Types](variable and types&#x2F;C++ Arithmetic Types.png)</li>
+<li><p>char：一个 char 的空间应确保可以存放机器基本字符集中任意字符对于的数字值，即一个 char 的大小和一个机器字节一样。</p>
+</li>
+<li><p>wchar_t：宽字符，用于扩展字符集，wchar_t 确保可以存放机器最大扩展字符集中的任意一个字符。</p>
+</li>
+<li><p>char16_t 和 char32_t：为 Unicode 字符集服务。</p>
+</li>
 </ol>
+<p>  下为书中列出的表格：</p>
+<p>  ![C++ Arithmetic Types](&#x2F;images&#x2F;C++ Arithmetic Types.png)</p>
 <blockquote>
 <p>  [!NOTE] 类型选择技巧<br>  明确知晓数值不可能为负时，选用无符号类型。</p>
 <p>  整数运算用 int，数值太大时用 long long，不用 short 和 long </p>
@@ -79,24 +102,6 @@
       <categories>
         <category>C++ primer</category>
       </categories>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2025/03/17/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>绪论</title>
