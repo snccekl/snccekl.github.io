@@ -18,7 +18,7 @@
 <ol>
 <li>char：一个 char 的空间应确保可以存放机器基本字符集中任意字符对于的数字值，即一个 char 的大小和一个机器字节一样。</li>
 <li>wchar_t：宽字符，用于扩展字符集，wchar_t 确保可以存放机器最大扩展字符集中的任意一个字符。</li>
-<li>char16_t 和 char32_t：为 Unicode 字符集服务。<br>下为书中列出的表格：<br>![C++ Arithmetic Types](..&#x2F;&#x2F;img&#x2F;C++ Arithmetic Types.png)</li>
+<li>char16_t 和 char32_t：为 Unicode 字符集服务。<br>下为书中列出的表格：<br>![C++ Arithmetic Types](.&#x2F;variable and types&#x2F;C++ Arithmetic Types.png)</li>
 </ol>
 <blockquote>
 <p>  [!NOTE] 类型选择技巧<br>  明确知晓数值不可能为负时，选用无符号类型。</p>
