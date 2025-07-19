@@ -24,7 +24,8 @@
 </li>
 </ol>
 <p>  下为书中列出的表格：</p>
-<p><img src="https://tvax4.sinaimg.cn//008tUEXmly1i3j5x7hx8dj30w60fngvk.jpg" alt="C++ Arithmetic Types"></p>
+<img src="https://tvax3.sinaimg.cn//008tUEXmly1i3j5x7hx8dj30w60fngvk.jpg" alt="C++ Arithmetic Types">
+
 <blockquote>
 <p>  [!NOTE] 类型选择技巧<br>  明确知晓数值不可能为负时，选用无符号类型。</p>
 <p>  整数运算用 int，数值太大时用 long long，不用 short 和 long </p>
