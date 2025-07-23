@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="本文为阅读C++ primer第二章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。">
+<meta name="description" content="P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷可以直接用sort排序后再去重。 但是考虑到最大只有1000，因此可以用桶排。每个桶只需要记录有没有即可 最后stl库中的set可以同时完成去重和排序的目的。 最终我选择的set。代码如下 123456789101112131415161718#include &lt;bits&#x2F;stdc++.h&gt;using namespace">
 <meta property="og:type" content="article">
-<meta property="og:title" content="变量和基本类型">
-<meta property="og:url" content="https://snccekl.github.io/2025/07/18/C++primer%E7%AC%AC2%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:title" content="7-23 洛谷题单之排序">
+<meta property="og:url" content="https://snccekl.github.io/2025/07/23/7-23/index.html">
 <meta property="og:site_name" content="Snccekl">
-<meta property="og:description" content="本文为阅读C++ primer第二章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。">
+<meta property="og:description" content="P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷可以直接用sort排序后再去重。 但是考虑到最大只有1000，因此可以用桶排。每个桶只需要记录有没有即可 最后stl库中的set可以同时完成去重和排序的目的。 最终我选择的set。代码如下 123456789101112131415161718#include &lt;bits&#x2F;stdc++.h&gt;using namespace">
 <meta property="og:locale">
-<meta property="og:image" content="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250719/ilim/1158X563/C%2B%2B_Arithmetic_Types.png">
-<meta property="article:published_time" content="2025-07-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-19T07:20:08.353Z">
+<meta property="article:published_time" content="2025-07-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-23T14:22:27.309Z">
 <meta property="article:author" content="snccekl">
 <meta property="article:tag" content="java and Compiler security">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250719/ilim/1158X563/C%2B%2B_Arithmetic_Types.png">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://snccekl.github.io/2025/07/18/C++primer第2章 变量和基本类型/"/>
+  <link rel="canonical" href="https://snccekl.github.io/2025/07/23/7-23/"/>
 
 
 
 
 
-  <title>变量和基本类型 | Snccekl</title>
+  <title>7-23 洛谷题单之排序 | Snccekl</title>
   
 
 
@@ -309,7 +307,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/18/C++primer%E7%AC%AC2%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/23/7-23/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -326,7 +324,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">变量和基本类型</h1>
+          <h1 class="post-title" itemprop="name headline">7-23 洛谷题单之排序</h1>
         
 
         <div class="post-meta">
@@ -338,8 +336,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">
-                2025-07-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-23T00:00:00+08:00">
+                2025-07-23
               </time>
             
 
@@ -361,8 +359,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C-primer/" itemprop="url" rel="index">
-                    <span itemprop="name">C++ primer</span>
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
+                    <span itemprop="name">算法刷题</span>
                   </a>
                 </span>
 
@@ -403,84 +401,17 @@
       
 
       
-        <p>本文为阅读C++ primer第二章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。</p>
-<span id="more"></span>
-<p>C++定义了几种基本内置类型，如字符、整型、浮点数等。</p>
-<h1 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h1><p>基本内置类型包括算数类型和空类型。算术类型包括字符、整数、布尔值和浮点数。void类型没有关联的值，只能在少数情况下使用，最常见的是作为不返回值的函数的返回类型</p>
-<h2 id="算术类型"><a href="#算术类型" class="headerlink" title="算术类型"></a>算术类型</h2><p>算数类型整体分为整型和浮点型两类。字符和布尔值都属于整型。</p>
-<p>C++ 定义了各类型的最小尺寸：bool 未定义、char 8位、short 16位、int 16位、long 32位、long long 64位；float 是 32 位 4 字节，包括6位有效数字、double 是 64 位 8 字节，包括10位有效数字。</p>
-<blockquote>
-<p>[!NOTE] int位数的特别说明<br>int作为一个变长的类型，可能是16位，也可能是32位，取决于编译器。目前多为32位</p>
-</blockquote>
-<p>int、short、long 都是带符号类型。char 是否有符号由编译器决定。</p>
-<p>因为 char 是否有符号并不确定，因此可以使用 signed char 或 unsigned char 来指定是否有符号。</p>
-<p>C++ 提供了几种字符类型：</p>
-<ol>
-<li><p>char：一个 char 的空间应确保可以存放机器基本字符集中任意字符对于的数字值，即一个 char 的大小和一个机器字节一样。</p>
-</li>
-<li><p>wchar_t：宽字符，用于扩展字符集，wchar_t 确保可以存放机器最大扩展字符集中的任意一个字符。</p>
-</li>
-<li><p>char16_t 和 char32_t：为 Unicode 字符集服务。</p>
-</li>
-</ol>
-<p>  下为书中列出的表格：</p>
-<p><img src="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250719/ilim/1158X563/C%2B%2B_Arithmetic_Types.png" alt="1158X563&#x2F;C++_Arithmetic_Types.png"></p>
-<blockquote>
-<p>  [!NOTE] 类型选择技巧<br>  明确知晓数值不可能为负时，选用无符号类型。</p>
-<p>  整数运算用 int，数值太大时用 long long，不用 short 和 long </p>
-<p>  浮点数运算用 double。float 和 double 的计算代价相差无几</p>
-</blockquote>
-<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><h3 id="几种类型转换的情况："><a href="#几种类型转换的情况：" class="headerlink" title="几种类型转换的情况："></a>几种类型转换的情况：</h3><ul>
-<li>把浮点数赋给整型时，结果仅保留小数点前的部分。</li>
-<li>赋给无符号类型超出范围的值时，结果是初始值对无符号类型表示数值总数取模后的余数。比如 -1 赋给 8 位 unsigned char 的结果是 255（-1&#x3D;256*(-1)+255）</li>
-<li>赋给带符号类型超出范围的值时，结果是未定义的。程序可能工作，可能崩溃。</li>
-</ul>
-<p>程序尽量避免依赖于实现环境的行为。比如 int 的尺寸在不同环境可能不同。</p>
-<h3 id="含有无符号类型的表达式"><a href="#含有无符号类型的表达式" class="headerlink" title="含有无符号类型的表达式"></a>含有无符号类型的表达式</h3><p>一个表达式中既有无符号数又有int值时，int会被转换成无符号数。</p>
-<p>无符号减无符号数，结果还是无符号数，如果是负值就等于该符数加上无符号数的模<br><code>unsigned u = 10; int i = -42; u + i = -32 + 2^32 = 4294967264</code></p>
-<h2 id="字面值常量"><a href="#字面值常量" class="headerlink" title="字面值常量"></a>字面值常量</h2><h3 id="整型和浮点型字面值"><a href="#整型和浮点型字面值" class="headerlink" title="整型和浮点型字面值"></a>整型和浮点型字面值</h3><p>整型字面值中 0 开头的整数是 8 进制，0x 开头的整数是十六进制。</p>
-<p>整型字面值的具体数据类型由它的值和符号决定。默认情况下十进制字面值是带符号数，类型是 int, long, long long 中能容纳当前值的尺寸最小的那个。</p>
-<p>浮点型字面值可以用小数或科学计数法表示，科学计数法中的指数部分用 E 或 e 标识</p>
-<h3 id="字符和字符串字面值"><a href="#字符和字符串字面值" class="headerlink" title="字符和字符串字面值"></a>字符和字符串字面值</h3><p>单引号括起来的一个字符是 char 型字面值，双引号括起来的 0 个或多个字符则构成字符串型字面值。</p>
-<p>字符串字面值的类型实际上是字符数组，编译器会向每个字符串结尾添加一个空字符（’\0’），因此字符串字面值的实际长度要比它的内容多 1。如 “A” 代表了一个长度为 2 的字符数组。</p>
-<p><strong>如果两个字符串字面值紧邻且仅由空格、缩进和换行符分隔，则它们实际上是一个整体。因此字符串比较长时可以直接分行书写</strong></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">string global_str = <span class="string">&quot;A is B&quot;</span>   <span class="string">&quot;and B is A&quot;</span>;</span><br><span class="line">cout &lt;&lt; global_str &lt;&lt; endl; <span class="comment">// 输出: A is Band B is A</span></span><br></pre></td></tr></table></figure>
-<h3 id="转义序列"><a href="#转义序列" class="headerlink" title="转义序列"></a>转义序列</h3><p>建议直接网上查表</p>
-<h3 id="指定字面值的类型"><a href="#指定字面值的类型" class="headerlink" title="指定字面值的类型"></a>指定字面值的类型</h3><p>可以通过给字面值增加前缀和后缀来改变字面值的默认类型。<br>下为一些常见的字面量类型指定</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;整型字面值&#x27;</span> </span><br><span class="line"><span class="number">12</span> <span class="comment">// 默认类型为 int </span></span><br><span class="line"><span class="number">12u</span> <span class="number">12U</span> <span class="comment">// 最小匹配类型 unsigned </span></span><br><span class="line"><span class="number">12l</span> <span class="number">12L</span> <span class="comment">// 最小匹配类型 long </span></span><br><span class="line"><span class="number">12ul</span> <span class="number">12UL</span> <span class="comment">// 最小匹配类型 unsigned long </span></span><br><span class="line"><span class="number">12ll</span> <span class="number">12LL</span> <span class="comment">// 最小匹配类型 long long </span></span><br><span class="line"><span class="number">12ull</span> <span class="number">12ULL</span> <span class="comment">// 最小匹配类型 unsigned long long </span></span><br><span class="line"><span class="string">&#x27;浮点型字面值&#x27;</span> </span><br><span class="line"><span class="number">3.14</span> <span class="comment">// 默认类型为 double </span></span><br><span class="line"><span class="number">3.14f</span> <span class="number">3.14F</span> <span class="comment">// 类型为 float </span></span><br><span class="line"><span class="number">3.14l</span> <span class="number">3.14L</span> <span class="comment">// 类型为 long double </span></span><br><span class="line"><span class="string">&#x27;字符字符串字面值&#x27;</span> </span><br><span class="line"><span class="string">u&#x27;a&#x27;</span> <span class="string">u&quot;abandon&quot;</span> <span class="comment">// Unicode 16 字符，类型为 char16_t </span></span><br><span class="line"><span class="string">U&#x27;a&#x27;</span> <span class="string">U&quot;abandon&quot;</span> <span class="comment">// Unicode 32 字符，类型为 char32_t </span></span><br><span class="line"><span class="string">L&#x27;a&#x27;</span> <span class="string">L&quot;abandon&quot;</span> <span class="comment">// 宽字符，类型为 wchar_t </span></span><br><span class="line"><span class="string">u8&quot;abandon&quot;</span> <span class="comment">// 类型为 char，u8 的含义是 UTF-8，仅用于字符串字面值。</span></span><br></pre></td></tr></table></figure>
-<p><strong>注意 12f 是错的，不能给整型字面值加 f 后缀，可以使用 12.f</strong></p>
-<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><p>对于c++而言，”变量“和”对象“一般可以互换使用。</p>
-<p>c++中，对象通常指一块能存储数据并具有某种类型的内存</p>
-<h2 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>可以一个一个初始化</p>
-<p>也可以在同一条定义语句中使用先定义的变量去初始化后定义的其他变量。<br><code>double price = 109.99, discount = price * 0.6;</code></p>
-<p>初始化不是赋值，初始化是创建变量时赋予一个初始值，赋值是把对象的当前值擦除并用一个新值来替代。</p>
-<h3 id="列表初始化"><a href="#列表初始化" class="headerlink" title="列表初始化"></a>列表初始化</h3><p>下面四种初始化方式都是可行的，其中使用花括号的方式叫做列表初始化。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i=<span class="number">0</span>; <span class="type">int</span> i=&#123;<span class="number">0</span>&#125;; <span class="type">int</span> i&#123;<span class="number">0</span>&#125;; <span class="function"><span class="type">int</span> <span class="title">i</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>当用于内置类型的变量时，使用列表初始化且初始值存在信息丢失的风险，编译器会报错</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> <span class="type">double</span> ld = <span class="number">3.1415926536</span>; </span><br><span class="line"><span class="type">int</span> a&#123;ld&#125;, b=&#123;ld&#125;; <span class="comment">//错误，存在信息丢失的风险，转换未执行。 </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">c</span><span class="params">(ld)</span>, d</span>=ld; <span class="comment">//正确</span></span><br></pre></td></tr></table></figure>
-<h3 id="默认初始化"><a href="#默认初始化" class="headerlink" title="默认初始化"></a>默认初始化</h3><p><strong>定义于函数体内的内置类型的对象如果没有初始化，则其值未定义。</strong></p>
-<p>定义于任何函数之外的内置类型则被初始化为0；</p>
-<p>类的对象如果没有显式地初始化，则其由类确定。string 默认初始化为一个空串。</p>
-<p>不能使用未初始化的变量，否则会引发运行时故障。</p>
-<p><strong>建议初始化每一个内置类型的变量。</strong></p>
-<h2 id="变量声明和定义的关系"><a href="#变量声明和定义的关系" class="headerlink" title="变量声明和定义的关系"></a>变量声明和定义的关系</h2><p>声明和定义是严格区分的。</p>
-<p>要声明一个变量加 extern，声明变量不能赋值。</p>
-<p>任何包含了显式初始化的声明即成为定义。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> i; <span class="comment">// 声明 i </span></span><br><span class="line"><span class="type">int</span> i; <span class="comment">// 定义i； </span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> i = <span class="number">1</span>; <span class="comment">// 定义 i，初始化抵消了 extern 的作用。</span></span><br></pre></td></tr></table></figure>
-<p>变量只能被定义一次，但是可以多次声明。通过这种方式，一个变量可以在多个文件中使用</p>
-<p>声明和定义的区分很重要</p>
-<p>c++是静态类型语言，其含义是在编译阶段检查类型。</p>
-<h2 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h2><p>标识符组成：字母、数字、下划线。不能以数字开头，对大小写敏感。标识符的长度没有限制。</p>
-<p>用户自定义的标识符不能连续出现两个下划线，也不能以下划线紧连大写字母开头。定义在函数体外的标识符不能以下划线开头。这些是为了确保用户自定义的标识符不会和标准库中的重合</p>
-<p>变量命名规范：</p>
-<ol>
-<li>标识符要体现其实际含义。</li>
-<li>变量名一般用小写字母。</li>
-<li>用户自定义的类型一般以大写字母开头。</li>
-<li>包含多个单词的标识符，使用驼峰命名法或使用下划线连接不同单词。</li>
-</ol>
-<p>对于嵌套作用域，可以在内层作用域中重新定义外层作用域已有的名字，但是最好不要这样做。</p>
-
+        <h1 id="P1059-NOIP-2006-普及组-明明的随机数-洛谷"><a href="#P1059-NOIP-2006-普及组-明明的随机数-洛谷" class="headerlink" title="P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1059">P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷</a></h1><p>可以直接用sort排序后再去重。</p>
+<p>但是考虑到最大只有1000，因此可以用桶排。每个桶只需要记录有没有即可</p>
+<p>最后stl库中的set可以同时完成去重和排序的目的。</p>
+<p>最终我选择的set。代码如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        <span class="type">int</span> x;</span><br><span class="line">        cin &gt;&gt; x;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);    </span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;s.<span class="built_in">size</span>()&lt;&lt;endl;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> it = s.<span class="built_in">begin</span>(); it != s.<span class="built_in">end</span>(); it++)&#123;</span><br><span class="line">        cout &lt;&lt; *it &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="P1093-NOIP-2007-普及组-奖学金-洛谷"><a href="#P1093-NOIP-2007-普及组-奖学金-洛谷" class="headerlink" title="P1093 [NOIP 2007 普及组] 奖学金 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1093">P1093 [NOIP 2007 普及组] 奖学金 - 洛谷</a></h1><p>用结构体存储对应的变量，然后重构cmp即可。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">score</span>&#123;</span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">int</span> chinese;</span><br><span class="line">    <span class="type">int</span> math;</span><br><span class="line">    <span class="type">int</span> english;</span><br><span class="line">    <span class="type">int</span> total;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> score &amp;a, <span class="type">const</span> score &amp;b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(a.total != b.total) <span class="keyword">return</span> a.total &gt; b.total;</span><br><span class="line">    <span class="keyword">if</span>(a.chinese != b.chinese) <span class="keyword">return</span> a.chinese &gt; b.chinese;</span><br><span class="line">    <span class="keyword">return</span> a.id &lt; b.id;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="function">vector&lt;score&gt; <span class="title">scores</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        cin &gt;&gt;scores[i].chinese &gt;&gt; scores[i].math &gt;&gt; scores[i].english;</span><br><span class="line">        scores[i].total = scores[i].chinese + scores[i].math + scores[i].english;</span><br><span class="line">        scores[i].id = i + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(scores.<span class="built_in">begin</span>(), scores.<span class="built_in">end</span>(), cmp);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">        <span class="type">const</span> <span class="keyword">auto</span> &amp;s = scores[i];</span><br><span class="line">        cout &lt;&lt; s.id &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; s.total &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="P1781-宇宙总统-洛谷"><a href="#P1781-宇宙总统-洛谷" class="headerlink" title="P1781 宇宙总统 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1781">P1781 宇宙总统 - 洛谷</a></h1><p>这是个大整数，因此不能直接排序。但是考虑到C++字符串提供了比较字典序的方法，因此可以将其作为字符串来比较，当然首先要比较长度</p>
+<p>因为只需要最大的，所以不需要全部存储，读一个比一次即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> string &amp;a, <span class="type">const</span> string &amp; b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(a.<span class="built_in">size</span>() != b.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> a.<span class="built_in">size</span>() &gt; b.<span class="built_in">size</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a &gt; b;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="type">int</span> winner = <span class="number">1</span>;</span><br><span class="line">    string vote;</span><br><span class="line">    cin&gt;&gt;vote;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++)&#123;</span><br><span class="line">        string current_vote;</span><br><span class="line">        cin &gt;&gt; current_vote;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">cmp</span>(current_vote, vote)) &#123;</span><br><span class="line">            vote = current_vote;</span><br><span class="line">            winner = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; winner &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; vote &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -507,7 +438,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://snccekl.github.io/2025/07/18/C++primer%E7%AC%AC2%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" title="变量和基本类型">https://snccekl.github.io/2025/07/18/C++primer%E7%AC%AC2%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/</a>
+    <a href="https://snccekl.github.io/2025/07/23/7-23/" title="7-23 洛谷题单之排序">https://snccekl.github.io/2025/07/23/7-23/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -529,8 +460,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/" rel="next" title="分层结构">
-                <i class="fa fa-chevron-left"></i> 分层结构
+              <a href="/2025/07/23/day3/" rel="next" title="7-23 代码随想录之链表">
+                <i class="fa fa-chevron-left"></i> 7-23 代码随想录之链表
               </a>
             
           </div>
@@ -538,10 +469,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2025/07/21/day2/" rel="prev" title="7-21 代码随想录之数组">
-                7-21 代码随想录之数组 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -618,7 +545,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -680,7 +607,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">基本类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">算术类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E7%A7%8D%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%9A%84%E6%83%85%E5%86%B5%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">几种类型转换的情况：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AB%E6%9C%89%E6%97%A0%E7%AC%A6%E5%8F%B7%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">含有无符号类型的表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E9%9D%A2%E5%80%BC%E5%B8%B8%E9%87%8F"><span class="nav-number">1.3.</span> <span class="nav-text">字面值常量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E5%9E%8B%E5%92%8C%E6%B5%AE%E7%82%B9%E5%9E%8B%E5%AD%97%E9%9D%A2%E5%80%BC"><span class="nav-number">1.3.1.</span> <span class="nav-text">整型和浮点型字面值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AD%97%E9%9D%A2%E5%80%BC"><span class="nav-number">1.3.2.</span> <span class="nav-text">字符和字符串字面值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97"><span class="nav-number">1.3.3.</span> <span class="nav-text">转义序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%AD%97%E9%9D%A2%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.4.</span> <span class="nav-text">指定字面值的类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">变量定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.1.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E8%A1%A8%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.1.2.</span> <span class="nav-text">列表初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.1.3.</span> <span class="nav-text">默认初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%A3%B0%E6%98%8E%E5%92%8C%E5%AE%9A%E4%B9%89%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.</span> <span class="nav-text">变量声明和定义的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">2.3.</span> <span class="nav-text">标识符</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#P1059-NOIP-2006-%E6%99%AE%E5%8F%8A%E7%BB%84-%E6%98%8E%E6%98%8E%E7%9A%84%E9%9A%8F%E6%9C%BA%E6%95%B0-%E6%B4%9B%E8%B0%B7"><span class="nav-number">1.</span> <span class="nav-text">P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#P1093-NOIP-2007-%E6%99%AE%E5%8F%8A%E7%BB%84-%E5%A5%96%E5%AD%A6%E9%87%91-%E6%B4%9B%E8%B0%B7"><span class="nav-number">2.</span> <span class="nav-text">P1093 [NOIP 2007 普及组] 奖学金 - 洛谷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#P1781-%E5%AE%87%E5%AE%99%E6%80%BB%E7%BB%9F-%E6%B4%9B%E8%B0%B7"><span class="nav-number">3.</span> <span class="nav-text">P1781 宇宙总统 - 洛谷</span></a></li></ol></div>
             
 
           </div>
