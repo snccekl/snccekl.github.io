@@ -1,25 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>7-22 洛谷题单之排序</title>
-    <url>/2025/07/22/7-22/</url>
-    <content><![CDATA[<h1 id="P1177-【模板】排序-洛谷"><a href="#P1177-【模板】排序-洛谷" class="headerlink" title="P1177 【模板】排序 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1177">P1177 【模板】排序 - 洛谷</a></h1><p>主要是练一下手写快排。</p>
-<h2 id="快速排序的原理"><a href="#快速排序的原理" class="headerlink" title="快速排序的原理"></a>快速排序的原理</h2><p>本部分讲述的是常用的三路快速排序。如果想了解快速排序的更多变种实现方式可以在 <a href="https://oi-wiki.org/basic/quick-sort/#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">OI Wiki</a> 中了解。</p>
-<p>我们设待排序的序列为一个长度为 n 的序列 a。快速排序的具体原理如下：</p>
-<p>首先，在 a 中随机选择一个数 x，之后我们进行如下操作：</p>
-<ol>
-<li>如果 n&#x3D;0 或 n&#x3D;1，此时根本无需排序，直接退出；</li>
-<li>定义三个新的序列 b,c,d；</li>
-<li>遍历整个序列 a，将比 x 小的放在 b 内，比 x 大的放在 d 内，和 x 相等的放在 c 内；</li>
-<li>将 b,d 按如上过程继续排序。序列 c 中的数由于都相等所以不必排序。</li>
-</ol>
-<p>可以发现：实际上每一次的排序之后都会通过调用本身来继续排序，这明显就是递归。</p>
-<p>通过递归，我们将一个完整的序列经过不断的分解来变成很多个小序列，直到只有一个或没有数为止。<strong>这种排序就是在不断的递归和分解当中来慢慢实现与完成排序</strong></p>
-<p>模版代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    T pivot = arr[<span class="built_in">rand</span>() % (right - left + <span class="number">1</span>) + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, left, j - <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, k + <span class="number">1</span>, right);</span><br><span class="line">	<span class="comment">//j是第一个pivot所在的位置,k是最后一个pivot所在的位置</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="P1923-【深基9-例4】求第-k-小的数-洛谷"><a href="#P1923-【深基9-例4】求第-k-小的数-洛谷" class="headerlink" title="P1923 【深基9.例4】求第 k 小的数 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1923">P1923 【深基9.例4】求第 k 小的数 - 洛谷</a></h1><p>通过分治去求。考虑上面的快排，每次分出三个相对有序的序列，可以据此判断出第k小的数在哪个序列中，然后再递归对应的序列即可</p>
+    <title>7-21 代码随想录之数组</title>
+    <url>/2025/07/21/day2/</url>
+    <content><![CDATA[<h1 id="209-长度最小的子数组-力扣（LeetCode）"><a href="#209-长度最小的子数组-力扣（LeetCode）" class="headerlink" title="209. 长度最小的子数组 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209. 长度最小的子数组 - 力扣（LeetCode）</a></h1><p>双指针维护子数组的左边界和右边界，一个变量记录和。</p>
+<p><strong>注意：当和大于等于target时，需要循环减去左边界，因为当新加入的数特别大时，只减一次是不够的</strong></p>
 <p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">get_nth_k</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right,<span class="type">int</span> pos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; right) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (left == right) <span class="keyword">return</span> arr[left];</span><br><span class="line">    T pivot = arr[(right-left) / <span class="number">2</span> + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(pos &lt; j - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, left, j<span class="number">-1</span>, pos);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(pos &gt; k - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, k<span class="number">+1</span>, right, pos- (k - left + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pivot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="type">int</span> s = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> sum = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(f &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sum &gt;= target)&#123;</span><br><span class="line">                <span class="keyword">while</span>(sum &gt;= target)&#123;</span><br><span class="line">                    ans = <span class="built_in">min</span>(ans, f - s + <span class="number">1</span>);</span><br><span class="line">                    sum -= nums[s];</span><br><span class="line">                    s++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum &lt; target)&#123;</span><br><span class="line">                f++;</span><br><span class="line">                <span class="keyword">if</span>(f &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                    sum += nums[f];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == INT_MAX?<span class="number">0</span>:ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="58-区间和（第九期模拟笔试）"><a href="#58-区间和（第九期模拟笔试）" class="headerlink" title="58. 区间和（第九期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1070">58. 区间和（第九期模拟笔试）</a></h1><p>可以暴力，但是太慢了。</p>
+<p>这里引入前缀和。前缀和可以简单理解为「数列的前n项的和」，是一种重要的预处理方式，能大大降低查询的时间复杂度。</p>
+<p>在这道题目中，计算的是区间内的和(设区间为a、b)，则该区间内的和就是前b项的和减去前a项的和。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prefix</span><span class="params">(n + <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        prefix[i] = prefix[i - <span class="number">1</span>] + nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;a, &amp;b))&#123;</span><br><span class="line">        <span class="keyword">if</span> (a &gt; b) <span class="built_in">swap</span>(a, b);</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, prefix[b]);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = prefix[b] - prefix[a - <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, ans);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="44-开发商购买土地（第五期模拟笔试）"><a href="#44-开发商购买土地（第五期模拟笔试）" class="headerlink" title="44. 开发商购买土地（第五期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1044">44. 开发商购买土地（第五期模拟笔试）</a></h1><p>其实还是用前缀和的思想，但是这里最好是把整个二维数组观想成一维一维的数组（无论行列）。然后将每一维当作一个元素，去求整体的前缀和。</p>
+<p>因为无论怎么分，都是以一行或者一列为单位的，那么这里面所有的元素都会划在同一个区域</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vec</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m, <span class="number">0</span>)) ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            cin &gt;&gt; vec[i][j];</span><br><span class="line">            sum += vec[i][j];<span class="comment">//计算所有元素的和，因为只有两个区域</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> result = INT_MAX;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span> ; j &lt; m; j++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (j == m - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">            <span class="comment">//每经过一行，计算所有元素的和，然后计算result</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; n; i++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (i == n - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">			<span class="comment">//同样作用在列上</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; result &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法刷题</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>7-21 代码随想录之数组</title>
+    <url>/2025/07/21/day1/</url>
+    <content><![CDATA[<h1 id="704-二分查找-力扣（LeetCode）"><a href="#704-二分查找-力扣（LeetCode）" class="headerlink" title="704. 二分查找 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/binary-search/description/">704. 二分查找 - 力扣（LeetCode）</a></h1><p>这是二分查找的模版题。二分查找两种思路：左闭右开和左闭右闭。</p>
+<p>在进行二分查找的循环中，循环的条件就是查找的区间要是合法的，即区间内至少有1个元素，例如，在左闭右闭的方法中，[1, 1]中至少有“1”这个元素，区间合法；而对于左闭右开，[1, 1)中没有元素，这个区间就是非法的。</p>
+<p>在确认区间合法后，才在区间中取中间值</p>
+<p>对于左闭右闭：由于每一次查找都需要在合法区间中寻找，且此次循环的合法区间不能包含上一次循环中已经筛除的值，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标-1。</p>
+<p>对于左闭右开：与上面一样，但是此时区间的右端点不在区间内，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标。</p>
+<p>注意<br>无论是左闭右闭还是左闭右开，在初始化时都必须要让数组中的所有元素都在初始合法区间内，例如数组nums为{1， 2， 3， 4}， 对于左闭右闭，那么初始的合法区间为[0, nums.size() - 1]，而对于左闭右开，初始的合法区间应该为[0, nums.size())</p>
+<p>给出代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//左闭右开</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//左闭右闭</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="27-移除元素-力扣（LeetCode）"><a href="#27-移除元素-力扣（LeetCode）" class="headerlink" title="27. 移除元素 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/remove-element/description/">27. 移除元素 - 力扣（LeetCode）</a></h1><p>双指针，慢的指向最后一个非val的下一个元素，快的就一直遍历。每遇到一个非val的元素，就把它赋值给慢指针对应的位置</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[r] == val)&#123;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                nums[l] = nums[r];</span><br><span class="line">                l++;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="977-有序数组的平方-力扣（LeetCode）"><a href="#977-有序数组的平方-力扣（LeetCode）" class="headerlink" title="977. 有序数组的平方 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/squares-of-a-sorted-array/description/">977. 有序数组的平方 - 力扣（LeetCode）</a></h1><p>最开始想的是从数组左右两边遍历，然后将大的放在右边，小的放在左边。但是如果全是负数就会出错，因为不会有任何一个数的绝对值小于数组最右边那个数，则一旦最右边那个数至于最左边后就不会再交换了。</p>
+<p>所以初始一个新的数组，然后从后往前填空，但是不改变原数组元素的顺序</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortedSquares</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">result</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        <span class="type">int</span> pos = r;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">abs</span>(nums[r]) &gt; <span class="built_in">abs</span>(nums[l]))&#123;</span><br><span class="line">                result[pos--] = nums[r] * nums[r];</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                result[pos--] = nums[l] * nums[l];</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>算法刷题</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>7-23 代码随想录之链表</title>
+    <url>/2025/07/23/day3/</url>
+    <content><![CDATA[<h1 id="203-移除链表元素-力扣（LeetCode）"><a href="#203-移除链表元素-力扣（LeetCode）" class="headerlink" title="203. 移除链表元素 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/remove-linked-list-elements/description/">203. 移除链表元素 - 力扣（LeetCode）</a></h1><p>链表的题我个人还是喜欢有一个虚拟的头节点更好。这样便于操作和处理边界情况</p>
+<p>在这个题里，维护一个当前节点和当前节点的前一个节点，当前节点值为val时，只需要把前一个节点的next指向当前节点的next即可。</p>
+<p><strong>最后返回虚拟头节点的next是因为当链表内全为对应val时，原head节点将被删除</strong></p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeElements</span><span class="params">(ListNode* head, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        ListNode* pre = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">0</span>);</span><br><span class="line">        pre-&gt;next = head;</span><br><span class="line">        ListNode* dumhead = pre;</span><br><span class="line">        ListNode* cur = head;</span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(cur-&gt;val == val)&#123;</span><br><span class="line">                ListNode* tmp = cur;</span><br><span class="line">                pre-&gt;next = cur-&gt;next;</span><br><span class="line">                cur = cur-&gt;next;</span><br><span class="line">                <span class="keyword">delete</span> tmp;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            pre = pre-&gt;next;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dumhead-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="206-反转链表-力扣（LeetCode）"><a href="#206-反转链表-力扣（LeetCode）" class="headerlink" title="206. 反转链表 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/reverse-linked-list/description/">206. 反转链表 - 力扣（LeetCode）</a></h1><p>循环的做法比较简单，不赘述</p>
+<p>对于递归，考虑设计一个函数，每次翻转两个节点间的指向关系即可。最后的那个节点就是头节点</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">reverse</span><span class="params">(ListNode* pre, ListNode* cur)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(cur == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> pre;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode* tmp = cur-&gt;next;</span><br><span class="line">        cur-&gt;next = pre;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reverse</span>(cur, tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">ListNode* <span class="title">reverseList</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reverse</span>(<span class="literal">nullptr</span>, head);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="24-两两交换链表中的节点-力扣（LeetCode）"><a href="#24-两两交换链表中的节点-力扣（LeetCode）" class="headerlink" title="24. 两两交换链表中的节点 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/swap-nodes-in-pairs/description/">24. 两两交换链表中的节点 - 力扣（LeetCode）</a></h1><p>依然设置一个虚拟头节点，current指针的下一个节点是需要临时保存的；因为是两两交换  </p>
+<p>还有循环停止的条件是current节点和下个节点不能为空</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">swapPairs</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        ListNode* dummyhead = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">0</span>);</span><br><span class="line">        dummyhead-&gt;next = head;</span><br><span class="line">        ListNode* pre = dummyhead;</span><br><span class="line">        ListNode* cur = head;</span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="literal">NULL</span> &amp;&amp; cur-&gt;next != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            ListNode* temp = cur-&gt;next; </span><br><span class="line">            cur-&gt;next = temp-&gt;next</span><br><span class="line">            temp-&gt;next = cur;</span><br><span class="line">            pre-&gt;next = temp;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummyhead-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>算法刷题</category>
@@ -61,59 +100,26 @@
       </categories>
   </entry>
   <entry>
-    <title>7-21 代码随想录之数组</title>
-    <url>/2025/07/21/day1/</url>
-    <content><![CDATA[<h1 id="704-二分查找-力扣（LeetCode）"><a href="#704-二分查找-力扣（LeetCode）" class="headerlink" title="704. 二分查找 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/binary-search/description/">704. 二分查找 - 力扣（LeetCode）</a></h1><p>这是二分查找的模版题。二分查找两种思路：左闭右开和左闭右闭。</p>
-<p>在进行二分查找的循环中，循环的条件就是查找的区间要是合法的，即区间内至少有1个元素，例如，在左闭右闭的方法中，[1, 1]中至少有“1”这个元素，区间合法；而对于左闭右开，[1, 1)中没有元素，这个区间就是非法的。</p>
-<p>在确认区间合法后，才在区间中取中间值</p>
-<p>对于左闭右闭：由于每一次查找都需要在合法区间中寻找，且此次循环的合法区间不能包含上一次循环中已经筛除的值，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标-1。</p>
-<p>对于左闭右开：与上面一样，但是此时区间的右端点不在区间内，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标。</p>
-<p>注意<br>无论是左闭右闭还是左闭右开，在初始化时都必须要让数组中的所有元素都在初始合法区间内，例如数组nums为{1， 2， 3， 4}， 对于左闭右闭，那么初始的合法区间为[0, nums.size() - 1]，而对于左闭右开，初始的合法区间应该为[0, nums.size())</p>
-<p>给出代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//左闭右开</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//左闭右闭</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="27-移除元素-力扣（LeetCode）"><a href="#27-移除元素-力扣（LeetCode）" class="headerlink" title="27. 移除元素 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/remove-element/description/">27. 移除元素 - 力扣（LeetCode）</a></h1><p>双指针，慢的指向最后一个非val的下一个元素，快的就一直遍历。每遇到一个非val的元素，就把它赋值给慢指针对应的位置</p>
+    <title>7-22 洛谷题单之排序</title>
+    <url>/2025/07/22/7-22/</url>
+    <content><![CDATA[<h1 id="P1177-【模板】排序-洛谷"><a href="#P1177-【模板】排序-洛谷" class="headerlink" title="P1177 【模板】排序 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1177">P1177 【模板】排序 - 洛谷</a></h1><p>主要是练一下手写快排。</p>
+<h2 id="快速排序的原理"><a href="#快速排序的原理" class="headerlink" title="快速排序的原理"></a>快速排序的原理</h2><p>本部分讲述的是常用的三路快速排序。如果想了解快速排序的更多变种实现方式可以在 <a href="https://oi-wiki.org/basic/quick-sort/#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">OI Wiki</a> 中了解。</p>
+<p>我们设待排序的序列为一个长度为 n 的序列 a。快速排序的具体原理如下：</p>
+<p>首先，在 a 中随机选择一个数 x，之后我们进行如下操作：</p>
+<ol>
+<li>如果 n&#x3D;0 或 n&#x3D;1，此时根本无需排序，直接退出；</li>
+<li>定义三个新的序列 b,c,d；</li>
+<li>遍历整个序列 a，将比 x 小的放在 b 内，比 x 大的放在 d 内，和 x 相等的放在 c 内；</li>
+<li>将 b,d 按如上过程继续排序。序列 c 中的数由于都相等所以不必排序。</li>
+</ol>
+<p>可以发现：实际上每一次的排序之后都会通过调用本身来继续排序，这明显就是递归。</p>
+<p>通过递归，我们将一个完整的序列经过不断的分解来变成很多个小序列，直到只有一个或没有数为止。<strong>这种排序就是在不断的递归和分解当中来慢慢实现与完成排序</strong></p>
+<p>模版代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    T pivot = arr[<span class="built_in">rand</span>() % (right - left + <span class="number">1</span>) + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, left, j - <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, k + <span class="number">1</span>, right);</span><br><span class="line">	<span class="comment">//j是第一个pivot所在的位置,k是最后一个pivot所在的位置</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="P1923-【深基9-例4】求第-k-小的数-洛谷"><a href="#P1923-【深基9-例4】求第-k-小的数-洛谷" class="headerlink" title="P1923 【深基9.例4】求第 k 小的数 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1923">P1923 【深基9.例4】求第 k 小的数 - 洛谷</a></h1><p>通过分治去求。考虑上面的快排，每次分出三个相对有序的序列，可以据此判断出第k小的数在哪个序列中，然后再递归对应的序列即可</p>
 <p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[r] == val)&#123;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                nums[l] = nums[r];</span><br><span class="line">                l++;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="977-有序数组的平方-力扣（LeetCode）"><a href="#977-有序数组的平方-力扣（LeetCode）" class="headerlink" title="977. 有序数组的平方 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/squares-of-a-sorted-array/description/">977. 有序数组的平方 - 力扣（LeetCode）</a></h1><p>最开始想的是从数组左右两边遍历，然后将大的放在右边，小的放在左边。但是如果全是负数就会出错，因为不会有任何一个数的绝对值小于数组最右边那个数，则一旦最右边那个数至于最左边后就不会再交换了。</p>
-<p>所以初始一个新的数组，然后从后往前填空，但是不改变原数组元素的顺序</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortedSquares</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">result</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        <span class="type">int</span> pos = r;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">abs</span>(nums[r]) &gt; <span class="built_in">abs</span>(nums[l]))&#123;</span><br><span class="line">                result[pos--] = nums[r] * nums[r];</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                result[pos--] = nums[l] * nums[l];</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>算法刷题</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>7-21 代码随想录之数组</title>
-    <url>/2025/07/21/day2/</url>
-    <content><![CDATA[<h1 id="209-长度最小的子数组-力扣（LeetCode）"><a href="#209-长度最小的子数组-力扣（LeetCode）" class="headerlink" title="209. 长度最小的子数组 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209. 长度最小的子数组 - 力扣（LeetCode）</a></h1><p>双指针维护子数组的左边界和右边界，一个变量记录和。</p>
-<p><strong>注意：当和大于等于target时，需要循环减去左边界，因为当新加入的数特别大时，只减一次是不够的</strong></p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="type">int</span> s = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> sum = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(f &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sum &gt;= target)&#123;</span><br><span class="line">                <span class="keyword">while</span>(sum &gt;= target)&#123;</span><br><span class="line">                    ans = <span class="built_in">min</span>(ans, f - s + <span class="number">1</span>);</span><br><span class="line">                    sum -= nums[s];</span><br><span class="line">                    s++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum &lt; target)&#123;</span><br><span class="line">                f++;</span><br><span class="line">                <span class="keyword">if</span>(f &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                    sum += nums[f];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == INT_MAX?<span class="number">0</span>:ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="58-区间和（第九期模拟笔试）"><a href="#58-区间和（第九期模拟笔试）" class="headerlink" title="58. 区间和（第九期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1070">58. 区间和（第九期模拟笔试）</a></h1><p>可以暴力，但是太慢了。</p>
-<p>这里引入前缀和。前缀和可以简单理解为「数列的前n项的和」，是一种重要的预处理方式，能大大降低查询的时间复杂度。</p>
-<p>在这道题目中，计算的是区间内的和(设区间为a、b)，则该区间内的和就是前b项的和减去前a项的和。</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prefix</span><span class="params">(n + <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        prefix[i] = prefix[i - <span class="number">1</span>] + nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;a, &amp;b))&#123;</span><br><span class="line">        <span class="keyword">if</span> (a &gt; b) <span class="built_in">swap</span>(a, b);</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, prefix[b]);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = prefix[b] - prefix[a - <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, ans);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="44-开发商购买土地（第五期模拟笔试）"><a href="#44-开发商购买土地（第五期模拟笔试）" class="headerlink" title="44. 开发商购买土地（第五期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1044">44. 开发商购买土地（第五期模拟笔试）</a></h1><p>其实还是用前缀和的思想，但是这里最好是把整个二维数组观想成一维一维的数组（无论行列）。然后将每一维当作一个元素，去求整体的前缀和。</p>
-<p>因为无论怎么分，都是以一行或者一列为单位的，那么这里面所有的元素都会划在同一个区域</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vec</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m, <span class="number">0</span>)) ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            cin &gt;&gt; vec[i][j];</span><br><span class="line">            sum += vec[i][j];<span class="comment">//计算所有元素的和，因为只有两个区域</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> result = INT_MAX;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span> ; j &lt; m; j++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (j == m - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">            <span class="comment">//每经过一行，计算所有元素的和，然后计算result</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; n; i++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (i == n - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">			<span class="comment">//同样作用在列上</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; result &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">get_nth_k</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right,<span class="type">int</span> pos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; right) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (left == right) <span class="keyword">return</span> arr[left];</span><br><span class="line">    T pivot = arr[(right-left) / <span class="number">2</span> + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(pos &lt; j - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, left, j<span class="number">-1</span>, pos);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(pos &gt; k - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, k<span class="number">+1</span>, right, pos- (k - left + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pivot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
-      <categories>
-        <category>算法刷题</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>7-25 代码随想录之哈希表</title>
-    <url>/2025/07/25/day5/</url>
-    <content><![CDATA[<h1 id="242-有效的字母异位词-力扣（LeetCode）"><a href="#242-有效的字母异位词-力扣（LeetCode）" class="headerlink" title="242. 有效的字母异位词 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/valid-anagram/description/">242. 有效的字母异位词 - 力扣（LeetCode）</a></h1><p>可以用哈希，也可以直接大小为26的数组。如果是unicode字符，那就必须用哈希了</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isAnagram</span><span class="params">(string s, string t)</span> </span>&#123;</span><br><span class="line">        unordered_map&lt;<span class="type">char</span>, <span class="type">int</span>&gt; hash;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span> c : s)&#123;</span><br><span class="line">            hash[c]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span> c : t)&#123;</span><br><span class="line">            hash[c]--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> it : hash)&#123;</span><br><span class="line">            <span class="keyword">if</span>(it.second != <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="349-两个数组的交集-力扣（LeetCode）"><a href="#349-两个数组的交集-力扣（LeetCode）" class="headerlink" title="349. 两个数组的交集 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/intersection-of-two-arrays/description/">349. 两个数组的交集 - 力扣（LeetCode）</a></h1><p>维护一个set。前面插入，后面删除。如果删除成功（即之前加入了），就加入结果集</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">intersection</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums1, vector&lt;<span class="type">int</span>&gt;&amp; nums2)</span> </span>&#123;</span><br><span class="line">        set&lt;<span class="type">int</span>&gt; n1;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> a : nums1)&#123;</span><br><span class="line">            n<span class="number">1.</span><span class="built_in">insert</span>(a);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> b : nums2)&#123;</span><br><span class="line">            <span class="keyword">if</span>(n<span class="number">1.</span><span class="built_in">erase</span>(b))&#123;</span><br><span class="line">                ans.<span class="built_in">push_back</span>(b);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="202-快乐数-力扣（LeetCode）"><a href="#202-快乐数-力扣（LeetCode）" class="headerlink" title="202. 快乐数 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/happy-number/description/">202. 快乐数 - 力扣（LeetCode）</a></h1><p>既然有可能无限循环，那就说明会遇到重复的数。</p>
-<p>简单计算一下，即使是9999计算后也只是324,。因此一个set是够存放的</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">SumSquare</span><span class="params">(<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(n != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="type">int</span> a = n % <span class="number">10</span>;</span><br><span class="line">            n = n / <span class="number">10</span>;</span><br><span class="line">            ans = ans + (a * a);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isHappy</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="type">int</span> sum = <span class="built_in">SumSquare</span>(n);</span><br><span class="line">            <span class="keyword">if</span>(sum == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (s.<span class="built_in">find</span>(sum) != s.<span class="built_in">end</span>()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                s.<span class="built_in">insert</span>(sum);</span><br><span class="line">            &#125;</span><br><span class="line">            n = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>算法刷题</category>
       </categories>
@@ -148,22 +154,63 @@
       </categories>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2025/03/17/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+    <title>7-25 代码随想录之哈希表</title>
+    <url>/2025/07/25/day5/</url>
+    <content><![CDATA[<h1 id="242-有效的字母异位词-力扣（LeetCode）"><a href="#242-有效的字母异位词-力扣（LeetCode）" class="headerlink" title="242. 有效的字母异位词 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/valid-anagram/description/">242. 有效的字母异位词 - 力扣（LeetCode）</a></h1><p>可以用哈希，也可以直接大小为26的数组。如果是unicode字符，那就必须用哈希了</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isAnagram</span><span class="params">(string s, string t)</span> </span>&#123;</span><br><span class="line">        unordered_map&lt;<span class="type">char</span>, <span class="type">int</span>&gt; hash;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span> c : s)&#123;</span><br><span class="line">            hash[c]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span> c : t)&#123;</span><br><span class="line">            hash[c]--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> it : hash)&#123;</span><br><span class="line">            <span class="keyword">if</span>(it.second != <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="349-两个数组的交集-力扣（LeetCode）"><a href="#349-两个数组的交集-力扣（LeetCode）" class="headerlink" title="349. 两个数组的交集 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/intersection-of-two-arrays/description/">349. 两个数组的交集 - 力扣（LeetCode）</a></h1><p>维护一个set。前面插入，后面删除。如果删除成功（即之前加入了），就加入结果集</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">intersection</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums1, vector&lt;<span class="type">int</span>&gt;&amp; nums2)</span> </span>&#123;</span><br><span class="line">        set&lt;<span class="type">int</span>&gt; n1;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> a : nums1)&#123;</span><br><span class="line">            n<span class="number">1.</span><span class="built_in">insert</span>(a);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> b : nums2)&#123;</span><br><span class="line">            <span class="keyword">if</span>(n<span class="number">1.</span><span class="built_in">erase</span>(b))&#123;</span><br><span class="line">                ans.<span class="built_in">push_back</span>(b);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="202-快乐数-力扣（LeetCode）"><a href="#202-快乐数-力扣（LeetCode）" class="headerlink" title="202. 快乐数 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/happy-number/description/">202. 快乐数 - 力扣（LeetCode）</a></h1><p>既然有可能无限循环，那就说明会遇到重复的数。</p>
+<p>简单计算一下，即使是9999计算后也只是324,。因此一个set是够存放的</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">SumSquare</span><span class="params">(<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(n != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="type">int</span> a = n % <span class="number">10</span>;</span><br><span class="line">            n = n / <span class="number">10</span>;</span><br><span class="line">            ans = ans + (a * a);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isHappy</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="type">int</span> sum = <span class="built_in">SumSquare</span>(n);</span><br><span class="line">            <span class="keyword">if</span>(sum == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (s.<span class="built_in">find</span>(sum) != s.<span class="built_in">end</span>()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                s.<span class="built_in">insert</span>(sum);</span><br><span class="line">            &#125;</span><br><span class="line">            n = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>算法刷题</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>字符串、向量和数组</title>
+    <url>/2025/07/25/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/</url>
+    <content><![CDATA[<p>本文为阅读C++ primer第三章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。</p>
+<span id="more"></span>
+<h1 id="命名空间的using声明"><a href="#命名空间的using声明" class="headerlink" title="命名空间的using声明"></a>命名空间的using声明</h1><p>可以对单个名字进行独立的using声明</p>
+<p>头文件里不应包含 using 声明。因为头文件的内容会拷贝到所有引用它的文件，一旦头文件有using声明，每个引用它的文件都有该声明，可能冲突</p>
+<h1 id="标准库类型string"><a href="#标准库类型string" class="headerlink" title="标准库类型string"></a>标准库类型string</h1><p>string 表示可变长的字符序列。</p>
+<h2 id="定义和初始化string对象"><a href="#定义和初始化string对象" class="headerlink" title="定义和初始化string对象"></a>定义和初始化string对象</h2><p>有以下几种方法</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">string s1; <span class="comment">//将 s1 默认初始化为一个空的 string </span></span><br><span class="line"><span class="function">string <span class="title">s1</span><span class="params">(s2)</span></span>; <span class="comment">//使用拷贝构造函数进行的拷贝初始化。s1 是 s2 的拷贝。 </span></span><br><span class="line">string s1 = s2; <span class="comment">//使用拷贝赋值运算符进行的拷贝初始化。s1 是 s2 的拷贝。 </span></span><br><span class="line"><span class="function">string <span class="title">s1</span><span class="params">(<span class="string">&quot;value&quot;</span>)</span></span>; <span class="comment">//s1 是字面值 &quot;value&quot; 去除最后一个空字符后的拷贝。 </span></span><br><span class="line">string s1 = <span class="string">&quot;value&quot;</span>; <span class="comment">//同上。 </span></span><br><span class="line"><span class="function">string <span class="title">s1</span><span class="params">(n,<span class="string">&#x27;c&#x27;</span>)</span></span>; <span class="comment">//s1 初始化为 n 个 &#x27;c&#x27;。</span></span><br></pre></td></tr></table></figure>
+<p><strong>使用字符串字面值或字符数组初始化 string 对象时，string 对象中是不包含末尾的空字符的，它会将字符数组中末尾的空字符去掉</strong></p>
+<h2 id="string的一些操作"><a href="#string的一些操作" class="headerlink" title="string的一些操作"></a>string的一些操作</h2><p><img src="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250725/QdOG/1040X475/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2025-07-25_163653.png" alt="1040X475&#x2F;屏幕截图_2025-07-25_163653.png"></p>
+<h3 id="读写string对象"><a href="#读写string对象" class="headerlink" title="读写string对象"></a>读写string对象</h3><p>可以使用 cin, cout 来读写 string 对象，也可以使用 stringstream 来读写 string 对象。</p>
+<h4 id="getline-函数"><a href="#getline-函数" class="headerlink" title="getline 函数"></a>getline 函数</h4><p>getline() 定义在头文件 string 中，以一个 istream 对象和一个 string 对象为输入参数。getline() 读取输入流的内容直到遇到换行符停止，然后将读入的数据存入 string 对象。</p>
+<p>注意 getline 会将换行符也读入，但是不将换行符存入 string 对象。即触发 getline() 函数返回的那个换行符实际上被丢弃掉了。</p>
+<p>getline() 只要一遇到换行符就结束读取操作并返回结果，即使一开始就是换行符也一样，这种情况下会得到一个空 string。</p>
+<p>getline() 与 &lt;&lt; 一样，会返回它的流参数。所以可以用 getline 的结果作为条件。</p>
+<h3 id="string-size-type-类型"><a href="#string-size-type-类型" class="headerlink" title="string::size_type 类型"></a>string::size_type 类型</h3><p>string 的 size() 成员函数返回一个 string::size_type 类型的值。</p>
+<blockquote>
+<p>[!NOTE] 配套类型<br>大多数标准库类型都定义了几种配套的类型，这些配套类型体现了标准库与机器无关的特性。</p>
+</blockquote>
+<p>在具体使用时，通过作用域操作符来表明 size_type 是在类 string 中定义的。</p>
+<p>string::size_type 是无符号值，可以确定的是它足够存放任何 string 对象的大小。</p>
+<p>C++11 允许通过 auto 和 decltype 来获得此类型。</p>
+<p><code>auto len = s.size();// len 的类型是 string::size_type</code></p>
+<p>不要在同一个表达式中混用 size_type 和 int 类型。原因一部分在于无符号数和有符号数转换的问题上</p>
+<h2 id="string中的字符"><a href="#string中的字符" class="headerlink" title="string中的字符"></a>string中的字符</h2><p>cctype 头文件中有下列标准库函数来处理 string 中的字符。</p>
+<p>下面这些函数的输入和返回值实际都是 int 类型的，且输入的值 c 必须满足 -1&lt;&#x3D;c&lt;&#x3D;255，即输入必须是 ASCII 字符<br><img src="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250725/blbx/1019X636/cctype.png" alt="1019X636&#x2F;cctype.png"></p>
+<blockquote>
+<p>[!tip] 头文件使用建议<br>使用 c++ 版本的标准库头文件</p>
+</blockquote>
+<h3 id="范围for语句"><a href="#范围for语句" class="headerlink" title="范围for语句"></a>范围for语句</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">string str; </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">auto</span> c:str) <span class="comment">// 对于str中的每个字符 </span></span><br><span class="line">	cout &lt;&lt; c &lt;&lt; endl; <span class="comment">// 输出当前字符，后面紧跟一个换行符</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>当要改变 string 对象中的值时，需要把循环变量定义成引用类型。必须通过显示添加 &amp; 符号来声明引用类型。</p>
+<p><strong>不能在范围 for 语句中改变所遍历序列的大小。</strong></p>
+<p><code>for(auto &amp;c:str) c = toupper(c); // 转换为大写</code></p>
+<p>对 string 的最后一个字符进行索引：s[s.size()-1];</p>
+<p>索引必须大于等于 0 小于 size，使用索引前最好用 if(!s.empty()) 判断一下字符串是否为空。</p>
+<p>任何表达式只要是整型值就可以作为索引。索引是无符号类型 size_type；</p>
 ]]></content>
+      <categories>
+        <category>C++ primer</category>
+      </categories>
   </entry>
   <entry>
     <title>变量和基本类型</title>
@@ -362,185 +409,86 @@
       </categories>
   </entry>
   <entry>
-    <title>字符串、向量和数组</title>
-    <url>/2025/07/25/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/</url>
-    <content><![CDATA[<p>本文为阅读C++ primer第三章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。</p>
-<span id="more"></span>
-<h1 id="命名空间的using声明"><a href="#命名空间的using声明" class="headerlink" title="命名空间的using声明"></a>命名空间的using声明</h1><p>可以对单个名字进行独立的using声明</p>
-<p>头文件里不应包含 using 声明。因为头文件的内容会拷贝到所有引用它的文件，一旦头文件有using声明，每个引用它的文件都有该声明，可能冲突</p>
-<h1 id="标准库类型string"><a href="#标准库类型string" class="headerlink" title="标准库类型string"></a>标准库类型string</h1><p>string 表示可变长的字符序列。</p>
-<h2 id="定义和初始化string对象"><a href="#定义和初始化string对象" class="headerlink" title="定义和初始化string对象"></a>定义和初始化string对象</h2><p>有以下几种方法</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">string s1; <span class="comment">//将 s1 默认初始化为一个空的 string </span></span><br><span class="line"><span class="function">string <span class="title">s1</span><span class="params">(s2)</span></span>; <span class="comment">//使用拷贝构造函数进行的拷贝初始化。s1 是 s2 的拷贝。 </span></span><br><span class="line">string s1 = s2; <span class="comment">//使用拷贝赋值运算符进行的拷贝初始化。s1 是 s2 的拷贝。 </span></span><br><span class="line"><span class="function">string <span class="title">s1</span><span class="params">(<span class="string">&quot;value&quot;</span>)</span></span>; <span class="comment">//s1 是字面值 &quot;value&quot; 去除最后一个空字符后的拷贝。 </span></span><br><span class="line">string s1 = <span class="string">&quot;value&quot;</span>; <span class="comment">//同上。 </span></span><br><span class="line"><span class="function">string <span class="title">s1</span><span class="params">(n,<span class="string">&#x27;c&#x27;</span>)</span></span>; <span class="comment">//s1 初始化为 n 个 &#x27;c&#x27;。</span></span><br></pre></td></tr></table></figure>
-<p><strong>使用字符串字面值或字符数组初始化 string 对象时，string 对象中是不包含末尾的空字符的，它会将字符数组中末尾的空字符去掉</strong></p>
-<h2 id="string的一些操作"><a href="#string的一些操作" class="headerlink" title="string的一些操作"></a>string的一些操作</h2><p><img src="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250725/QdOG/1040X475/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2025-07-25_163653.png" alt="1040X475&#x2F;屏幕截图_2025-07-25_163653.png"></p>
-<h3 id="读写string对象"><a href="#读写string对象" class="headerlink" title="读写string对象"></a>读写string对象</h3><p>可以使用 cin, cout 来读写 string 对象，也可以使用 stringstream 来读写 string 对象。</p>
-<h4 id="getline-函数"><a href="#getline-函数" class="headerlink" title="getline 函数"></a>getline 函数</h4><p>getline() 定义在头文件 string 中，以一个 istream 对象和一个 string 对象为输入参数。getline() 读取输入流的内容直到遇到换行符停止，然后将读入的数据存入 string 对象。</p>
-<p>注意 getline 会将换行符也读入，但是不将换行符存入 string 对象。即触发 getline() 函数返回的那个换行符实际上被丢弃掉了。</p>
-<p>getline() 只要一遇到换行符就结束读取操作并返回结果，即使一开始就是换行符也一样，这种情况下会得到一个空 string。</p>
-<p>getline() 与 &lt;&lt; 一样，会返回它的流参数。所以可以用 getline 的结果作为条件。</p>
-<h3 id="string-size-type-类型"><a href="#string-size-type-类型" class="headerlink" title="string::size_type 类型"></a>string::size_type 类型</h3><p>string 的 size() 成员函数返回一个 string::size_type 类型的值。</p>
-<blockquote>
-<p>[!NOTE] 配套类型<br>大多数标准库类型都定义了几种配套的类型，这些配套类型体现了标准库与机器无关的特性。</p>
-</blockquote>
-<p>在具体使用时，通过作用域操作符来表明 size_type 是在类 string 中定义的。</p>
-<p>string::size_type 是无符号值，可以确定的是它足够存放任何 string 对象的大小。</p>
-<p>C++11 允许通过 auto 和 decltype 来获得此类型。</p>
-<p><code>auto len = s.size();// len 的类型是 string::size_type</code></p>
-<p>不要在同一个表达式中混用 size_type 和 int 类型。原因一部分在于无符号数和有符号数转换的问题上</p>
-<h2 id="string中的字符"><a href="#string中的字符" class="headerlink" title="string中的字符"></a>string中的字符</h2><p>cctype 头文件中有下列标准库函数来处理 string 中的字符。</p>
-<p>下面这些函数的输入和返回值实际都是 int 类型的，且输入的值 c 必须满足 -1&lt;&#x3D;c&lt;&#x3D;255，即输入必须是 ASCII 字符<br><img src="https://tc.z.wiki/autoupload/f/i9VH93eH4ENDdQHnYXj2PuHhVTZgOgfLijisMn2fRaCyl5f0KlZfm6UsKj-HyTuv/20250725/blbx/1019X636/cctype.png" alt="1019X636&#x2F;cctype.png"></p>
-<blockquote>
-<p>[!tip] 头文件使用建议<br>使用 c++ 版本的标准库头文件</p>
-</blockquote>
-<h3 id="范围for语句"><a href="#范围for语句" class="headerlink" title="范围for语句"></a>范围for语句</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">string str; </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">auto</span> c:str) <span class="comment">// 对于str中的每个字符 </span></span><br><span class="line">	cout &lt;&lt; c &lt;&lt; endl; <span class="comment">// 输出当前字符，后面紧跟一个换行符</span></span><br></pre></td></tr></table></figure>
+    <title>Hello World</title>
+    <url>/2025/03/17/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>当要改变 string 对象中的值时，需要把循环变量定义成引用类型。必须通过显示添加 &amp; 符号来声明引用类型。</p>
-<p><strong>不能在范围 for 语句中改变所遍历序列的大小。</strong></p>
-<p><code>for(auto &amp;c:str) c = toupper(c); // 转换为大写</code></p>
-<p>对 string 的最后一个字符进行索引：s[s.size()-1];</p>
-<p>索引必须大于等于 0 小于 size，使用索引前最好用 if(!s.empty()) 判断一下字符串是否为空。</p>
-<p>任何表达式只要是整型值就可以作为索引。索引是无符号类型 size_type；</p>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
-      <categories>
-        <category>C++ primer</category>
-      </categories>
   </entry>
   <entry>
-    <title>绪论</title>
-    <url>/2025/07/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E7%BB%AA%E8%AE%BA/</url>
-    <content><![CDATA[<p>本文将介绍计算机网络的概念以及进行信息交换的方式</p>
+    <title>分层结构</title>
+    <url>/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<p>计算机网络的模型主要有OSI模型和TCP&#x2F;IP模型两种，本文将分别介绍对应模型中每一层的功能与最终的对比。</p>
 <span id="more"></span>
-<h1 id="什么是Internet"><a href="#什么是Internet" class="headerlink" title="什么是Internet"></a>什么是Internet</h1><ul>
-<li>当前全球最大的、开放的、由众多网络和路由器互连而成的特定计算机网络，它采用TCP&#x2F;IP协议族作为通信的规则，其前身是美国的ARPANET</li>
+<h1 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h1><ul>
+<li>协议数据单元（PDU）：对等层之间传送的数据单位。第n层的记为n-PDU。各层PDU都分为服务数据单元和协议控制信息</li>
+<li>服务数据单元（SDU）：层与层之间交换的数据单位，第n层的SDU记为n-SDU</li>
+<li>协议控制信息（PCI）：控制协议操作的信息。第n层的PCI记为n-PCI<br>每层的协议数据单元都有额外名称，如物理层的称为比特流，链路层的称为帧，网络层的称为分组，传输层的称为报文段</li>
 </ul>
-<h1 id="计算机网络的组成"><a href="#计算机网络的组成" class="headerlink" title="计算机网络的组成"></a>计算机网络的组成</h1><ul>
-<li>组成部分：<ul>
-<li>硬件：主要有主机（也被称作端系统）、通信链路（如光纤）、交换设备（如路由器、交换机）和通信处理机（如网卡）等组成</li>
-<li>软件：主要包括各种实现资源共享的软件和方便用户使用的各种工具软件</li>
-<li>协议：是计算机网络的核心，规定了网络传输数据时所遵循的规范</li>
+<p>在各层间传输数据时满足：n-SDU + n-PCI &#x3D; n-PDU &#x3D; (n-1)-SDU</p>
+<h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>为了在网络中进行数据交换而建立的规则、标准或约定称为网络协议，是控制在对等实体间进行通信的规则的集合，是水平的，不对等实体间没有协议。</p>
+<p>由以下三部分组成：</p>
+<ul>
+<li>语法：数据与控制信息的格式</li>
+<li>语义：即需要发出何种控制信息、完成何种动作以及做出何种应答</li>
+<li>同步：执行各种操作的条件、时序关系等，即事件实现顺序的详细说明</li>
+</ul>
+<h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><p>同一节点内相邻两层的实体交换信息的逻辑接口称为服务访问点（SAP），每层只能在紧邻的层间定义接口，而不能跨层定义。</p>
+<h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>指下层为紧邻的上层提供的功能调用，是垂直的。对等实体在协议的控制下，使本层能为上层提供服务。</p>
+<p>可以分为以下三种：</p>
+<ul>
+<li>面向连接和无连接服务：<ul>
+<li>面向连接服务中，通信双方必须先建立连接，分配相应的资源，以保证通信正常进行，传输结束后释放连接和占用的资源。</li>
+<li>无连接服务中，通信双方不需要提前建立连接，发送数据时直接发送。</li>
 </ul>
 </li>
-<li>工作方式：可以分为边缘部分和核心部分<ul>
-<li>边缘部分：所有连接到互联网上的供用户直接使用的主机组成，用来进行通信（如传输数据、音频和视频）和资源共享</li>
-<li>核心部分：由大量网络和连接这些网络的路由器组成，为边缘部分提供连通性和交换服务</li>
+<li>可靠服务和不可靠服务<ul>
+<li>可靠服务：指网络具有纠错、检错、应答机制，能保证数据正确、可靠地传送到目的地。</li>
+<li>不可靠服务：指网络只是尽量让数据正确、可靠地传送到目的地</li>
 </ul>
 </li>
-<li>功能组成<ul>
-<li>通信子网：由各种传输介质、通信设备和相应的网络协议组成，使网络具有数据传输、交换、控制和存储的能力，实现联网计算机间的数据通信</li>
-<li>资源子网：实现资源共享功能的设备及软件的集合，向网络用户提供共享其他计算机的硬件资源、软件资源和数据资源的服务</li>
+<li>有应答服务和无应答服务<ul>
+<li>有应答服务：指接收方在收到数据后向发送方给出相应的应答，由传输系统内部自动实现</li>
+<li>无应答服务：接收方收到数据后不自动给出应答。如果需要，由高层实现</li>
 </ul>
 </li>
 </ul>
-<h1 id="计算机网络的功能"><a href="#计算机网络的功能" class="headerlink" title="计算机网络的功能"></a>计算机网络的功能</h1><ul>
-<li>数据通信：是最基本和最重要的功能，用来实现联网计算机间各种信息的传输。</li>
-<li>资源共享：既可以是软件或数据的共享，也可以是硬件的共享。使计算机中的资源互通有无、分工协作，极大提高了硬件资源、软件资源和数据资源的利用率</li>
-<li>分布式处理：当某个计算机系统负荷过重时，可将其处理的复杂任务分配给网络中其他计算机系统，从而利用空闲计算机资源提高整个系统的利用率</li>
-<li>提高可靠性：计算机网络中各台计算机可以通过网络互为替代机</li>
-<li>负载均衡：将工作任务均衡分配给计算机网络中各台计算机</li>
-</ul>
-<h1 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h1><p>分为三步：</p>
-<ul>
-<li>建立连接：进行数据传输前，两个用户必须先建立一条专用的物理通信路径，由通信双方之间的交换设备和链路逐段连接而成</li>
-<li>传输数据：在数据传输过程中，这一物理通信路径始终被两用户独占</li>
-<li>释放连接：通信结束后释放通信资源<br>整个通信阶段，比特流连续地从源节点直达目的节点，好像在一个管道中传送，不存在存储转发所耗费的时间</li>
-</ul>
-<p>优点：</p>
-<ul>
-<li>通信时延小：通信线路为通信双方专用，数据直达，传输速率高</li>
-<li>有序传输：通信时按发送顺序传输数据，不存在失序问题</li>
-<li>没有冲突：不同的通信双方有不同的信道</li>
-<li>实时性强：一旦建立连接，可以随时通信<br>缺点：</li>
-<li>建立连接时间长</li>
-<li>线路利用率低：线路被独占，即使空闲也不能供其他用户使用</li>
-<li>灵活性差：物理通路中任何一点出现故障，必须重新建立连接</li>
-<li>难以实现差错控制：中间节点不具备存储和检验数据的能力，无法发现并纠正错误<br>计算机间的数据传送往往是突发（高频、少量）的，使用电路交换来传送数据时，被用户占用的通信资源在绝大部分时间是空闲的，利用率往往不到10%乃至1%</li>
-</ul>
-<h1 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h1><p>数据交换的单位是报文，用户数据+原地址+目的地址等信息封装为报文。</p>
-<p>采用存储转发的技术，整个报文先传送到相邻的节点，全部存储后查找转发表，转发到下一个节点，如此重复直到目的节点。每个报文可以单独选择到达目的端的路径</p>
-<p>优点：</p>
-<ul>
-<li>无建立连接时延：通信前无需建立连接，用户可以随时发生报文</li>
-<li>灵活分配线路：交换节点存储整个报文后，选择一条合适的空闲线路，转发报文。若某条路径故障，可重新选择另一条路径传输</li>
-<li>线路利用率高：报文在一段链路上传送时才占用这段链路的通信资源</li>
-<li>支持差错控制：交换节点可以对缓存下来的报文进行差错检验<br>缺点：</li>
-<li>转发时延高：交换节点要收到所有报文后，才查找转发表进行转发</li>
-<li>缓存开销大：报文大小没有限制，要求交换节点有较大的缓存空间</li>
-<li>错误处理低效：报文较长时，发生错误概率相对更高，重传整个报文的代价也很大</li>
-</ul>
-<h1 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h1><p>也采用存储转发技术，但是解决了报文过长的问题</p>
-<p>源主机在发送之前，先把较长的报文划分为若干较小的等长数据段，每个数据段前添加一些必要的控制信息（如源地址、目的地址和编号信息）组成的首部，构成分组</p>
-<p>源主机将分组发送到分组交换网中，分组交换网的分组交换机收到一个分组后，先缓存，再从首部中提取目的地址，据此查找自己的转发表，再将分组转发给下一个分组交换机。经过多个分组交换机的存储转发后，分组到达目的主机</p>
-<p>除了继承报文交换的优点外，还有如下优点：</p>
-<ul>
-<li>方便存储管理，存储转发开销小。</li>
-<li>传输效率高</li>
-<li>减少了出错概率和重传代价<br>缺点：</li>
-<li>存在存储转发时延</li>
-<li>需要额外的信息量</li>
-<li>当采用数据报服务时，可能出现失序、丢失或重复分组的情况。如果采用虚电路服务，则没有失序问题，但是有呼叫建立、数据传输和虚电路释放三个过程</li>
-</ul>
-<h1 id="三种交换方式总结"><a href="#三种交换方式总结" class="headerlink" title="三种交换方式总结"></a>三种交换方式总结</h1><p>当要连续传送大量的数据，且传送时间远大于建立连接时间时，采用电路交换比较合适；从提高整个网络的信道利用率来看，报文交换和分组交换优于电路交换，其中分组交换的时延更小，更为灵活，尤其适合突发式数据传送</p>
-<h1 id="计算机网络的分类"><a href="#计算机网络的分类" class="headerlink" title="计算机网络的分类"></a>计算机网络的分类</h1><h2 id="按分布范围"><a href="#按分布范围" class="headerlink" title="按分布范围"></a>按分布范围</h2><ul>
-<li>广域网（WAN）：提供长距离通信，运送主机发送的数据，覆盖范围通常是直径几十米到几千千米的区域。是互联网核心部分，连接广域网各节点交换机的链路一般是高速链路，具有较大的通信容量。一般使用交换技术</li>
-<li>城域网（MAN）：覆盖范围可以跨越几个街区甚至几个城市，直径为5-50km。多采用以太网技术</li>
-<li>局域网（LAN）：一般用主机通过高速线路相连，覆盖范围较小，通常是直径为几十米到几千米的区域。一般使用广播技术</li>
-<li>个人区域网（PAN）：指在个人工作的地方将电子设备用无线技术连接起来的网络，也叫无线个人区域网</li>
-</ul>
-<h2 id="按传输技术"><a href="#按传输技术" class="headerlink" title="按传输技术"></a>按传输技术</h2><ul>
-<li>广播式网络：共享一个公共通信信道。当一个计算机发送报文分组时，其他所有计算机都会“收听”到，通过检查目的地址来决定是否接收</li>
-<li>点对点网络：每条物理线路连接一对计算机。若通信的两台主机间没有直接相连的线路，则要通过中间节点进行存储转发</li>
-</ul>
-<h2 id="按拓扑结构"><a href="#按拓扑结构" class="headerlink" title="按拓扑结构"></a>按拓扑结构</h2><p>网络拓扑结构是指由网中节点与通信线路间的几何关系表示的网络结构</p>
-<ul>
-<li>总线型：单根传输线连接计算机。优点是建网容易、增删节点方便、节省线路。缺点是重负载时通信效率不高，总线任意一处对故障敏感</li>
-<li>星型网络：每个终端或计算机以单独线路与中央设备（一般是路由器或交换机）相连。优点是便于集中控制和管理。缺点是成本高，中央设备对故障敏感</li>
-<li>环形网络：所有计算机接口设备连成一个环。最典型的例子是令牌环局域网，既可以是单环也可以是双环。环中信号单向传输</li>
-<li>网状网络：每个节点至少有两条路径与其他节点相连，多用在广域网中。有规则型和非规则型两种。优点是可靠性高，缺点是控制复杂、线路成本高</li>
-</ul>
-<h2 id="按使用者"><a href="#按使用者" class="headerlink" title="按使用者"></a>按使用者</h2><ul>
-<li>公用网</li>
-<li>专用网</li>
-</ul>
-<h2 id="按传输介质"><a href="#按传输介质" class="headerlink" title="按传输介质"></a>按传输介质</h2><p>可以分为有线无线两大类。有线网络可以再分为双绞线网络、同轴电缆网络等。无线网络可以分为蓝牙、微波、无线电等类型</p>
-<h1 id="计算机网络性能指标"><a href="#计算机网络性能指标" class="headerlink" title="计算机网络性能指标"></a>计算机网络性能指标</h1><ul>
-<li>速率：指连接到网络上的节点在数字信道上传送数据的速率。单位为b&#x2F;s。较高时可用kb&#x2F;s、Mb&#x2F;s、Gb&#x2F;s</li>
-<li>带宽：原本表示通信线路允许通过的信号频率范围，单位是Hz。但是在计算机网络中，带宽表示网络的通信线路所能传送数据的能力，是数字信道所能传送的“最高数据传输速率”的同义语。单位为b&#x2F;s</li>
-<li>吞吐量：单位时间内通过某个网络（或信道、接口）的实际数据量。</li>
-<li>时延：指数据从网络的一端传送到另一端所需的总时间。由四部分组成：<ul>
-<li>发送时延：从发送第一个比特开始到最后一个比特从本地发送到线路结束。发送时延&#x3D;分组长度&#x2F;发送速率</li>
-<li>传播时延：一个比特从链路一端到另一端的时间。传播时延&#x3D;信道长度&#x2F;传播速率</li>
-<li>处理时延：分组在交换节点为存储转发而进行的处理所花的时间。</li>
-<li>排队时延：分组在路由器的输入或输出队列排队等待的时间</li>
-</ul>
-</li>
-<li>时延带宽积：指发送的第一个比特到达终点时发送端发出了多少比特。时延带宽积&#x3D;传播时延 * 信道带宽</li>
-<li>往返时延（RTT）：从发送端发出一个短分组，到发送端收到来自接收端的确认总共经历的时间。包括各中间节点的处理时延、排队时延及转发数据时的发送时延</li>
-<li>信道利用率：某个信道有百分之多少的时间有数据通过。太低会浪费网络资源。太高会产生较大的时延，导致网络拥塞。</li>
+<h1 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h1><p>有七层，分别为物理层、数据链路层、网络层、传输层、会话层、表示层、应用层</p>
+<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>传输单位是比特，功能是在物理介质上为数据端设备透明地传输原始比特流。但是注意传输信息所用的物理介质（如光缆、无线信道等等）不在物理层协议内</p>
+<h2 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h2><p>传输单位是帧，功能是将物理层提供的可能出错的物理连接改造为逻辑上无差错的数据链路，同时实现节点间的差错控制和流量控制的功能</p>
+<p>广播式网络还要处理如何控制对共享信道的访问</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>传输单位是数据报。主要任务是将网络层的协议数据单元（分组）从源主机传输到目的主机。关键在于对分组进行路由选择，并实现流量控制、拥塞控制、差错控制和网际互联等功能。</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>负责两个进程间的通信，提供端到端的流量控制、差错控制、连接建立和释放、可靠传输管理等服务。</p>
+<p>数据链路层提供点对点通信，可以理解为主机与主机的通信（主机通过硬件地址或IP地址标识）</p>
+<p>端到端的通信指运行在不同主机内两个进程间的通信，每个进程都由一个端口来标识</p>
+<p>因为一台主机可以运行多个进程，因此传输层具有复用和分用的功能。复用指多个进程可以同时使用传输层的服务，分用指传输层将收到的信息分别交付给上层的对应进程</p>
+<h2 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h2><p>允许不同主机上各个进程进行会话，为进程建立连接，并在连接上有序传输数据，这就是会话。</p>
+<p>负责管理主机间的会话进程，包括建立、管理和终止进程间的会话。</p>
+<p>包含一种称为检查点的机制来维持可靠会话，使通信会话在通信失效时从检查点继续恢复通信。</p>
+<h2 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h2><p>主要处理不同主机间交换信息的方式，此外数据压缩、加密和解密也是表示层的功能</p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>是用户与网络的接口</p>
+<h1 id="TCP-IP模型"><a href="#TCP-IP模型" class="headerlink" title="TCP&#x2F;IP模型"></a>TCP&#x2F;IP模型</h1><p>分为五层：物理层、链路层、网络层、传输层、应用层</p>
+<p>主要内容上面已经有对应的了，只不过应用层整合了会话层、表示层、应用层三层的功能</p>
+<h1 id="不同"><a href="#不同" class="headerlink" title="不同"></a>不同</h1><ul>
+<li>OSI模型精确定义了服务、协议与接口。但是TCP&#x2F;IP模型没有明确区分</li>
+<li>OSI模型先有模型，后有协议规范，通用性好。TCP&#x2F;IP模型先有协议栈后建立模型，不适合其他非TCP&#x2F;IP的网络</li>
+<li>OSI模型在网络层支持无连接和面向连接的服务，但是在传输层仅有面向连接的服务。而TCP&#x2F;IP模型认为可靠性是端到端的问题，因此在网络层仅有一种无连接通信模式，但是在传输层支持无连接和面向连接两种模式</li>
+<li>OSI模型有七层，而TCP&#x2F;IP模型分为五层。</li>
 </ul>
 ]]></content>
       <categories>
         <category>计算机网络复习</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>7-23 代码随想录之链表</title>
-    <url>/2025/07/23/day3/</url>
-    <content><![CDATA[<h1 id="203-移除链表元素-力扣（LeetCode）"><a href="#203-移除链表元素-力扣（LeetCode）" class="headerlink" title="203. 移除链表元素 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/remove-linked-list-elements/description/">203. 移除链表元素 - 力扣（LeetCode）</a></h1><p>链表的题我个人还是喜欢有一个虚拟的头节点更好。这样便于操作和处理边界情况</p>
-<p>在这个题里，维护一个当前节点和当前节点的前一个节点，当前节点值为val时，只需要把前一个节点的next指向当前节点的next即可。</p>
-<p><strong>最后返回虚拟头节点的next是因为当链表内全为对应val时，原head节点将被删除</strong></p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeElements</span><span class="params">(ListNode* head, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        ListNode* pre = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">0</span>);</span><br><span class="line">        pre-&gt;next = head;</span><br><span class="line">        ListNode* dumhead = pre;</span><br><span class="line">        ListNode* cur = head;</span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(cur-&gt;val == val)&#123;</span><br><span class="line">                ListNode* tmp = cur;</span><br><span class="line">                pre-&gt;next = cur-&gt;next;</span><br><span class="line">                cur = cur-&gt;next;</span><br><span class="line">                <span class="keyword">delete</span> tmp;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            pre = pre-&gt;next;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dumhead-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="206-反转链表-力扣（LeetCode）"><a href="#206-反转链表-力扣（LeetCode）" class="headerlink" title="206. 反转链表 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/reverse-linked-list/description/">206. 反转链表 - 力扣（LeetCode）</a></h1><p>循环的做法比较简单，不赘述</p>
-<p>对于递归，考虑设计一个函数，每次翻转两个节点间的指向关系即可。最后的那个节点就是头节点</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">reverse</span><span class="params">(ListNode* pre, ListNode* cur)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(cur == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> pre;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode* tmp = cur-&gt;next;</span><br><span class="line">        cur-&gt;next = pre;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reverse</span>(cur, tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">ListNode* <span class="title">reverseList</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reverse</span>(<span class="literal">nullptr</span>, head);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="24-两两交换链表中的节点-力扣（LeetCode）"><a href="#24-两两交换链表中的节点-力扣（LeetCode）" class="headerlink" title="24. 两两交换链表中的节点 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/swap-nodes-in-pairs/description/">24. 两两交换链表中的节点 - 力扣（LeetCode）</a></h1><p>依然设置一个虚拟头节点，current指针的下一个节点是需要临时保存的；因为是两两交换  </p>
-<p>还有循环停止的条件是current节点和下个节点不能为空</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">swapPairs</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        ListNode* dummyhead = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">0</span>);</span><br><span class="line">        dummyhead-&gt;next = head;</span><br><span class="line">        ListNode* pre = dummyhead;</span><br><span class="line">        ListNode* cur = head;</span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="literal">NULL</span> &amp;&amp; cur-&gt;next != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            ListNode* temp = cur-&gt;next; </span><br><span class="line">            cur-&gt;next = temp-&gt;next</span><br><span class="line">            temp-&gt;next = cur;</span><br><span class="line">            pre-&gt;next = temp;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummyhead-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>算法刷题</category>
       </categories>
   </entry>
   <entry>
@@ -660,71 +608,124 @@
 <h3 id="旧式的强制类型转换"><a href="#旧式的强制类型转换" class="headerlink" title="旧式的强制类型转换"></a>旧式的强制类型转换</h3><p>本质上采用 const_cast、static_cast 或 reinterpret_cast 中的一种。</p>
 <p>旧式与新式相比没那么清晰明了，如果出现问题，追踪困难</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">int</span>(a);<span class="comment">// 函数形式的强制类型转换 </span></span><br><span class="line">(<span class="type">int</span>)a;<span class="comment">// c 语言风格的强制类型转换</span></span><br></pre></td></tr></table></figure>
-<h1 id="附录：优先级表"><a href="#附录：优先级表" class="headerlink" title="附录：优先级表"></a>附录：优先级表</h1><p>![[priority level 1.png]]<br>![[priority level 2.png]]</p>
+<h1 id="附录：优先级表"><a href="#附录：优先级表" class="headerlink" title="附录：优先级表"></a>附录：优先级表</h1><p><img src="https://tc.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/ZzOK/627X605/priority_level_1.png" alt="627X605&#x2F;priority_level_1.png"></p>
+<p><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/N7CE/631X880/priority_level_2.png" alt="631X880&#x2F;priority_level_2.png"></p>
 ]]></content>
       <categories>
         <category>C++ primer</category>
       </categories>
   </entry>
   <entry>
-    <title>分层结构</title>
-    <url>/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/</url>
-    <content><![CDATA[<p>计算机网络的模型主要有OSI模型和TCP&#x2F;IP模型两种，本文将分别介绍对应模型中每一层的功能与最终的对比。</p>
+    <title>绪论</title>
+    <url>/2025/07/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E7%BB%AA%E8%AE%BA/</url>
+    <content><![CDATA[<p>本文将介绍计算机网络的概念以及进行信息交换的方式</p>
 <span id="more"></span>
-<h1 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h1><ul>
-<li>协议数据单元（PDU）：对等层之间传送的数据单位。第n层的记为n-PDU。各层PDU都分为服务数据单元和协议控制信息</li>
-<li>服务数据单元（SDU）：层与层之间交换的数据单位，第n层的SDU记为n-SDU</li>
-<li>协议控制信息（PCI）：控制协议操作的信息。第n层的PCI记为n-PCI<br>每层的协议数据单元都有额外名称，如物理层的称为比特流，链路层的称为帧，网络层的称为分组，传输层的称为报文段</li>
+<h1 id="什么是Internet"><a href="#什么是Internet" class="headerlink" title="什么是Internet"></a>什么是Internet</h1><ul>
+<li>当前全球最大的、开放的、由众多网络和路由器互连而成的特定计算机网络，它采用TCP&#x2F;IP协议族作为通信的规则，其前身是美国的ARPANET</li>
 </ul>
-<p>在各层间传输数据时满足：n-SDU + n-PCI &#x3D; n-PDU &#x3D; (n-1)-SDU</p>
-<h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>为了在网络中进行数据交换而建立的规则、标准或约定称为网络协议，是控制在对等实体间进行通信的规则的集合，是水平的，不对等实体间没有协议。</p>
-<p>由以下三部分组成：</p>
+<h1 id="计算机网络的组成"><a href="#计算机网络的组成" class="headerlink" title="计算机网络的组成"></a>计算机网络的组成</h1><ul>
+<li>组成部分：<ul>
+<li>硬件：主要有主机（也被称作端系统）、通信链路（如光纤）、交换设备（如路由器、交换机）和通信处理机（如网卡）等组成</li>
+<li>软件：主要包括各种实现资源共享的软件和方便用户使用的各种工具软件</li>
+<li>协议：是计算机网络的核心，规定了网络传输数据时所遵循的规范</li>
+</ul>
+</li>
+<li>工作方式：可以分为边缘部分和核心部分<ul>
+<li>边缘部分：所有连接到互联网上的供用户直接使用的主机组成，用来进行通信（如传输数据、音频和视频）和资源共享</li>
+<li>核心部分：由大量网络和连接这些网络的路由器组成，为边缘部分提供连通性和交换服务</li>
+</ul>
+</li>
+<li>功能组成<ul>
+<li>通信子网：由各种传输介质、通信设备和相应的网络协议组成，使网络具有数据传输、交换、控制和存储的能力，实现联网计算机间的数据通信</li>
+<li>资源子网：实现资源共享功能的设备及软件的集合，向网络用户提供共享其他计算机的硬件资源、软件资源和数据资源的服务</li>
+</ul>
+</li>
+</ul>
+<h1 id="计算机网络的功能"><a href="#计算机网络的功能" class="headerlink" title="计算机网络的功能"></a>计算机网络的功能</h1><ul>
+<li>数据通信：是最基本和最重要的功能，用来实现联网计算机间各种信息的传输。</li>
+<li>资源共享：既可以是软件或数据的共享，也可以是硬件的共享。使计算机中的资源互通有无、分工协作，极大提高了硬件资源、软件资源和数据资源的利用率</li>
+<li>分布式处理：当某个计算机系统负荷过重时，可将其处理的复杂任务分配给网络中其他计算机系统，从而利用空闲计算机资源提高整个系统的利用率</li>
+<li>提高可靠性：计算机网络中各台计算机可以通过网络互为替代机</li>
+<li>负载均衡：将工作任务均衡分配给计算机网络中各台计算机</li>
+</ul>
+<h1 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h1><p>分为三步：</p>
 <ul>
-<li>语法：数据与控制信息的格式</li>
-<li>语义：即需要发出何种控制信息、完成何种动作以及做出何种应答</li>
-<li>同步：执行各种操作的条件、时序关系等，即事件实现顺序的详细说明</li>
+<li>建立连接：进行数据传输前，两个用户必须先建立一条专用的物理通信路径，由通信双方之间的交换设备和链路逐段连接而成</li>
+<li>传输数据：在数据传输过程中，这一物理通信路径始终被两用户独占</li>
+<li>释放连接：通信结束后释放通信资源<br>整个通信阶段，比特流连续地从源节点直达目的节点，好像在一个管道中传送，不存在存储转发所耗费的时间</li>
 </ul>
-<h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><p>同一节点内相邻两层的实体交换信息的逻辑接口称为服务访问点（SAP），每层只能在紧邻的层间定义接口，而不能跨层定义。</p>
-<h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>指下层为紧邻的上层提供的功能调用，是垂直的。对等实体在协议的控制下，使本层能为上层提供服务。</p>
-<p>可以分为以下三种：</p>
+<p>优点：</p>
 <ul>
-<li>面向连接和无连接服务：<ul>
-<li>面向连接服务中，通信双方必须先建立连接，分配相应的资源，以保证通信正常进行，传输结束后释放连接和占用的资源。</li>
-<li>无连接服务中，通信双方不需要提前建立连接，发送数据时直接发送。</li>
+<li>通信时延小：通信线路为通信双方专用，数据直达，传输速率高</li>
+<li>有序传输：通信时按发送顺序传输数据，不存在失序问题</li>
+<li>没有冲突：不同的通信双方有不同的信道</li>
+<li>实时性强：一旦建立连接，可以随时通信<br>缺点：</li>
+<li>建立连接时间长</li>
+<li>线路利用率低：线路被独占，即使空闲也不能供其他用户使用</li>
+<li>灵活性差：物理通路中任何一点出现故障，必须重新建立连接</li>
+<li>难以实现差错控制：中间节点不具备存储和检验数据的能力，无法发现并纠正错误<br>计算机间的数据传送往往是突发（高频、少量）的，使用电路交换来传送数据时，被用户占用的通信资源在绝大部分时间是空闲的，利用率往往不到10%乃至1%</li>
+</ul>
+<h1 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h1><p>数据交换的单位是报文，用户数据+原地址+目的地址等信息封装为报文。</p>
+<p>采用存储转发的技术，整个报文先传送到相邻的节点，全部存储后查找转发表，转发到下一个节点，如此重复直到目的节点。每个报文可以单独选择到达目的端的路径</p>
+<p>优点：</p>
+<ul>
+<li>无建立连接时延：通信前无需建立连接，用户可以随时发生报文</li>
+<li>灵活分配线路：交换节点存储整个报文后，选择一条合适的空闲线路，转发报文。若某条路径故障，可重新选择另一条路径传输</li>
+<li>线路利用率高：报文在一段链路上传送时才占用这段链路的通信资源</li>
+<li>支持差错控制：交换节点可以对缓存下来的报文进行差错检验<br>缺点：</li>
+<li>转发时延高：交换节点要收到所有报文后，才查找转发表进行转发</li>
+<li>缓存开销大：报文大小没有限制，要求交换节点有较大的缓存空间</li>
+<li>错误处理低效：报文较长时，发生错误概率相对更高，重传整个报文的代价也很大</li>
+</ul>
+<h1 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h1><p>也采用存储转发技术，但是解决了报文过长的问题</p>
+<p>源主机在发送之前，先把较长的报文划分为若干较小的等长数据段，每个数据段前添加一些必要的控制信息（如源地址、目的地址和编号信息）组成的首部，构成分组</p>
+<p>源主机将分组发送到分组交换网中，分组交换网的分组交换机收到一个分组后，先缓存，再从首部中提取目的地址，据此查找自己的转发表，再将分组转发给下一个分组交换机。经过多个分组交换机的存储转发后，分组到达目的主机</p>
+<p>除了继承报文交换的优点外，还有如下优点：</p>
+<ul>
+<li>方便存储管理，存储转发开销小。</li>
+<li>传输效率高</li>
+<li>减少了出错概率和重传代价<br>缺点：</li>
+<li>存在存储转发时延</li>
+<li>需要额外的信息量</li>
+<li>当采用数据报服务时，可能出现失序、丢失或重复分组的情况。如果采用虚电路服务，则没有失序问题，但是有呼叫建立、数据传输和虚电路释放三个过程</li>
+</ul>
+<h1 id="三种交换方式总结"><a href="#三种交换方式总结" class="headerlink" title="三种交换方式总结"></a>三种交换方式总结</h1><p>当要连续传送大量的数据，且传送时间远大于建立连接时间时，采用电路交换比较合适；从提高整个网络的信道利用率来看，报文交换和分组交换优于电路交换，其中分组交换的时延更小，更为灵活，尤其适合突发式数据传送</p>
+<h1 id="计算机网络的分类"><a href="#计算机网络的分类" class="headerlink" title="计算机网络的分类"></a>计算机网络的分类</h1><h2 id="按分布范围"><a href="#按分布范围" class="headerlink" title="按分布范围"></a>按分布范围</h2><ul>
+<li>广域网（WAN）：提供长距离通信，运送主机发送的数据，覆盖范围通常是直径几十米到几千千米的区域。是互联网核心部分，连接广域网各节点交换机的链路一般是高速链路，具有较大的通信容量。一般使用交换技术</li>
+<li>城域网（MAN）：覆盖范围可以跨越几个街区甚至几个城市，直径为5-50km。多采用以太网技术</li>
+<li>局域网（LAN）：一般用主机通过高速线路相连，覆盖范围较小，通常是直径为几十米到几千米的区域。一般使用广播技术</li>
+<li>个人区域网（PAN）：指在个人工作的地方将电子设备用无线技术连接起来的网络，也叫无线个人区域网</li>
+</ul>
+<h2 id="按传输技术"><a href="#按传输技术" class="headerlink" title="按传输技术"></a>按传输技术</h2><ul>
+<li>广播式网络：共享一个公共通信信道。当一个计算机发送报文分组时，其他所有计算机都会“收听”到，通过检查目的地址来决定是否接收</li>
+<li>点对点网络：每条物理线路连接一对计算机。若通信的两台主机间没有直接相连的线路，则要通过中间节点进行存储转发</li>
+</ul>
+<h2 id="按拓扑结构"><a href="#按拓扑结构" class="headerlink" title="按拓扑结构"></a>按拓扑结构</h2><p>网络拓扑结构是指由网中节点与通信线路间的几何关系表示的网络结构</p>
+<ul>
+<li>总线型：单根传输线连接计算机。优点是建网容易、增删节点方便、节省线路。缺点是重负载时通信效率不高，总线任意一处对故障敏感</li>
+<li>星型网络：每个终端或计算机以单独线路与中央设备（一般是路由器或交换机）相连。优点是便于集中控制和管理。缺点是成本高，中央设备对故障敏感</li>
+<li>环形网络：所有计算机接口设备连成一个环。最典型的例子是令牌环局域网，既可以是单环也可以是双环。环中信号单向传输</li>
+<li>网状网络：每个节点至少有两条路径与其他节点相连，多用在广域网中。有规则型和非规则型两种。优点是可靠性高，缺点是控制复杂、线路成本高</li>
+</ul>
+<h2 id="按使用者"><a href="#按使用者" class="headerlink" title="按使用者"></a>按使用者</h2><ul>
+<li>公用网</li>
+<li>专用网</li>
+</ul>
+<h2 id="按传输介质"><a href="#按传输介质" class="headerlink" title="按传输介质"></a>按传输介质</h2><p>可以分为有线无线两大类。有线网络可以再分为双绞线网络、同轴电缆网络等。无线网络可以分为蓝牙、微波、无线电等类型</p>
+<h1 id="计算机网络性能指标"><a href="#计算机网络性能指标" class="headerlink" title="计算机网络性能指标"></a>计算机网络性能指标</h1><ul>
+<li>速率：指连接到网络上的节点在数字信道上传送数据的速率。单位为b&#x2F;s。较高时可用kb&#x2F;s、Mb&#x2F;s、Gb&#x2F;s</li>
+<li>带宽：原本表示通信线路允许通过的信号频率范围，单位是Hz。但是在计算机网络中，带宽表示网络的通信线路所能传送数据的能力，是数字信道所能传送的“最高数据传输速率”的同义语。单位为b&#x2F;s</li>
+<li>吞吐量：单位时间内通过某个网络（或信道、接口）的实际数据量。</li>
+<li>时延：指数据从网络的一端传送到另一端所需的总时间。由四部分组成：<ul>
+<li>发送时延：从发送第一个比特开始到最后一个比特从本地发送到线路结束。发送时延&#x3D;分组长度&#x2F;发送速率</li>
+<li>传播时延：一个比特从链路一端到另一端的时间。传播时延&#x3D;信道长度&#x2F;传播速率</li>
+<li>处理时延：分组在交换节点为存储转发而进行的处理所花的时间。</li>
+<li>排队时延：分组在路由器的输入或输出队列排队等待的时间</li>
 </ul>
 </li>
-<li>可靠服务和不可靠服务<ul>
-<li>可靠服务：指网络具有纠错、检错、应答机制，能保证数据正确、可靠地传送到目的地。</li>
-<li>不可靠服务：指网络只是尽量让数据正确、可靠地传送到目的地</li>
-</ul>
-</li>
-<li>有应答服务和无应答服务<ul>
-<li>有应答服务：指接收方在收到数据后向发送方给出相应的应答，由传输系统内部自动实现</li>
-<li>无应答服务：接收方收到数据后不自动给出应答。如果需要，由高层实现</li>
-</ul>
-</li>
-</ul>
-<h1 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h1><p>有七层，分别为物理层、数据链路层、网络层、传输层、会话层、表示层、应用层</p>
-<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>传输单位是比特，功能是在物理介质上为数据端设备透明地传输原始比特流。但是注意传输信息所用的物理介质（如光缆、无线信道等等）不在物理层协议内</p>
-<h2 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h2><p>传输单位是帧，功能是将物理层提供的可能出错的物理连接改造为逻辑上无差错的数据链路，同时实现节点间的差错控制和流量控制的功能</p>
-<p>广播式网络还要处理如何控制对共享信道的访问</p>
-<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>传输单位是数据报。主要任务是将网络层的协议数据单元（分组）从源主机传输到目的主机。关键在于对分组进行路由选择，并实现流量控制、拥塞控制、差错控制和网际互联等功能。</p>
-<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>负责两个进程间的通信，提供端到端的流量控制、差错控制、连接建立和释放、可靠传输管理等服务。</p>
-<p>数据链路层提供点对点通信，可以理解为主机与主机的通信（主机通过硬件地址或IP地址标识）</p>
-<p>端到端的通信指运行在不同主机内两个进程间的通信，每个进程都由一个端口来标识</p>
-<p>因为一台主机可以运行多个进程，因此传输层具有复用和分用的功能。复用指多个进程可以同时使用传输层的服务，分用指传输层将收到的信息分别交付给上层的对应进程</p>
-<h2 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h2><p>允许不同主机上各个进程进行会话，为进程建立连接，并在连接上有序传输数据，这就是会话。</p>
-<p>负责管理主机间的会话进程，包括建立、管理和终止进程间的会话。</p>
-<p>包含一种称为检查点的机制来维持可靠会话，使通信会话在通信失效时从检查点继续恢复通信。</p>
-<h2 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h2><p>主要处理不同主机间交换信息的方式，此外数据压缩、加密和解密也是表示层的功能</p>
-<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>是用户与网络的接口</p>
-<h1 id="TCP-IP模型"><a href="#TCP-IP模型" class="headerlink" title="TCP&#x2F;IP模型"></a>TCP&#x2F;IP模型</h1><p>分为五层：物理层、链路层、网络层、传输层、应用层</p>
-<p>主要内容上面已经有对应的了，只不过应用层整合了会话层、表示层、应用层三层的功能</p>
-<h1 id="不同"><a href="#不同" class="headerlink" title="不同"></a>不同</h1><ul>
-<li>OSI模型精确定义了服务、协议与接口。但是TCP&#x2F;IP模型没有明确区分</li>
-<li>OSI模型先有模型，后有协议规范，通用性好。TCP&#x2F;IP模型先有协议栈后建立模型，不适合其他非TCP&#x2F;IP的网络</li>
-<li>OSI模型在网络层支持无连接和面向连接的服务，但是在传输层仅有面向连接的服务。而TCP&#x2F;IP模型认为可靠性是端到端的问题，因此在网络层仅有一种无连接通信模式，但是在传输层支持无连接和面向连接两种模式</li>
-<li>OSI模型有七层，而TCP&#x2F;IP模型分为五层。</li>
+<li>时延带宽积：指发送的第一个比特到达终点时发送端发出了多少比特。时延带宽积&#x3D;传播时延 * 信道带宽</li>
+<li>往返时延（RTT）：从发送端发出一个短分组，到发送端收到来自接收端的确认总共经历的时间。包括各中间节点的处理时延、排队时延及转发数据时的发送时延</li>
+<li>信道利用率：某个信道有百分之多少的时间有数据通过。太低会浪费网络资源。太高会产生较大的时延，导致网络拥塞。</li>
 </ul>
 ]]></content>
       <categories>
