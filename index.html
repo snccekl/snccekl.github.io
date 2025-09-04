@@ -306,6 +306,236 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/08/25/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E8%AF%AD%E5%8F%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/08/25/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E8%AF%AD%E5%8F%A5/" itemprop="url">字符串、向量和数组</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-08-25T00:00:00+08:00">
+                2025-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-primer/" itemprop="url" rel="index">
+                    <span itemprop="name">C++ primer</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="简单语句"><a href="#简单语句" class="headerlink" title="简单语句"></a>简单语句</h1><h2 id="表达式语句"><a href="#表达式语句" class="headerlink" title="表达式语句"></a>表达式语句</h2><p>一个表达式加一个分号就是一个表达式语句，其执行表达式并丢弃掉求值结果</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ival + <span class="number">3</span>;<span class="comment">//一条没有实际用处的表达式语句 </span></span><br><span class="line">cout &lt;&lt; ival;<span class="comment">//一条有用的表达式语句</span></span><br></pre></td></tr></table></figure>
+<h2 id="空语句"><a href="#空语句" class="headerlink" title="空语句"></a>空语句</h2><p>空语句是最简单的语句，只有一个分号</p>
+<p>用在语法上需要一条语句，但是逻辑上不需要的地方。</p>
+<p>使用空语句块最好加注释</p>
+<h2 id="复合语句（块）"><a href="#复合语句（块）" class="headerlink" title="复合语句（块）"></a>复合语句（块）</h2><p>用花括号括起来的语句和声明序列都是复合语句（块），一个复合语句（块）就是一个作用域</p>
+<p>空块的作用等价于一个空语句</p>
+<h1 id="语句作用域"><a href="#语句作用域" class="headerlink" title="语句作用域"></a>语句作用域</h1><p>可以在 if、switch、while、for 语句的控制结构内定义变量。</p>
+<p>这些定义的变量只能在这些语句的复合语句中使用</p>
+<p>常见的语句有条件语句、循环语句、跳转语句三种。</p>
+<h1 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h1><h2 id="if语句"><a href="#if语句" class="headerlink" title="if语句"></a>if语句</h2><p>if 语句有两种形式，一种有 else 分支，另一种没有。</p>
+<p>c++ 规定 else 与离他<strong>最近的在同一作用域的尚未匹配的</strong> if 匹配</p>
+<p>使用 if 语句最好在所有的 if 和 else 之后都用花括号</p>
+<h2 id="switch语句"><a href="#switch语句" class="headerlink" title="switch语句"></a>switch语句</h2><p>switch 语句计算一个整型表达式的值，然后根据这个值从几条执行路径中选择一条。如果没有任何一个 case 标签匹配 switch 表达式的值，就执行 default 分支。</p>
+<p>case 关键字和它对应的值一起被称为 case 标签，case 标签必须为<strong>整型常量表达式</strong>。</p>
+<p>default 也是一种特殊的 case 标签。</p>
+<p>注意：如果switch条件值在某个case标签满足后，程序将从该case标签一直执行到switch末尾或者遇到第一个break。因此一般在每个 case标签后都有一条 break 语句。如果需要两个或多个值共享同一组操作，可以故意省略掉 break 语句</p>
+<p>一条switch语句后可以跟多条语句，而不需要花括号</p>
+<blockquote>
+<p>[!NOTE] 为了代码的可阅读性，一般有以下规范<br>一般不要省略 case 分支最后的 break 语句。如果没有 break 语句，最好注释一下。</p>
+<p>即使不准备在 default 下做任何工作，最好也定义一个 default 标签。</p>
+<p>如果要在 case 分支定义并初始化变量，应该定义在块内以约束其作用域</p>
+</blockquote>
+<h1 id="迭代语句"><a href="#迭代语句" class="headerlink" title="迭代语句"></a>迭代语句</h1><h2 id="while语句"><a href="#while语句" class="headerlink" title="while语句"></a>while语句</h2><p>其条件不能为空，可以是一个表达式或者带初始化的变量声明</p>
+<p>定义在条件部分或者循环体内的变量每次迭代都会重新创建和销毁</p>
+<p>一般使用于不知道多少次的循环</p>
+<h2 id="传统for语句"><a href="#传统for语句" class="headerlink" title="传统for语句"></a>传统for语句</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(init-statement; condition; expression) </span><br><span class="line">	statement;</span><br></pre></td></tr></table></figure>
+<p>init-statement 可以是声明语句、表达式语句或空语句。init-statement 可以定义多个对象，但是只能有一条声明语句。</p>
+<p>expression 在每次循环之后执行。</p>
+<p>for 语句头能省略掉三者中的任意一个或全部。</p>
+<p>如果省略 condition ，条件恒为 true。</p>
+<h2 id="范围for语句"><a href="#范围for语句" class="headerlink" title="范围for语句"></a>范围for语句</h2><p>用来遍历<strong>容器或其他序列</strong>的所有元素</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(declaration : expression) </span><br><span class="line">	statement;</span><br></pre></td></tr></table></figure>
+<p>expression表示的必须是一个序列（可以是用花括号括起来的初始值列表）。共同特点的是都可以返回迭代器的 begin 和 end 成员</p>
+<p>declaration定义一个能从序列中元素转换而来的变量（<strong>不是迭代器</strong>），最简单的方法为用auto</p>
+<p>如果需要执行写操作，必须将循环变量声明成引用类型。不需要写时最好都声明为常量引用</p>
+<p>每次迭代都会重新定义循环控制变量，并将其初始化为序列的下一个值。</p>
+<p><strong>绝对不要在范围 for 语句改变序列的元素数量</strong>。因为其预存了 end() 的值，改变元素数量后 end() 的值就可能失效了</p>
+<h2 id="dowhile语句"><a href="#dowhile语句" class="headerlink" title="dowhile语句"></a>dowhile语句</h2><p>do while 语句与 while 语句的唯一区别就是它先执行循环体后检查条件。即至少执行一次循环。</p>
+<p>注意：do while 后不要忘了加分号。</p>
+<p>因为 condition 在循环体后面，所以 condition 使用的变量应该定义在循环体外面。</p>
+<h1 id="跳转语句"><a href="#跳转语句" class="headerlink" title="跳转语句"></a>跳转语句</h1><h2 id="break"><a href="#break" class="headerlink" title="break"></a>break</h2><p>终止离它最近的 while、do while、for 或 switch 语句，并从这些语句之后的第一条语句开始执行。</p>
+<p>break 语句只能出现在迭代语句或 switch 内部</p>
+<h2 id="continue语句"><a href="#continue语句" class="headerlink" title="continue语句"></a>continue语句</h2><p>终止最近的循环中的当前迭代并开始下一次迭代。</p>
+<p>continue 只能出现在迭代语句内部</p>
+<h2 id="goto语句"><a href="#goto语句" class="headerlink" title="goto语句"></a>goto语句</h2><p>作用是从 goto 语句无条件跳转到同一函数内的另一条语句</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">label: <span class="type">int</span> a = <span class="number">1</span>; </span><br><span class="line"><span class="keyword">goto</span> label;</span><br></pre></td></tr></table></figure>
+<p>label 是用于标识一条语句的标示符</p>
+<p>标签标示符独立于变量或其他标示符的名字，标签标示符可以和程序中其他实体的标示符使用同一个名字而不会相互干扰。</p>
+<p>如果 goto 语句跳回了一条变量的定义之前意味着系统将会销毁该变量，然后重新创建它。</p>
+<p><strong>不要使用 goto，它会令程序又难理解又难修改</strong></p>
+<h1 id="try和异常处理"><a href="#try和异常处理" class="headerlink" title="try和异常处理"></a>try和异常处理</h1><p>异常是指存在于运行时的反常行为，典型的有失去数据库连接和意外输入等等。</p>
+<p><strong>处理异常可能是最难的部分</strong></p>
+<p>当程序检测到一个无法处理的问题时，就需要异常处理，此时检测到问题的部分应该发出检测信号。</p>
+<p>如果程序里有可能引发异常的代码，也应该有专门的代码处理问题</p>
+<p>C++的异常处理机制为异常检测和异常处理提供支持。包括：</p>
+<ol>
+<li>throw表达式：异常检测部分使用throw表达式来表示遇到了无法处理的问题</li>
+<li>try语句块：异常处理部分使用try语句块处理异常，以关键字try开始，一个或多个catch结束</li>
+<li>一套异常类：用于在 throw 表达式和相关的 catch 子句间传递异常的具体信息</li>
+</ol>
+<h2 id="throw表达式"><a href="#throw表达式" class="headerlink" title="throw表达式"></a>throw表达式</h2><p>throw 表达式包含关键字 throw 和紧随其后的一个表达式，表达式的类型就是抛出的异常类型</p>
+<p>即 throw 后面跟一个异常类型的对象（必须同时使用 string 或 C 风格字符串对其初始化）</p>
+<p><code>throw runtime_error(&quot;Data must be same as size&quot;);//使用 throw 表达式抛出一个运行时错误。</code></p>
+<h2 id="try语句块"><a href="#try语句块" class="headerlink" title="try语句块"></a>try语句块</h2><p>跟在 try 块后面的是一个或多个 catch 子句。catch子句包括三部分：关键字catch、括号内一个异常类型的对象的声明（即异常声明）、一个块</p>
+<p>当try语句中抛出了一个异常，如果该异常类型与catch子句中的异常类型相同，就会执行该catch子句</p>
+<p>catch一旦完成，程序跳转到try语句块最后一个catch子句之后的那条语句执行</p>
+<p>在catch后的括号中使用省略号…可以让catch捕获所有异常</p>
+<p>每个标准库异常类都有一个 what 成员函数，它没有参数，返回初始化该对象时所用的 C 风格字符串</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123; </span><br><span class="line">	<span class="keyword">throw</span> <span class="built_in">runtime_error</span>(<span class="string">&quot;Data must be same as size&quot;</span>);<span class="comment">//try 语句块抛出了一个异常 </span></span><br><span class="line">&#125; </span><br><span class="line"><span class="built_in">catch</span>(runtime_error err)<span class="comment">//在 catch 后面的括号中声明了一个“runtime_error”类型的对象，与 try 抛出的异常类型相同，接下来执行此子句。 </span></span><br><span class="line">	&#123; </span><br><span class="line">		cout &lt;&lt; err.<span class="built_in">what</span>();<span class="comment">//输出 &quot;Data must be same as size&quot; </span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[!NOTE] 函数在寻找处理代码的过程中退出<br>throw 语句可能出现在嵌套的 try 语句块中或在 try 语句块中调用的某个函数内。</p>
+<p>当异常抛出的时候，会从内到外一层层寻找相应类型的catch子句。如果最后还是没找到，会调用terminate函数调用来终止程序</p>
+<p>如果 throw 语句外就没有 try 语句块，也会执行 terminate 函数</p>
+<p>异常中断了程序的正常流程。当发生异常，程序执行到一半就中断了，可能会存在如资源没有正常释放，对象没有处理完成等情况。异常安全的代码要求在异常发生时能正确执行清理工作。这个非常困难</p>
+</blockquote>
+<h2 id="标准异常"><a href="#标准异常" class="headerlink" title="标准异常"></a>标准异常</h2><p>C++ 标准库定义了一组异常类，用于报告标准库函数遇到的问题。他们定义在 4 个头文件中</p>
+<p>定义在stdexcept头文件中的类型必须使用string对象或者C风格字符串来初始化，其他的3个头文件中的类型则只能默认初始化，</p>
+<p>异常类型只有一个 what 成员函数，该函数没有参数，返回是一个 C 风格字符串的指针，目的是提供关于异常的文本信息</p>
+<p>对于无初始值的异常类型，what 返回的内容由编译器决定，有初始值的返回初始值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//exception头文件 </span></span><br><span class="line">exception           <span class="comment">// 异常类 exception 是最通用的异常类。它只报告异常的发生，不提供额外信息。 </span></span><br><span class="line"><span class="comment">//new头文件</span></span><br><span class="line">bad_alloc           <span class="comment">// 异常类 bad_alloc。在使用 new 分配动态内存失败时抛出 </span></span><br><span class="line"><span class="comment">//type_info头文件 </span></span><br><span class="line">bad_cast            <span class="comment">// 异常类型 bad_cast。经常发生在使用 dynamic_cast 时发生。 //stdexcept头文件 </span></span><br><span class="line">exception runtime_error       <span class="comment">// 只有在运行时才能检测出的问题 </span></span><br><span class="line">range_error         <span class="comment">// 运行时错误：生成的结果超出了有意义的值域范围 overflow_error      // 运行时错误：计算上溢 </span></span><br><span class="line">underflow_error     <span class="comment">// 运行时错误：计算下溢 </span></span><br><span class="line">logic_error         <span class="comment">// 程序逻辑错误 </span></span><br><span class="line">domain_error        <span class="comment">// 逻辑错误：参数对象的结果值不存在 </span></span><br><span class="line">invalid_argument    <span class="comment">// 逻辑错误：无效参数 </span></span><br><span class="line">length_error        <span class="comment">// 逻辑错误：试图创建一个超出该类型最大长度的对象 out_of_range        // 逻辑错误：使用一个超出有效范围的值</span></span><br></pre></td></tr></table></figure>
+<p>上述几个类的具体继承关系如下图<br><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250904/pYAn/656X562/exception_inherit.png" alt="656X562&#x2F;exception_inherit.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/08/21/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1351,6 +1581,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/23/7-23/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/23/7-23/" itemprop="url">7-23 洛谷题单之排序</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-23T00:00:00+08:00">
+                2025-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
+                    <span itemprop="name">算法刷题</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="P1059-NOIP-2006-普及组-明明的随机数-洛谷"><a href="#P1059-NOIP-2006-普及组-明明的随机数-洛谷" class="headerlink" title="P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1059">P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷</a></h1><p>可以直接用sort排序后再去重。</p>
+<p>但是考虑到最大只有1000，因此可以用桶排。每个桶只需要记录有没有即可</p>
+<p>最后stl库中的set可以同时完成去重和排序的目的。</p>
+<p>最终我选择的set。代码如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        <span class="type">int</span> x;</span><br><span class="line">        cin &gt;&gt; x;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);    </span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;s.<span class="built_in">size</span>()&lt;&lt;endl;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> it = s.<span class="built_in">begin</span>(); it != s.<span class="built_in">end</span>(); it++)&#123;</span><br><span class="line">        cout &lt;&lt; *it &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="P1093-NOIP-2007-普及组-奖学金-洛谷"><a href="#P1093-NOIP-2007-普及组-奖学金-洛谷" class="headerlink" title="P1093 [NOIP 2007 普及组] 奖学金 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1093">P1093 [NOIP 2007 普及组] 奖学金 - 洛谷</a></h1><p>用结构体存储对应的变量，然后重构cmp即可。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">score</span>&#123;</span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">int</span> chinese;</span><br><span class="line">    <span class="type">int</span> math;</span><br><span class="line">    <span class="type">int</span> english;</span><br><span class="line">    <span class="type">int</span> total;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> score &amp;a, <span class="type">const</span> score &amp;b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(a.total != b.total) <span class="keyword">return</span> a.total &gt; b.total;</span><br><span class="line">    <span class="keyword">if</span>(a.chinese != b.chinese) <span class="keyword">return</span> a.chinese &gt; b.chinese;</span><br><span class="line">    <span class="keyword">return</span> a.id &lt; b.id;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="function">vector&lt;score&gt; <span class="title">scores</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        cin &gt;&gt;scores[i].chinese &gt;&gt; scores[i].math &gt;&gt; scores[i].english;</span><br><span class="line">        scores[i].total = scores[i].chinese + scores[i].math + scores[i].english;</span><br><span class="line">        scores[i].id = i + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(scores.<span class="built_in">begin</span>(), scores.<span class="built_in">end</span>(), cmp);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">        <span class="type">const</span> <span class="keyword">auto</span> &amp;s = scores[i];</span><br><span class="line">        cout &lt;&lt; s.id &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; s.total &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="P1781-宇宙总统-洛谷"><a href="#P1781-宇宙总统-洛谷" class="headerlink" title="P1781 宇宙总统 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1781">P1781 宇宙总统 - 洛谷</a></h1><p>这是个大整数，因此不能直接排序。但是考虑到C++字符串提供了比较字典序的方法，因此可以将其作为字符串来比较，当然首先要比较长度</p>
+<p>因为只需要最大的，所以不需要全部存储，读一个比一次即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> string &amp;a, <span class="type">const</span> string &amp; b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(a.<span class="built_in">size</span>() != b.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> a.<span class="built_in">size</span>() &gt; b.<span class="built_in">size</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a &gt; b;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="type">int</span> winner = <span class="number">1</span>;</span><br><span class="line">    string vote;</span><br><span class="line">    cin&gt;&gt;vote;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++)&#123;</span><br><span class="line">        string current_vote;</span><br><span class="line">        cin &gt;&gt; current_vote;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">cmp</span>(current_vote, vote)) &#123;</span><br><span class="line">            vote = current_vote;</span><br><span class="line">            winner = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; winner &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; vote &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/23/day3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1460,163 +1847,6 @@
 <p>代码如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">swapPairs</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        ListNode* dummyhead = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">0</span>);</span><br><span class="line">        dummyhead-&gt;next = head;</span><br><span class="line">        ListNode* pre = dummyhead;</span><br><span class="line">        ListNode* cur = head;</span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="literal">NULL</span> &amp;&amp; cur-&gt;next != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            ListNode* temp = cur-&gt;next; </span><br><span class="line">            cur-&gt;next = temp-&gt;next</span><br><span class="line">            temp-&gt;next = cur;</span><br><span class="line">            pre-&gt;next = temp;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummyhead-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/23/7-23/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/23/7-23/" itemprop="url">7-23 洛谷题单之排序</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-23T00:00:00+08:00">
-                2025-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
-                    <span itemprop="name">算法刷题</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="P1059-NOIP-2006-普及组-明明的随机数-洛谷"><a href="#P1059-NOIP-2006-普及组-明明的随机数-洛谷" class="headerlink" title="P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1059">P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷</a></h1><p>可以直接用sort排序后再去重。</p>
-<p>但是考虑到最大只有1000，因此可以用桶排。每个桶只需要记录有没有即可</p>
-<p>最后stl库中的set可以同时完成去重和排序的目的。</p>
-<p>最终我选择的set。代码如下</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        <span class="type">int</span> x;</span><br><span class="line">        cin &gt;&gt; x;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);    </span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;s.<span class="built_in">size</span>()&lt;&lt;endl;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> it = s.<span class="built_in">begin</span>(); it != s.<span class="built_in">end</span>(); it++)&#123;</span><br><span class="line">        cout &lt;&lt; *it &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="P1093-NOIP-2007-普及组-奖学金-洛谷"><a href="#P1093-NOIP-2007-普及组-奖学金-洛谷" class="headerlink" title="P1093 [NOIP 2007 普及组] 奖学金 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1093">P1093 [NOIP 2007 普及组] 奖学金 - 洛谷</a></h1><p>用结构体存储对应的变量，然后重构cmp即可。</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">score</span>&#123;</span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">int</span> chinese;</span><br><span class="line">    <span class="type">int</span> math;</span><br><span class="line">    <span class="type">int</span> english;</span><br><span class="line">    <span class="type">int</span> total;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> score &amp;a, <span class="type">const</span> score &amp;b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(a.total != b.total) <span class="keyword">return</span> a.total &gt; b.total;</span><br><span class="line">    <span class="keyword">if</span>(a.chinese != b.chinese) <span class="keyword">return</span> a.chinese &gt; b.chinese;</span><br><span class="line">    <span class="keyword">return</span> a.id &lt; b.id;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="function">vector&lt;score&gt; <span class="title">scores</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        cin &gt;&gt;scores[i].chinese &gt;&gt; scores[i].math &gt;&gt; scores[i].english;</span><br><span class="line">        scores[i].total = scores[i].chinese + scores[i].math + scores[i].english;</span><br><span class="line">        scores[i].id = i + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(scores.<span class="built_in">begin</span>(), scores.<span class="built_in">end</span>(), cmp);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">        <span class="type">const</span> <span class="keyword">auto</span> &amp;s = scores[i];</span><br><span class="line">        cout &lt;&lt; s.id &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; s.total &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="P1781-宇宙总统-洛谷"><a href="#P1781-宇宙总统-洛谷" class="headerlink" title="P1781 宇宙总统 - 洛谷"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1781">P1781 宇宙总统 - 洛谷</a></h1><p>这是个大整数，因此不能直接排序。但是考虑到C++字符串提供了比较字典序的方法，因此可以将其作为字符串来比较，当然首先要比较长度</p>
-<p>因为只需要最大的，所以不需要全部存储，读一个比一次即可</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> string &amp;a, <span class="type">const</span> string &amp; b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(a.<span class="built_in">size</span>() != b.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> a.<span class="built_in">size</span>() &gt; b.<span class="built_in">size</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a &gt; b;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="type">int</span> winner = <span class="number">1</span>;</span><br><span class="line">    string vote;</span><br><span class="line">    cin&gt;&gt;vote;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++)&#123;</span><br><span class="line">        string current_vote;</span><br><span class="line">        cin &gt;&gt; current_vote;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">cmp</span>(current_vote, vote)) &#123;</span><br><span class="line">            vote = current_vote;</span><br><span class="line">            winner = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; winner &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; vote &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           
         
       
@@ -1819,166 +2049,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/21/day2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/21/day2/" itemprop="url">7-21 代码随想录之数组</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-21T00:00:00+08:00">
-                2025-07-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
-                    <span itemprop="name">算法刷题</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="209-长度最小的子数组-力扣（LeetCode）"><a href="#209-长度最小的子数组-力扣（LeetCode）" class="headerlink" title="209. 长度最小的子数组 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209. 长度最小的子数组 - 力扣（LeetCode）</a></h1><p>双指针维护子数组的左边界和右边界，一个变量记录和。</p>
-<p><strong>注意：当和大于等于target时，需要循环减去左边界，因为当新加入的数特别大时，只减一次是不够的</strong></p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="type">int</span> s = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> sum = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(f &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sum &gt;= target)&#123;</span><br><span class="line">                <span class="keyword">while</span>(sum &gt;= target)&#123;</span><br><span class="line">                    ans = <span class="built_in">min</span>(ans, f - s + <span class="number">1</span>);</span><br><span class="line">                    sum -= nums[s];</span><br><span class="line">                    s++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum &lt; target)&#123;</span><br><span class="line">                f++;</span><br><span class="line">                <span class="keyword">if</span>(f &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                    sum += nums[f];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == INT_MAX?<span class="number">0</span>:ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="58-区间和（第九期模拟笔试）"><a href="#58-区间和（第九期模拟笔试）" class="headerlink" title="58. 区间和（第九期模拟笔试）"></a><a target="_blank" rel="noopener" href="https://kamacoder.com/problempage.php?pid=1070">58. 区间和（第九期模拟笔试）</a></h1><p>可以暴力，但是太慢了。</p>
-<p>这里引入前缀和。前缀和可以简单理解为「数列的前n项的和」，是一种重要的预处理方式，能大大降低查询的时间复杂度。</p>
-<p>在这道题目中，计算的是区间内的和(设区间为a、b)，则该区间内的和就是前b项的和减去前a项的和。</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prefix</span><span class="params">(n + <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        prefix[i] = prefix[i - <span class="number">1</span>] + nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;a, &amp;b))&#123;</span><br><span class="line">        <span class="keyword">if</span> (a &gt; b) <span class="built_in">swap</span>(a, b);</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, prefix[b]);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = prefix[b] - prefix[a - <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, ans);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="44-开发商购买土地（第五期模拟笔试）"><a href="#44-开发商购买土地（第五期模拟笔试）" class="headerlink" title="44. 开发商购买土地（第五期模拟笔试）"></a><a target="_blank" rel="noopener" href="https://kamacoder.com/problempage.php?pid=1044">44. 开发商购买土地（第五期模拟笔试）</a></h1><p>其实还是用前缀和的思想，但是这里最好是把整个二维数组观想成一维一维的数组（无论行列）。然后将每一维当作一个元素，去求整体的前缀和。</p>
-<p>因为无论怎么分，都是以一行或者一列为单位的，那么这里面所有的元素都会划在同一个区域</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vec</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m, <span class="number">0</span>)) ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            cin &gt;&gt; vec[i][j];</span><br><span class="line">            sum += vec[i][j];<span class="comment">//计算所有元素的和，因为只有两个区域</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> result = INT_MAX;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span> ; j &lt; m; j++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (j == m - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">            <span class="comment">//每经过一行，计算所有元素的和，然后计算result</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; n; i++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (i == n - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">			<span class="comment">//同样作用在列上</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; result &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2029,7 +2099,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
