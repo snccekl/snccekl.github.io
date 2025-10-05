@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>7-22 洛谷题单之排序</title>
-    <url>/2025/07/22/7-22/</url>
-    <content><![CDATA[<h1 id="P1177-【模板】排序-洛谷"><a href="#P1177-【模板】排序-洛谷" class="headerlink" title="P1177 【模板】排序 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1177">P1177 【模板】排序 - 洛谷</a></h1><p>主要是练一下手写快排。</p>
-<h2 id="快速排序的原理"><a href="#快速排序的原理" class="headerlink" title="快速排序的原理"></a>快速排序的原理</h2><p>本部分讲述的是常用的三路快速排序。如果想了解快速排序的更多变种实现方式可以在 <a href="https://oi-wiki.org/basic/quick-sort/#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">OI Wiki</a> 中了解。</p>
-<p>我们设待排序的序列为一个长度为 n 的序列 a。快速排序的具体原理如下：</p>
-<p>首先，在 a 中随机选择一个数 x，之后我们进行如下操作：</p>
-<ol>
-<li>如果 n&#x3D;0 或 n&#x3D;1，此时根本无需排序，直接退出；</li>
-<li>定义三个新的序列 b,c,d；</li>
-<li>遍历整个序列 a，将比 x 小的放在 b 内，比 x 大的放在 d 内，和 x 相等的放在 c 内；</li>
-<li>将 b,d 按如上过程继续排序。序列 c 中的数由于都相等所以不必排序。</li>
-</ol>
-<p>可以发现：实际上每一次的排序之后都会通过调用本身来继续排序，这明显就是递归。</p>
-<p>通过递归，我们将一个完整的序列经过不断的分解来变成很多个小序列，直到只有一个或没有数为止。<strong>这种排序就是在不断的递归和分解当中来慢慢实现与完成排序</strong></p>
-<p>模版代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    T pivot = arr[<span class="built_in">rand</span>() % (right - left + <span class="number">1</span>) + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, left, j - <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, k + <span class="number">1</span>, right);</span><br><span class="line">	<span class="comment">//j是第一个pivot所在的位置,k是最后一个pivot所在的位置</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="P1923-【深基9-例4】求第-k-小的数-洛谷"><a href="#P1923-【深基9-例4】求第-k-小的数-洛谷" class="headerlink" title="P1923 【深基9.例4】求第 k 小的数 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1923">P1923 【深基9.例4】求第 k 小的数 - 洛谷</a></h1><p>通过分治去求。考虑上面的快排，每次分出三个相对有序的序列，可以据此判断出第k小的数在哪个序列中，然后再递归对应的序列即可</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">get_nth_k</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right,<span class="type">int</span> pos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; right) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (left == right) <span class="keyword">return</span> arr[left];</span><br><span class="line">    T pivot = arr[(right-left) / <span class="number">2</span> + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(pos &lt; j - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, left, j<span class="number">-1</span>, pos);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(pos &gt; k - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, k<span class="number">+1</span>, right, pos- (k - left + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pivot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>算法刷题</category>
-      </categories>
-  </entry>
-  <entry>
     <title>7-23 洛谷题单之排序</title>
     <url>/2025/07/23/7-23/</url>
     <content><![CDATA[<h1 id="P1059-NOIP-2006-普及组-明明的随机数-洛谷"><a href="#P1059-NOIP-2006-普及组-明明的随机数-洛谷" class="headerlink" title="P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1059">P1059 [NOIP 2006 普及组] 明明的随机数 - 洛谷</a></h1><p>可以直接用sort排序后再去重。</p>
@@ -55,27 +30,6 @@
 <p>一个简单的想法是，<strong>考虑相邻两项是否需要交换</strong></p>
 <p><strong>那么就把对字典序贡献最大的放在前面。比较方法只要比较 s1​+s2​ 和 s2​+s1​ 的大小即可</strong></p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function">vector&lt;string&gt; <span class="title">vec</span><span class="params">(<span class="number">25</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> string &amp;a, <span class="type">const</span> string &amp;b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a+b &gt; b+a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        cin &gt;&gt; vec[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">begin</span>() + n, cmp);</span><br><span class="line">    string ans;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        ans += vec[i];</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>算法刷题</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>7-21 代码随想录之数组</title>
-    <url>/2025/07/21/day2/</url>
-    <content><![CDATA[<h1 id="209-长度最小的子数组-力扣（LeetCode）"><a href="#209-长度最小的子数组-力扣（LeetCode）" class="headerlink" title="209. 长度最小的子数组 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209. 长度最小的子数组 - 力扣（LeetCode）</a></h1><p>双指针维护子数组的左边界和右边界，一个变量记录和。</p>
-<p><strong>注意：当和大于等于target时，需要循环减去左边界，因为当新加入的数特别大时，只减一次是不够的</strong></p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="type">int</span> s = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> sum = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(f &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sum &gt;= target)&#123;</span><br><span class="line">                <span class="keyword">while</span>(sum &gt;= target)&#123;</span><br><span class="line">                    ans = <span class="built_in">min</span>(ans, f - s + <span class="number">1</span>);</span><br><span class="line">                    sum -= nums[s];</span><br><span class="line">                    s++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum &lt; target)&#123;</span><br><span class="line">                f++;</span><br><span class="line">                <span class="keyword">if</span>(f &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                    sum += nums[f];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == INT_MAX?<span class="number">0</span>:ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="58-区间和（第九期模拟笔试）"><a href="#58-区间和（第九期模拟笔试）" class="headerlink" title="58. 区间和（第九期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1070">58. 区间和（第九期模拟笔试）</a></h1><p>可以暴力，但是太慢了。</p>
-<p>这里引入前缀和。前缀和可以简单理解为「数列的前n项的和」，是一种重要的预处理方式，能大大降低查询的时间复杂度。</p>
-<p>在这道题目中，计算的是区间内的和(设区间为a、b)，则该区间内的和就是前b项的和减去前a项的和。</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prefix</span><span class="params">(n + <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        prefix[i] = prefix[i - <span class="number">1</span>] + nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;a, &amp;b))&#123;</span><br><span class="line">        <span class="keyword">if</span> (a &gt; b) <span class="built_in">swap</span>(a, b);</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, prefix[b]);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = prefix[b] - prefix[a - <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, ans);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="44-开发商购买土地（第五期模拟笔试）"><a href="#44-开发商购买土地（第五期模拟笔试）" class="headerlink" title="44. 开发商购买土地（第五期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1044">44. 开发商购买土地（第五期模拟笔试）</a></h1><p>其实还是用前缀和的思想，但是这里最好是把整个二维数组观想成一维一维的数组（无论行列）。然后将每一维当作一个元素，去求整体的前缀和。</p>
-<p>因为无论怎么分，都是以一行或者一列为单位的，那么这里面所有的元素都会划在同一个区域</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vec</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m, <span class="number">0</span>)) ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            cin &gt;&gt; vec[i][j];</span><br><span class="line">            sum += vec[i][j];<span class="comment">//计算所有元素的和，因为只有两个区域</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> result = INT_MAX;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span> ; j &lt; m; j++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (j == m - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">            <span class="comment">//每经过一行，计算所有元素的和，然后计算result</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; n; i++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (i == n - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">			<span class="comment">//同样作用在列上</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; result &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>算法刷题</category>
@@ -125,6 +79,27 @@
       </categories>
   </entry>
   <entry>
+    <title>7-21 代码随想录之数组</title>
+    <url>/2025/07/21/day2/</url>
+    <content><![CDATA[<h1 id="209-长度最小的子数组-力扣（LeetCode）"><a href="#209-长度最小的子数组-力扣（LeetCode）" class="headerlink" title="209. 长度最小的子数组 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209. 长度最小的子数组 - 力扣（LeetCode）</a></h1><p>双指针维护子数组的左边界和右边界，一个变量记录和。</p>
+<p><strong>注意：当和大于等于target时，需要循环减去左边界，因为当新加入的数特别大时，只减一次是不够的</strong></p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="type">int</span> s = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> sum = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(f &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sum &gt;= target)&#123;</span><br><span class="line">                <span class="keyword">while</span>(sum &gt;= target)&#123;</span><br><span class="line">                    ans = <span class="built_in">min</span>(ans, f - s + <span class="number">1</span>);</span><br><span class="line">                    sum -= nums[s];</span><br><span class="line">                    s++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum &lt; target)&#123;</span><br><span class="line">                f++;</span><br><span class="line">                <span class="keyword">if</span>(f &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                    sum += nums[f];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == INT_MAX?<span class="number">0</span>:ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="58-区间和（第九期模拟笔试）"><a href="#58-区间和（第九期模拟笔试）" class="headerlink" title="58. 区间和（第九期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1070">58. 区间和（第九期模拟笔试）</a></h1><p>可以暴力，但是太慢了。</p>
+<p>这里引入前缀和。前缀和可以简单理解为「数列的前n项的和」，是一种重要的预处理方式，能大大降低查询的时间复杂度。</p>
+<p>在这道题目中，计算的是区间内的和(设区间为a、b)，则该区间内的和就是前b项的和减去前a项的和。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prefix</span><span class="params">(n + <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        prefix[i] = prefix[i - <span class="number">1</span>] + nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;a, &amp;b))&#123;</span><br><span class="line">        <span class="keyword">if</span> (a &gt; b) <span class="built_in">swap</span>(a, b);</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, prefix[b]);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = prefix[b] - prefix[a - <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, ans);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="44-开发商购买土地（第五期模拟笔试）"><a href="#44-开发商购买土地（第五期模拟笔试）" class="headerlink" title="44. 开发商购买土地（第五期模拟笔试）"></a><a href="https://kamacoder.com/problempage.php?pid=1044">44. 开发商购买土地（第五期模拟笔试）</a></h1><p>其实还是用前缀和的思想，但是这里最好是把整个二维数组观想成一维一维的数组（无论行列）。然后将每一维当作一个元素，去求整体的前缀和。</p>
+<p>因为无论怎么分，都是以一行或者一列为单位的，那么这里面所有的元素都会划在同一个区域</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vec</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m, <span class="number">0</span>)) ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            cin &gt;&gt; vec[i][j];</span><br><span class="line">            sum += vec[i][j];<span class="comment">//计算所有元素的和，因为只有两个区域</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> result = INT_MAX;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span> ; j &lt; m; j++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (j == m - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">            <span class="comment">//每经过一行，计算所有元素的和，然后计算result</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; n; i++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (i == n - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">			<span class="comment">//同样作用在列上</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; result &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法刷题</category>
+      </categories>
+  </entry>
+  <entry>
     <title>7-244 代码随想录之链表</title>
     <url>/2025/07/24/day4/</url>
     <content><![CDATA[<h1 id="19-删除链表的倒数第-N-个结点-力扣（LeetCode）"><a href="#19-删除链表的倒数第-N-个结点-力扣（LeetCode）" class="headerlink" title="19. 删除链表的倒数第 N 个结点 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/">19. 删除链表的倒数第 N 个结点 - 力扣（LeetCode）</a></h1><p>先让cur节点往后跑n-1个，然后一起后移cur和pre。</p>
@@ -154,6 +129,31 @@
       </categories>
   </entry>
   <entry>
+    <title>7-22 洛谷题单之排序</title>
+    <url>/2025/07/22/7-22/</url>
+    <content><![CDATA[<h1 id="P1177-【模板】排序-洛谷"><a href="#P1177-【模板】排序-洛谷" class="headerlink" title="P1177 【模板】排序 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1177">P1177 【模板】排序 - 洛谷</a></h1><p>主要是练一下手写快排。</p>
+<h2 id="快速排序的原理"><a href="#快速排序的原理" class="headerlink" title="快速排序的原理"></a>快速排序的原理</h2><p>本部分讲述的是常用的三路快速排序。如果想了解快速排序的更多变种实现方式可以在 <a href="https://oi-wiki.org/basic/quick-sort/#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">OI Wiki</a> 中了解。</p>
+<p>我们设待排序的序列为一个长度为 n 的序列 a。快速排序的具体原理如下：</p>
+<p>首先，在 a 中随机选择一个数 x，之后我们进行如下操作：</p>
+<ol>
+<li>如果 n&#x3D;0 或 n&#x3D;1，此时根本无需排序，直接退出；</li>
+<li>定义三个新的序列 b,c,d；</li>
+<li>遍历整个序列 a，将比 x 小的放在 b 内，比 x 大的放在 d 内，和 x 相等的放在 c 内；</li>
+<li>将 b,d 按如上过程继续排序。序列 c 中的数由于都相等所以不必排序。</li>
+</ol>
+<p>可以发现：实际上每一次的排序之后都会通过调用本身来继续排序，这明显就是递归。</p>
+<p>通过递归，我们将一个完整的序列经过不断的分解来变成很多个小序列，直到只有一个或没有数为止。<strong>这种排序就是在不断的递归和分解当中来慢慢实现与完成排序</strong></p>
+<p>模版代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    T pivot = arr[<span class="built_in">rand</span>() % (right - left + <span class="number">1</span>) + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, left, j - <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">quickSort</span>(arr, k + <span class="number">1</span>, right);</span><br><span class="line">	<span class="comment">//j是第一个pivot所在的位置,k是最后一个pivot所在的位置</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="P1923-【深基9-例4】求第-k-小的数-洛谷"><a href="#P1923-【深基9-例4】求第-k-小的数-洛谷" class="headerlink" title="P1923 【深基9.例4】求第 k 小的数 - 洛谷"></a><a href="https://www.luogu.com.cn/problem/P1923">P1923 【深基9.例4】求第 k 小的数 - 洛谷</a></h1><p>通过分治去求。考虑上面的快排，每次分出三个相对有序的序列，可以据此判断出第k小的数在哪个序列中，然后再递归对应的序列即可</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">get_nth_k</span><span class="params">(vector&lt;T&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right,<span class="type">int</span> pos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; right) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (left == right) <span class="keyword">return</span> arr[left];</span><br><span class="line">    T pivot = arr[(right-left) / <span class="number">2</span> + left];</span><br><span class="line">    <span class="type">int</span> i = left, j = left, k = right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt;= k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i++], arr[j++]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(arr[i], arr[k--]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(pos &lt; j - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, left, j<span class="number">-1</span>, pos);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(pos &gt; k - left) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get_nth_k</span>(arr, k<span class="number">+1</span>, right, pos- (k - left + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pivot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法刷题</category>
+      </categories>
+  </entry>
+  <entry>
     <title>7-25 代码随想录之哈希表</title>
     <url>/2025/07/25/day5/</url>
     <content><![CDATA[<h1 id="242-有效的字母异位词-力扣（LeetCode）"><a href="#242-有效的字母异位词-力扣（LeetCode）" class="headerlink" title="242. 有效的字母异位词 - 力扣（LeetCode）"></a><a href="https://leetcode.cn/problems/valid-anagram/description/">242. 有效的字母异位词 - 力扣（LeetCode）</a></h1><p>可以用哈希，也可以直接大小为26的数组。如果是unicode字符，那就必须用哈希了</p>
@@ -167,134 +167,6 @@
       <categories>
         <category>算法刷题</category>
       </categories>
-  </entry>
-  <entry>
-    <title>浅谈协程</title>
-    <url>/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/</url>
-    <content><![CDATA[<p>探讨协程的底层实现，剖析开源库 libco 的实现，并在此基础之上实现一个简单的协程</p>
-<span id="more"></span>
-<h1 id="浅谈协程"><a href="#浅谈协程" class="headerlink" title="浅谈协程"></a>浅谈协程</h1><h2 id="协程是什么"><a href="#协程是什么" class="headerlink" title="协程是什么"></a>协程是什么</h2><p>协程就是用户态的线程，但是上下文切换的时机是靠调用方（写代码的开发人员）自身去控制的。</p>
-<p>下面是一个简单的例子：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">B</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;y&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;z&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">A</span>();</span><br><span class="line">  <span class="built_in">B</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在单线程中，上述函数的输出为：<code>1 2 3 x y z</code></p>
-<p>如果我们用 libco 库将上面程序改造一下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">A</span><span class="params">()</span> &#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   co_yield_ct();  <span class="comment">// 切出到主协程</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">B</span><span class="params">()</span> &#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   co_yield_ct();  <span class="comment">// 切出到主协程</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;y&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;z&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  ...  <span class="comment">// 主协程</span></span><br><span class="line">  co_resume(A);  <span class="comment">// 启动协程 A</span></span><br><span class="line">  co_resume(B);  <span class="comment">// 启动协程 B</span></span><br><span class="line">  co_resume(A);  <span class="comment">// 从协程 A 切出处继续执行</span></span><br><span class="line">  co_resume(B);  <span class="comment">// 从协程 B 切出处继续执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>同样在单线程中，改造后的程序输出如下：<code>1 2 x 3 y z</code></p>
-<p>xxxxxxxxxx23 1#include &lt;bits&#x2F;stdc++.h&gt;2using namespace std;3​4vector<string> vec(25);5​6bool cmp(const string &amp;a, const string &amp;b){7    return a+b &gt; b+a;8}9​10int main(){11    int n;12    cin &gt;&gt; n;13    for(int i &#x3D; 0; i &lt; n; i++){14        cin &gt;&gt; vec[i];15    }16    sort(vec.begin(), vec.begin() + n, cmp);17    string ans;18    for(int i &#x3D; 0; i &lt; n; i++){19        ans +&#x3D; vec[i];20    }21    cout &lt;&lt; ans &lt;&lt; endl;22    return 0;23}cpp</string></p>
-<p>函数 A() 和 B() 并不是一个执行完才执行另一个，而是产生了 “交叉执行“ 的效果，这就是通过协程实现的</p>
-<h2 id="为什么不用线程而用协程"><a href="#为什么不用线程而用协程" class="headerlink" title="为什么不用线程而用协程"></a>为什么不用线程而用协程</h2><p>有些时候我们在执行一些操作（尤其是IO操作）时，不希望去做“创建一个新的线程”这种重量级的操作来异步处理。而是希望：<strong>在当前线程执行中，暂时切换到其他任务中执行，同时在IO真正准备好了之后，再切换回来继续执行！</strong></p>
-<p>相比于多开一个线程来操作，使用协程的好处：</p>
-<ul>
-<li><strong>减少了线程的重复高频创建；</strong></li>
-<li><strong>尽量避免线程的阻塞；</strong></li>
-<li><strong>提升代码的可维护与可理解性（毕竟不需要考虑多线程那一套东西了）</strong></li>
-</ul>
-<p>下面是一些协程的特点：</p>
-<ul>
-<li><strong>协程可以主动让出 CPU 时间片；（注意：不是当前线程让出 CPU 时间片，而是线程内的某个协程让出时间片供同线程内其他协程运行；）</strong></li>
-<li><strong>协程可以恢复 CPU 上下文；当另一个协程继续执行时，其需要恢复 CPU 上下文环境；</strong></li>
-<li><strong>协程有个管理者，管理者可以选择一个协程来运行，其他协程要么阻塞，要么ready，或者died；</strong></li>
-<li><strong>运行中的协程将占有当前线程的所有计算资源；</strong></li>
-<li><strong>协程天生有栈属性，而且是 lock free；</strong></li>
-</ul>
-<h1 id="协程的类别"><a href="#协程的类别" class="headerlink" title="协程的类别"></a>协程的类别</h1><p>根据是否存在<strong>调用栈</strong>，可以分为以下两类</p>
-<ul>
-<li>有栈协程：类似于内核态线程，不同协程间切换还是要切换上下文，只是不需要陷入内核。例如goroutine、libco</li>
-<li>无栈协程：上下文放在公共内存中，切换时使用状态机来切换，而不切换对应的上下文（因为已经在堆里了），更轻量，例如：C++20、Rust、JavaScript 中的协程</li>
-</ul>
-<p>根据是否存在明显的调用关系，可以分为</p>
-<ul>
-<li>非对称协程：协程间有明显的调用关系</li>
-<li>对称协程：无明显调用关系</li>
-</ul>
-<h2 id="有栈协程"><a href="#有栈协程" class="headerlink" title="有栈协程"></a>有栈协程</h2><p>开源库 libco 就是通过汇编语言实现的有栈协程库。</p>
-<p>通过分析代码可以看到，无论是<code>co_yield</code>还是<code>co_resume</code>，在协程切出和恢复时，都调用了同一个函数<code>co_swap</code>，在这个函数中调用了 <code>coctx_swap</code> 来实现协程的切换，这一函数的原型是<br><code>void coctx_swap( coctx_t *,coctx_t* ) asm(&quot;coctx_swap&quot;);</code></p>
-<p>两个参数都是 <code>coctx_t *</code> 指针类型，其中第一个参数表示要切出的协程，第二个参数表示切出后要进入的协程；</p>
-<p>并不会像常规被调用函数一样创立新栈帧。而是通过调整 <code>%rsp</code> 的值来恢复新协程的栈，并利用了 <code>ret</code> 语句来实现修改指令寄存器 <code>%rip</code> 的目的，通过修改 <code>%rip</code> 来实现程序运行逻辑跳转；</p>
-<blockquote>
-<p>[!NOTE] %rip的修改<br>不能直接修改，只能通过call或ret来修改</p>
-</blockquote>
-<p><strong>整体上看来，协程的切换其实就是： cpu 寄存器内容特别是 <code>%rip</code> 和 <code>%rsp</code> 的写入和恢复，因为 cpu 的寄存器决定了程序从哪里执行（%rip) 和使用哪个地址作为堆栈 （%rsp）；</strong></p>
-<h2 id="无栈协程"><a href="#无栈协程" class="headerlink" title="无栈协程"></a>无栈协程</h2><p>无栈协程本质上是一个状态机，从另一个角度上：<strong>同一协程切换的本质不过是指令指针寄存器的改变</strong></p>
-<p>先来看一个使用libco的例子：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="title">test</span><span class="params">(<span class="type">void</span>* para)</span></span>&#123; </span><br><span class="line">	<span class="built_in">co_enable_hook_sys</span>(); </span><br><span class="line">	<span class="type">int</span> i = <span class="number">0</span>; </span><br><span class="line">	<span class="built_in">poll</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.</span> <span class="number">1000</span>); <span class="comment">// 协程切换执行权，1000ms后返回 </span></span><br><span class="line">	i++; </span><br><span class="line">	<span class="built_in">poll</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.</span> <span class="number">1000</span>); <span class="comment">// 协程切换执行权，1000ms后返回 </span></span><br><span class="line">	i--; </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123; </span><br><span class="line">	stCoRoutine_t* routine; </span><br><span class="line">	<span class="built_in">co_create</span>(&amp;routine, <span class="literal">NULL</span>, test, <span class="number">0</span>); <span class="comment">// 创建一个协程 </span></span><br><span class="line">	<span class="built_in">co_resume</span>(routine); </span><br><span class="line">	<span class="built_in">co_eventloop</span>(<span class="built_in">co_get_epoll_ct</span>(),<span class="number">0</span>,<span class="number">0</span> ); </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果是无栈协程，实现相同逻辑的代码是怎么样的呢？</p>
-<p>其实就是翻译成类似于以下状态机的代码：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test_coroutine</span> &#123; </span><br><span class="line">	<span class="type">int</span> i; </span><br><span class="line">	<span class="type">int</span> __state = <span class="number">0</span>; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">MoveNext</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		<span class="keyword">switch</span>(__state) &#123; </span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="built_in">frist</span>(); </span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="built_in">second</span>(); </span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> <span class="built_in">third</span>(); </span><br><span class="line">		&#125; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">frist</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i = <span class="number">0</span>; __state = <span class="number">1</span>; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">second</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i++; _state = <span class="number">2</span>; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">third</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i--; </span><br><span class="line">	&#125; </span><br><span class="line">;</span><br></pre></td></tr></table></figure>
-<p><strong>把整个协程抽象成一个类，以原本需要执行切换的语句处为界限，把函数划分为几个部分，并在某一个部分执行完以后进行状态转移，在下一次调用此函数的时候就会执行下一部分</strong></p>
-<p>这样就完全没有必要像有栈协程那样显式的执行上下文切换了，我们只需要一个简易的调度器来调度这些函数即可；</p>
-<p>从执行时栈的角度来看：</p>
-<p><strong>其实所有的协程共用的都是一个栈，即系统栈，也就也不必我们自行去给协程分配栈，因为是函数调用，我们当然也不必去显示的保存寄存器的值；</strong></p>
-<p><strong>而且相比有栈协程把局部变量放在新开的空间上，无栈协程直接使用系统栈使得CPU cache局部性更好，同时也使得无栈协程的中断和函数返回几乎没有区别，这样也可以凸显出无栈协程的高效；</strong></p>
-<h2 id="对称协程与非对称协程"><a href="#对称协程与非对称协程" class="headerlink" title="对称协程与非对称协程"></a>对称协程与非对称协程</h2><ul>
-<li><strong>对称协程 Symmetric Coroutine：任何一个协程都是相互独立且平等的，调度权可以在任意协程之间转移；</strong></li>
-<li><strong>非对称协程 Asymmetric Coroutine：协程出让调度权的目标只能是它的调用者，即协程之间存在调用和被调用关系；</strong></li>
-</ul>
-<p>非对称协程就是拥有调用栈，而对称协程则是大家都平等，不需要调用栈，只需要一个数据结构存储未执行完的协程即可</p>
-<p>我个人认为非对称协程相比之下更为符合认知，因为对称协程目前我不知道如何选择一个合适的协程来获得CPU执行权，正如上面所说，此协程可能正在等待事件；当然如果调度算法足够优秀的话，对称协程也是可取的；</p>
-<h1 id="其他内容"><a href="#其他内容" class="headerlink" title="其他内容"></a>其他内容</h1><h2 id="N-1-N-M-协程"><a href="#N-1-N-M-协程" class="headerlink" title="N:1 &amp; N:M 协程"></a>N:1 &amp; N:M 协程</h2><p>线程绑定的协程只有在对应线程运行的时候才有被执行的可能，如果对应线程中的某一个协程完全占有了当前线程，那么当前线程中的其他所有协程都不会被执行</p>
-<p>协程的所有信息都保存在上下文（Contex）对象中，将不同上下文分发给不同的线程就可以实现协程的跨线程执行，如此，协程被阻塞的概率将减小；</p>
-<p>借用 <a href="https://github.com/apache/incubator-brpc/blob/master/docs/cn/bthread.md">BRPC</a> 中对 <code>N:M</code> 协程的介绍，来解释下什么是 <code>N:M</code> 协程：</p>
-<p>常说的协程是指的N:1协程库，即所有协程运行在一个系统线程中，<strong>计算能力和各类eventloop库等价</strong></p>
-<p>由于不跨线程，那么切换也不需要系统调用，受cache一致性的影响也比较小，可以非常快</p>
-<p>但是代价是无法高效利用多核，而且代码必须非阻塞，否则所有协程都会卡住</p>
-<p><code>bthread</code> 是一个 <code>M:N</code> 线程库，一个<code>bthread</code>被卡住不会影响其他<code>bthread</code>；</p>
-<p>其中的关键技术有两点：</p>
-<ul>
-<li><strong>work stealing 调度；</strong></li>
-<li><strong>butex；</strong></li>
-</ul>
-<p>前者让 bthread 更快地被调度到更多的核心上，后者让 bthread 和 pthread 可以相互等待和唤醒，这两点协程都不需要；</p>
-<p>这么看来 貌似 bthread 自己实现了 golang 的 goroutine？</p>
-<p>表面看起来的却如此：两者都实现了 M:N 用户态线程；</p>
-<p>但是事实上， golang 中的 goroutine 的实现要更为复杂一些：</p>
-<p>bthread 的设计比较接近 go 1.0 版本：OS 线程不会动态增加，在有大量的阻塞性 syscall 下，会有影响；</p>
-<p>而 go 1.1 之后的设计就是动态增减 OS 线程，而且提供了 LockOSThread，可以让 goroutine 和 OS 线程 1:1；</p>
-<h2 id="协程的组成"><a href="#协程的组成" class="headerlink" title="协程的组成"></a>协程的组成</h2><p>N:M模式下的协程其实就是可以由用户来确定调度顺序的用户态线程，对比系统线程可以分为以下几个模块：</p>
-<ul>
-<li>协程上下文：对应系统中的PCB&#x2F;TCB</li>
-<li>保存协程上下文的容器：对应操作系统中保存 PCB&#x2F;TCB 的容器，一般是一个列表（在实际实现时，协程上下文容器可以使用一个也可以使用多个，比如：普通协程队列、定时的协程优先队列等</li>
-<li>协程的执行器<ul>
-<li>协程的调度器：对应操作系统中的进程、线程调度器</li>
-<li>执行协程的worker线程，对应实际进程&#x2F;线程的CPU核心</li>
-</ul>
-</li>
-</ul>
-<h2 id="调度"><a href="#调度" class="headerlink" title="调度"></a>调度</h2><p>参照进程调度即可</p>
-<h2 id="协程相关工具"><a href="#协程相关工具" class="headerlink" title="协程相关工具"></a>协程相关工具</h2><p>系统级线程有锁、条件变量等工具，</p>
-<p><strong>系统级线程和协程处于不同的系统层级，所以两者的同步工具不完全通用，如果在协程中使用了线程的锁（例如：<code>std::mutex</code>），则整个线程将会被阻塞，当前线程将不会再调度与执行其他协程；</strong></p>
-<h2 id="对CPU-IO的影响"><a href="#对CPU-IO的影响" class="headerlink" title="对CPU&#x2F;IO的影响"></a>对CPU&#x2F;IO的影响</h2><p>目的在于剔除线程的阻塞，提供CPU利用率</p>
-<p>很多服务在处理业务时需要请求第三方服务，向第三方服务发起 RPC 调用；RPC 调用的网络耗时一般耗时在毫秒级别，RPC 服务的处理耗时也可能在毫秒级别，如果当前服务使用同步调用，即 RPC 返回后才进行后续逻辑，那么一条线程每秒处理的业务数量是可以估算的；</p>
-<p>假设每次业务处理花费在 RPC 调用上的耗时是 20ms，那么一条线程一秒最多处理 50 次请求！</p>
-<p>如果在等待 RPC 返回时当前线程没有被系统调度转换为 Ready 状态，那当前 CPU 核心就会空转，浪费了 CPU 资源！通过增加线程数量提高系统吞吐量的效果非常有限，而且创建大量线程也会造成其他问题！</p>
-<p>协程虽然不一定能减少一次业务请求的耗时，但一定可以提升系统的吞吐量：</p>
-<ul>
-<li>当前业务只有一次第三方 RPC 的调用，那么协程不会减少业务处理的耗时，但可以提升 QPS；</li>
-<li>当前业务需要多个第三方 RPC 调用，<strong>同时创建多个协程可以让多个 RPC 调用一起执行，则当前业务的 RPC 耗时由耗时最长的 RPC 调用决定；</strong></li>
-</ul>
-]]></content>
-      <categories>
-        <category>协程库</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2025/03/17/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>字符串、向量和数组</title>
@@ -341,128 +213,22 @@
       </categories>
   </entry>
   <entry>
-    <title>表达式</title>
-    <url>/2025/06/04/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>一般二元运算符都要求两个运算对象的类型相同或者可以转换为相同类型</p>
-<p>运算符作用于类类型的对象时，用户可以自行定义含义，即重载运算符。</p>
-<h2 id="左值和右值"><a href="#左值和右值" class="headerlink" title="左值和右值"></a>左值和右值</h2><p>C++表达式要么是左值，要么是右值</p>
-<ul>
-<li>左值：当一个对象被用作左值时，用的是对象的身份（即内存中的位置）</li>
-<li>右值：当一个对象被用作右值时，用的是对象的值</li>
-</ul>
-<p>右值可以用左值来代替，但是反过来不行</p>
-<p>使用关键字 decltype 时，如果表达式的求值结果是左值，decltype 作用于该表达式（不是变量）得到一个引用类型</p>
-<h2 id="优先级和结合律"><a href="#优先级和结合律" class="headerlink" title="优先级和结合律"></a>优先级和结合律</h2><p>左结合律：如果运算符优先级相同，按照从左到右的方式组合运算对象</p>
-<p><strong>赋值运算符满足的是右结合律</strong></p>
-<h2 id="求值顺序"><a href="#求值顺序" class="headerlink" title="求值顺序"></a>求值顺序</h2><p>在一个复合表达式中，各个运算对象的求值顺序是不固定的。</p>
-<p><code>cout &lt;&lt; i &lt;&lt; ++i &lt;&lt; end;//错误！未定义的行为，不知道先求 i 还是先求 ++i</code></p>
-<p>4种运算符明确规定了运算对象的求值顺序：逻辑与(&amp;&amp;)、逻辑或(||)、条件(?:)、逗号(,)</p>
-<p>处理复合表达式的两个建议：</p>
-<ol>
-<li>不确定优先级与结合律时使用括号</li>
-<li>如果改变了某个运算对象的值，在同一表达式中不要再使用该运算对象。</li>
-</ol>
-<h1 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h1><p>算术运算符有 3 组，按优先级从高到低依次是</p>
-<ol>
-<li>+、- ：一元正号与一元负号</li>
-<li><ul>
-<li>、&#x2F;、% ：乘法、除法、求余</li>
-</ul>
-</li>
-<li>+、- ：加法、减法<br>注意一元正负号的优先级最高，求余也是一种算术运算。</li>
-</ol>
-<p>整数除法的结果是向零舍入。</p>
-<p>求余运算符的运算对象必须是整数，运算结果始终与被除数符号相同</p>
-<h1 id="逻辑和关系运算符"><a href="#逻辑和关系运算符" class="headerlink" title="逻辑和关系运算符"></a>逻辑和关系运算符</h1><ul>
-<li>逻辑运算符：！、&amp;&amp;、||。逻辑运算符的作用对象必须是能转换成布尔值的类型</li>
-<li>关系运算符：&lt;, &lt;&#x3D;, &gt;, &gt;&#x3D;, !&#x3D;, &#x3D;&#x3D; ：大于小于的优先级高于等于和不等于</li>
-</ul>
-<p><strong>&amp;&amp;、||都是短路求值，即先求左值，若无法判定整体布尔值，再求右值</strong></p>
-<h2 id="布尔字面值"><a href="#布尔字面值" class="headerlink" title="布尔字面值"></a>布尔字面值</h2><p>使用算术值做条件时直接用，不要与布尔值做比较</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(a);<span class="comment">//正确 </span></span><br><span class="line"><span class="keyword">if</span>(a == <span class="literal">true</span>);<span class="comment">//错误：会将 true 先转换为 int 再比较，比较结果是不相等</span></span><br></pre></td></tr></table></figure>
-<h1 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h1><p>赋值运算符的左侧对象必须是一个可修改的左值</p>
-<p>C++ 11 允许使用花括号括起来的初始值列表作为右侧运算对象。初始化列表可以为空，此时将进行值初始化。</p>
-<p>赋值运算符满足右结合律。同时优先级较低</p>
-<p>复合赋值运算符只求值一次，而普通运算符需要两次。(a&#x3D;a+1 要先求一次 a+1，再将结果赋值给 a)</p>
-<p><code>+=; -=; *=; /=; %=; &lt;&lt;=; &gt;&gt;=; &amp;=; ^=; |=;</code></p>
-<h1 id="递增和递减运算符"><a href="#递增和递减运算符" class="headerlink" title="递增和递减运算符"></a>递增和递减运算符</h1><h2 id="前置版本"><a href="#前置版本" class="headerlink" title="前置版本"></a>前置版本</h2><p>首先将运算对象加1，再将改变后的对象作为求值结果</p>
-<h2 id="后置版本"><a href="#后置版本" class="headerlink" title="后置版本"></a>后置版本</h2><p>也是将运算对象加 1，但是求值结果是运算对象改变之前那个值的副本</p>
-<blockquote>
-<p>[!NOTE] 关键区别<br>前置版本将对象本身作为左值返回，后置版本将对象的原始值的副本返回。</p>
-<p>前置版本直接返回改变了的运算对象，后置版本需要将原始值保存下来以便于返回，是一种浪费。</p>
-<p>整体而言，后置版本对于整数和指针来说影响不大，但是对于迭代器而言消耗巨大</p>
-</blockquote>
-<h2 id="在一条语句中混用解引用和递增运算符"><a href="#在一条语句中混用解引用和递增运算符" class="headerlink" title="在一条语句中混用解引用和递增运算符"></a>在一条语句中混用解引用和递增运算符</h2><p><code>*p++</code> ：p++将 p 的值加一，然后返回 p 的初始值的副本作为求值结果用于解引用。(递增运算符优先级高于解引用)</p>
-<p>这是一种提倡的写法，更加简洁，应该习惯于这种写法。</p>
-<h1 id="成员访问运算符"><a href="#成员访问运算符" class="headerlink" title="成员访问运算符"></a>成员访问运算符</h1><p>对于一个指针而言，点运算符和箭头运算符都可以用来访问成员。</p>
-<p><code>ptr-&gt;mem 等价于 (*ptr)-&gt;mem</code></p>
-<h1 id="条件运算符"><a href="#条件运算符" class="headerlink" title="条件运算符"></a>条件运算符</h1><p>cond ? expr1 : expr2。</p>
-<p>可以嵌套使用<br><code>finalgrade = (grade&gt;90) ? &quot;high pass&quot; : (grade&lt;60) ? &quot;fail&quot; : &quot;pass&quot;;</code></p>
-<p>条件运算符优先级非常低，一般都要加括号</p>
-<h1 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h1><p>位运算符作用于整数类型的对象。</p>
-<p>位运算符有六种：位求反、位与、位或、位异或、左移、右移</p>
-<p><code>~a; a&amp;b; a|b; a^b; a&lt;&lt;2; a&gt;&gt;2</code></p>
-<p>如果运算对象是个小整型，会被自动提升为较大的整型类型</p>
-<p>可以带符号，也可以不带。如果不带，那么运算结果是固定的，否则要看机器</p>
-<p><strong>左移操作处理带符号值是未定义行为</strong></p>
-<p>在 C++ 中，建议仅用位运算符来处理无符号类型。</p>
-<h2 id="移位运算符"><a href="#移位运算符" class="headerlink" title="移位运算符"></a>移位运算符</h2><p>使用移位运算符，移动的位数必须严格小于结果的位数，否则会产生未定义的行为</p>
-<p><code>&lt;&lt;</code>运算符在右侧插入 0，左侧移动超出边界的值舍弃掉。</p>
-<p><code>&gt;&gt;</code>运算符处理无符号数时在左侧插入 0，右侧移动超出边界的值舍弃掉。</p>
-<p><code>&gt;&gt;</code>运算符处理有符号数时可能在左侧插入 0 也可能插入符号位的副本，由机器决定使用哪种方式</p>
-<p>标注IO库里重载了这两个运算符，使得可以接受输入输出流。</p>
-<p>重载后满足左结合律</p>
-<h2 id="位求反、位与、位或、位异或"><a href="#位求反、位与、位或、位异或" class="headerlink" title="位求反、位与、位或、位异或"></a>位求反、位与、位或、位异或</h2><p>这几种运算符处理 char 时，都会把 char 类型的运算对象首先零扩展提升成 int 类型再进行位运算。</p>
-<h1 id="sizeof运算符"><a href="#sizeof运算符" class="headerlink" title="sizeof运算符"></a>sizeof运算符</h1><p>sizeof返回一个表达式或者一个类型名字所占的字节数，值为size_t类型</p>
-<p>对数组执行sizeof运算将得到数组所占的空间，这里不会把数组转换为指针进行处理</p>
-<p>对指针执行sizeof运算将得到指针类型的大小，8</p>
-<p>如果对string或者vector执行sizeof只返回该类型固定部分的大小，不会计算对象中的元素占多少空间</p>
-<blockquote>
-<p>[!Hint] 可以用 sizeof 获得数组中元素的个数<br><code>sizeof(arr)/sizeof(*arr);//返回的是数组 arr 的元素数量</code></p>
-</blockquote>
-<h1 id="逗号运算符"><a href="#逗号运算符" class="headerlink" title="逗号运算符"></a>逗号运算符</h1><p>在 for 循环中可以用逗号分隔两个不同的条件，或者定义多个值（类型完全相同）<br><code>for(int i=0,j = 0; i!=n; i++,j++)</code></p>
-<p><strong>注意，如果在条件判断的部分用逗号分割了若干部分，则只会返回最后一个条件判定的布尔值</strong></p>
-<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>c++ 不会直接将两个不同类型的值相加，会先通过类型转换把运算对象的类型统一后再求值</p>
-<h2 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h2><ul>
-<li>比int类型小的整型值转换为int类型或者更大的整数类型</li>
-<li>在条件里，把非布尔值转换成布尔值</li>
-<li>初始化过程中，初始值转换为变量的类型</li>
-<li>赋值时，右侧运算对象转换成左侧类型</li>
-<li>算数运算或关系运算的运算对象有多种类型，转换成一种（一般取最宽的那种）</li>
-</ul>
-<h2 id="整型提升"><a href="#整型提升" class="headerlink" title="整型提升"></a>整型提升</h2><p>整型提升把小整数类型（包括 char、bool等）转换成较大的整数类型。如果 int 可以就转换成 int，否则提升成 unsigned int 类型</p>
-<p>如果一个是无符号一个带符号。如果无符号类型不小于带符号类型（比如都是 4 字节），则带符号转换为无符号</p>
-<p>如果无符号类型小于带符号，转换结果依赖机器。尽量避免这种操作。</p>
-<h2 id="其他隐式转换"><a href="#其他隐式转换" class="headerlink" title="其他隐式转换"></a>其他隐式转换</h2><ol>
-<li>数组转换为指针：大多数情况下数组自动转换成指向数组首元素的指针。（decltype关键字参数、取地址符(&amp;)、sizeof、typeid都不会发生这种转换）</li>
-<li>指针的转换：0 或 nullptr 都能转换成任意指针类型。指向非常量的指针能转换成 void*。指向所有对象的指针都能转换成 const void*</li>
-<li>转换成常量：指向非常量的指针转换成指向相应常量类型的指针</li>
-<li>类类型的转换：<ol>
-<li><code>while(cin&gt;&gt;s);//将 cin 转换为 bool 值</code></li>
-<li><code>string s = &quot;value&quot;;//将 c 风格字符串转换为 string</code></li>
-</ol>
-</li>
-</ol>
-<h2 id="显式转换"><a href="#显式转换" class="headerlink" title="显式转换"></a>显式转换</h2><p>使用强制类型转换，非常危险，一般考虑能否用其他方式避免</p>
-<p><code>castname&lt;type&gt;(expression);</code></p>
-<p>有以下四种：</p>
-<h3 id="static-cast"><a href="#static-cast" class="headerlink" title="static cast"></a>static cast</h3><p>任何类型转换，只要不包含底层const，都可以用static cast</p>
-<p><code>double slope = static_cast&lt;double&gt;(j)/i; //将 j 转换成 double 以便执行浮点数除法</code></p>
-<p>当把较大的类型转换为较小的类型时，static_cast 很有用。这时它告诉读者和编译器：我们知道且不在乎精度损失。平时编译器会给警告，显式转换后就不警告了</p>
-<h3 id="const-cast"><a href="#const-cast" class="headerlink" title="const cast"></a>const cast</h3><p>只能改变对象的底层const，可以去掉或增加const性质</p>
-<p>只有const cast可以改变表达式的常量属性，其他均不可以</p>
-<p>cosnt_cast 常用于有函数重载的上下文中。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">string&amp; s; </span><br><span class="line"><span class="keyword">const_cast</span> &lt;<span class="type">const</span> string&amp;&gt; (s);<span class="comment">// 将 s 转换为常量引用 </span></span><br><span class="line"><span class="keyword">const_cast</span> &lt;string&amp;&gt; (s);<span class="comment">// 将 s 转换回非常量引用</span></span><br></pre></td></tr></table></figure>
-<h3 id="reinterpret-cast"><a href="#reinterpret-cast" class="headerlink" title="reinterpret_cast"></a>reinterpret_cast</h3><p>依赖于机器，门槛高而且危险，不要用</p>
-<h3 id="旧式的强制类型转换"><a href="#旧式的强制类型转换" class="headerlink" title="旧式的强制类型转换"></a>旧式的强制类型转换</h3><p>本质上采用 const_cast、static_cast 或 reinterpret_cast 中的一种。</p>
-<p>旧式与新式相比没那么清晰明了，如果出现问题，追踪困难</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">int</span>(a);<span class="comment">// 函数形式的强制类型转换 </span></span><br><span class="line">(<span class="type">int</span>)a;<span class="comment">// c 语言风格的强制类型转换</span></span><br></pre></td></tr></table></figure>
-<h1 id="附录：优先级表"><a href="#附录：优先级表" class="headerlink" title="附录：优先级表"></a>附录：优先级表</h1><p><img src="https://tc.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/ZzOK/627X605/priority_level_1.png" alt="627X605&#x2F;priority_level_1.png"></p>
-<p><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/N7CE/631X880/priority_level_2.png" alt="631X880&#x2F;priority_level_2.png"></p>
+    <title>Hello World</title>
+    <url>/2025/03/17/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
-      <categories>
-        <category>C++ primer</category>
-      </categories>
   </entry>
   <entry>
     <title>变量和基本类型</title>
@@ -752,6 +518,240 @@
       </categories>
   </entry>
   <entry>
+    <title>浅谈协程</title>
+    <url>/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/</url>
+    <content><![CDATA[<p>探讨协程的底层实现，剖析开源库 libco 的实现，并在此基础之上实现一个简单的协程</p>
+<span id="more"></span>
+<h1 id="浅谈协程"><a href="#浅谈协程" class="headerlink" title="浅谈协程"></a>浅谈协程</h1><h2 id="协程是什么"><a href="#协程是什么" class="headerlink" title="协程是什么"></a>协程是什么</h2><p>协程就是用户态的线程，但是上下文切换的时机是靠调用方（写代码的开发人员）自身去控制的。</p>
+<p>下面是一个简单的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">B</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;y&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;z&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">A</span>();</span><br><span class="line">  <span class="built_in">B</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在单线程中，上述函数的输出为：<code>1 2 3 x y z</code></p>
+<p>如果我们用 libco 库将上面程序改造一下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">A</span><span class="params">()</span> &#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   co_yield_ct();  <span class="comment">// 切出到主协程</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">B</span><span class="params">()</span> &#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   co_yield_ct();  <span class="comment">// 切出到主协程</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;y&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;z&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  ...  <span class="comment">// 主协程</span></span><br><span class="line">  co_resume(A);  <span class="comment">// 启动协程 A</span></span><br><span class="line">  co_resume(B);  <span class="comment">// 启动协程 B</span></span><br><span class="line">  co_resume(A);  <span class="comment">// 从协程 A 切出处继续执行</span></span><br><span class="line">  co_resume(B);  <span class="comment">// 从协程 B 切出处继续执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样在单线程中，改造后的程序输出如下：<code>1 2 x 3 y z</code></p>
+<p>xxxxxxxxxx23 1#include &lt;bits&#x2F;stdc++.h&gt;2using namespace std;3​4vector<string> vec(25);5​6bool cmp(const string &amp;a, const string &amp;b){7    return a+b &gt; b+a;8}9​10int main(){11    int n;12    cin &gt;&gt; n;13    for(int i &#x3D; 0; i &lt; n; i++){14        cin &gt;&gt; vec[i];15    }16    sort(vec.begin(), vec.begin() + n, cmp);17    string ans;18    for(int i &#x3D; 0; i &lt; n; i++){19        ans +&#x3D; vec[i];20    }21    cout &lt;&lt; ans &lt;&lt; endl;22    return 0;23}cpp</string></p>
+<p>函数 A() 和 B() 并不是一个执行完才执行另一个，而是产生了 “交叉执行“ 的效果，这就是通过协程实现的</p>
+<h2 id="为什么不用线程而用协程"><a href="#为什么不用线程而用协程" class="headerlink" title="为什么不用线程而用协程"></a>为什么不用线程而用协程</h2><p>有些时候我们在执行一些操作（尤其是IO操作）时，不希望去做“创建一个新的线程”这种重量级的操作来异步处理。而是希望：<strong>在当前线程执行中，暂时切换到其他任务中执行，同时在IO真正准备好了之后，再切换回来继续执行！</strong></p>
+<p>相比于多开一个线程来操作，使用协程的好处：</p>
+<ul>
+<li><strong>减少了线程的重复高频创建；</strong></li>
+<li><strong>尽量避免线程的阻塞；</strong></li>
+<li><strong>提升代码的可维护与可理解性（毕竟不需要考虑多线程那一套东西了）</strong></li>
+</ul>
+<p>下面是一些协程的特点：</p>
+<ul>
+<li><strong>协程可以主动让出 CPU 时间片；（注意：不是当前线程让出 CPU 时间片，而是线程内的某个协程让出时间片供同线程内其他协程运行；）</strong></li>
+<li><strong>协程可以恢复 CPU 上下文；当另一个协程继续执行时，其需要恢复 CPU 上下文环境；</strong></li>
+<li><strong>协程有个管理者，管理者可以选择一个协程来运行，其他协程要么阻塞，要么ready，或者died；</strong></li>
+<li><strong>运行中的协程将占有当前线程的所有计算资源；</strong></li>
+<li><strong>协程天生有栈属性，而且是 lock free；</strong></li>
+</ul>
+<h1 id="协程的类别"><a href="#协程的类别" class="headerlink" title="协程的类别"></a>协程的类别</h1><p>根据是否存在<strong>调用栈</strong>，可以分为以下两类</p>
+<ul>
+<li>有栈协程：类似于内核态线程，不同协程间切换还是要切换上下文，只是不需要陷入内核。例如goroutine、libco</li>
+<li>无栈协程：上下文放在公共内存中，切换时使用状态机来切换，而不切换对应的上下文（因为已经在堆里了），更轻量，例如：C++20、Rust、JavaScript 中的协程</li>
+</ul>
+<p>根据是否存在明显的调用关系，可以分为</p>
+<ul>
+<li>非对称协程：协程间有明显的调用关系</li>
+<li>对称协程：无明显调用关系</li>
+</ul>
+<h2 id="有栈协程"><a href="#有栈协程" class="headerlink" title="有栈协程"></a>有栈协程</h2><p>开源库 libco 就是通过汇编语言实现的有栈协程库。</p>
+<p>通过分析代码可以看到，无论是<code>co_yield</code>还是<code>co_resume</code>，在协程切出和恢复时，都调用了同一个函数<code>co_swap</code>，在这个函数中调用了 <code>coctx_swap</code> 来实现协程的切换，这一函数的原型是<br><code>void coctx_swap( coctx_t *,coctx_t* ) asm(&quot;coctx_swap&quot;);</code></p>
+<p>两个参数都是 <code>coctx_t *</code> 指针类型，其中第一个参数表示要切出的协程，第二个参数表示切出后要进入的协程；</p>
+<p>并不会像常规被调用函数一样创立新栈帧。而是通过调整 <code>%rsp</code> 的值来恢复新协程的栈，并利用了 <code>ret</code> 语句来实现修改指令寄存器 <code>%rip</code> 的目的，通过修改 <code>%rip</code> 来实现程序运行逻辑跳转；</p>
+<blockquote>
+<p>[!NOTE] %rip的修改<br>不能直接修改，只能通过call或ret来修改</p>
+</blockquote>
+<p><strong>整体上看来，协程的切换其实就是： cpu 寄存器内容特别是 <code>%rip</code> 和 <code>%rsp</code> 的写入和恢复，因为 cpu 的寄存器决定了程序从哪里执行（%rip) 和使用哪个地址作为堆栈 （%rsp）；</strong></p>
+<h2 id="无栈协程"><a href="#无栈协程" class="headerlink" title="无栈协程"></a>无栈协程</h2><p>无栈协程本质上是一个状态机，从另一个角度上：<strong>同一协程切换的本质不过是指令指针寄存器的改变</strong></p>
+<p>先来看一个使用libco的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="title">test</span><span class="params">(<span class="type">void</span>* para)</span></span>&#123; </span><br><span class="line">	<span class="built_in">co_enable_hook_sys</span>(); </span><br><span class="line">	<span class="type">int</span> i = <span class="number">0</span>; </span><br><span class="line">	<span class="built_in">poll</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.</span> <span class="number">1000</span>); <span class="comment">// 协程切换执行权，1000ms后返回 </span></span><br><span class="line">	i++; </span><br><span class="line">	<span class="built_in">poll</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.</span> <span class="number">1000</span>); <span class="comment">// 协程切换执行权，1000ms后返回 </span></span><br><span class="line">	i--; </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123; </span><br><span class="line">	stCoRoutine_t* routine; </span><br><span class="line">	<span class="built_in">co_create</span>(&amp;routine, <span class="literal">NULL</span>, test, <span class="number">0</span>); <span class="comment">// 创建一个协程 </span></span><br><span class="line">	<span class="built_in">co_resume</span>(routine); </span><br><span class="line">	<span class="built_in">co_eventloop</span>(<span class="built_in">co_get_epoll_ct</span>(),<span class="number">0</span>,<span class="number">0</span> ); </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果是无栈协程，实现相同逻辑的代码是怎么样的呢？</p>
+<p>其实就是翻译成类似于以下状态机的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test_coroutine</span> &#123; </span><br><span class="line">	<span class="type">int</span> i; </span><br><span class="line">	<span class="type">int</span> __state = <span class="number">0</span>; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">MoveNext</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		<span class="keyword">switch</span>(__state) &#123; </span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="built_in">frist</span>(); </span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="built_in">second</span>(); </span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> <span class="built_in">third</span>(); </span><br><span class="line">		&#125; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">frist</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i = <span class="number">0</span>; __state = <span class="number">1</span>; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">second</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i++; _state = <span class="number">2</span>; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">third</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i--; </span><br><span class="line">	&#125; </span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+<p><strong>把整个协程抽象成一个类，以原本需要执行切换的语句处为界限，把函数划分为几个部分，并在某一个部分执行完以后进行状态转移，在下一次调用此函数的时候就会执行下一部分</strong></p>
+<p>这样就完全没有必要像有栈协程那样显式的执行上下文切换了，我们只需要一个简易的调度器来调度这些函数即可；</p>
+<p>从执行时栈的角度来看：</p>
+<p><strong>其实所有的协程共用的都是一个栈，即系统栈，也就也不必我们自行去给协程分配栈，因为是函数调用，我们当然也不必去显示的保存寄存器的值；</strong></p>
+<p><strong>而且相比有栈协程把局部变量放在新开的空间上，无栈协程直接使用系统栈使得CPU cache局部性更好，同时也使得无栈协程的中断和函数返回几乎没有区别，这样也可以凸显出无栈协程的高效；</strong></p>
+<h2 id="对称协程与非对称协程"><a href="#对称协程与非对称协程" class="headerlink" title="对称协程与非对称协程"></a>对称协程与非对称协程</h2><ul>
+<li><strong>对称协程 Symmetric Coroutine：任何一个协程都是相互独立且平等的，调度权可以在任意协程之间转移；</strong></li>
+<li><strong>非对称协程 Asymmetric Coroutine：协程出让调度权的目标只能是它的调用者，即协程之间存在调用和被调用关系；</strong></li>
+</ul>
+<p>非对称协程就是拥有调用栈，而对称协程则是大家都平等，不需要调用栈，只需要一个数据结构存储未执行完的协程即可</p>
+<p>我个人认为非对称协程相比之下更为符合认知，因为对称协程目前我不知道如何选择一个合适的协程来获得CPU执行权，正如上面所说，此协程可能正在等待事件；当然如果调度算法足够优秀的话，对称协程也是可取的；</p>
+<h1 id="其他内容"><a href="#其他内容" class="headerlink" title="其他内容"></a>其他内容</h1><h2 id="N-1-N-M-协程"><a href="#N-1-N-M-协程" class="headerlink" title="N:1 &amp; N:M 协程"></a>N:1 &amp; N:M 协程</h2><p>线程绑定的协程只有在对应线程运行的时候才有被执行的可能，如果对应线程中的某一个协程完全占有了当前线程，那么当前线程中的其他所有协程都不会被执行</p>
+<p>协程的所有信息都保存在上下文（Contex）对象中，将不同上下文分发给不同的线程就可以实现协程的跨线程执行，如此，协程被阻塞的概率将减小；</p>
+<p>借用 <a href="https://github.com/apache/incubator-brpc/blob/master/docs/cn/bthread.md">BRPC</a> 中对 <code>N:M</code> 协程的介绍，来解释下什么是 <code>N:M</code> 协程：</p>
+<p>常说的协程是指的N:1协程库，即所有协程运行在一个系统线程中，<strong>计算能力和各类eventloop库等价</strong></p>
+<p>由于不跨线程，那么切换也不需要系统调用，受cache一致性的影响也比较小，可以非常快</p>
+<p>但是代价是无法高效利用多核，而且代码必须非阻塞，否则所有协程都会卡住</p>
+<p><code>bthread</code> 是一个 <code>M:N</code> 线程库，一个<code>bthread</code>被卡住不会影响其他<code>bthread</code>；</p>
+<p>其中的关键技术有两点：</p>
+<ul>
+<li><strong>work stealing 调度；</strong></li>
+<li><strong>butex；</strong></li>
+</ul>
+<p>前者让 bthread 更快地被调度到更多的核心上，后者让 bthread 和 pthread 可以相互等待和唤醒，这两点协程都不需要；</p>
+<p>这么看来 貌似 bthread 自己实现了 golang 的 goroutine？</p>
+<p>表面看起来的却如此：两者都实现了 M:N 用户态线程；</p>
+<p>但是事实上， golang 中的 goroutine 的实现要更为复杂一些：</p>
+<p>bthread 的设计比较接近 go 1.0 版本：OS 线程不会动态增加，在有大量的阻塞性 syscall 下，会有影响；</p>
+<p>而 go 1.1 之后的设计就是动态增减 OS 线程，而且提供了 LockOSThread，可以让 goroutine 和 OS 线程 1:1；</p>
+<h2 id="协程的组成"><a href="#协程的组成" class="headerlink" title="协程的组成"></a>协程的组成</h2><p>N:M模式下的协程其实就是可以由用户来确定调度顺序的用户态线程，对比系统线程可以分为以下几个模块：</p>
+<ul>
+<li>协程上下文：对应系统中的PCB&#x2F;TCB</li>
+<li>保存协程上下文的容器：对应操作系统中保存 PCB&#x2F;TCB 的容器，一般是一个列表（在实际实现时，协程上下文容器可以使用一个也可以使用多个，比如：普通协程队列、定时的协程优先队列等</li>
+<li>协程的执行器<ul>
+<li>协程的调度器：对应操作系统中的进程、线程调度器</li>
+<li>执行协程的worker线程，对应实际进程&#x2F;线程的CPU核心</li>
+</ul>
+</li>
+</ul>
+<h2 id="调度"><a href="#调度" class="headerlink" title="调度"></a>调度</h2><p>参照进程调度即可</p>
+<h2 id="协程相关工具"><a href="#协程相关工具" class="headerlink" title="协程相关工具"></a>协程相关工具</h2><p>系统级线程有锁、条件变量等工具，</p>
+<p><strong>系统级线程和协程处于不同的系统层级，所以两者的同步工具不完全通用，如果在协程中使用了线程的锁（例如：<code>std::mutex</code>），则整个线程将会被阻塞，当前线程将不会再调度与执行其他协程；</strong></p>
+<h2 id="对CPU-IO的影响"><a href="#对CPU-IO的影响" class="headerlink" title="对CPU&#x2F;IO的影响"></a>对CPU&#x2F;IO的影响</h2><p>目的在于剔除线程的阻塞，提供CPU利用率</p>
+<p>很多服务在处理业务时需要请求第三方服务，向第三方服务发起 RPC 调用；RPC 调用的网络耗时一般耗时在毫秒级别，RPC 服务的处理耗时也可能在毫秒级别，如果当前服务使用同步调用，即 RPC 返回后才进行后续逻辑，那么一条线程每秒处理的业务数量是可以估算的；</p>
+<p>假设每次业务处理花费在 RPC 调用上的耗时是 20ms，那么一条线程一秒最多处理 50 次请求！</p>
+<p>如果在等待 RPC 返回时当前线程没有被系统调度转换为 Ready 状态，那当前 CPU 核心就会空转，浪费了 CPU 资源！通过增加线程数量提高系统吞吐量的效果非常有限，而且创建大量线程也会造成其他问题！</p>
+<p>协程虽然不一定能减少一次业务请求的耗时，但一定可以提升系统的吞吐量：</p>
+<ul>
+<li>当前业务只有一次第三方 RPC 的调用，那么协程不会减少业务处理的耗时，但可以提升 QPS；</li>
+<li>当前业务需要多个第三方 RPC 调用，<strong>同时创建多个协程可以让多个 RPC 调用一起执行，则当前业务的 RPC 耗时由耗时最长的 RPC 调用决定；</strong></li>
+</ul>
+]]></content>
+      <categories>
+        <category>协程库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>表达式</title>
+    <url>/2025/06/04/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>一般二元运算符都要求两个运算对象的类型相同或者可以转换为相同类型</p>
+<p>运算符作用于类类型的对象时，用户可以自行定义含义，即重载运算符。</p>
+<h2 id="左值和右值"><a href="#左值和右值" class="headerlink" title="左值和右值"></a>左值和右值</h2><p>C++表达式要么是左值，要么是右值</p>
+<ul>
+<li>左值：当一个对象被用作左值时，用的是对象的身份（即内存中的位置）</li>
+<li>右值：当一个对象被用作右值时，用的是对象的值</li>
+</ul>
+<p>右值可以用左值来代替，但是反过来不行</p>
+<p>使用关键字 decltype 时，如果表达式的求值结果是左值，decltype 作用于该表达式（不是变量）得到一个引用类型</p>
+<h2 id="优先级和结合律"><a href="#优先级和结合律" class="headerlink" title="优先级和结合律"></a>优先级和结合律</h2><p>左结合律：如果运算符优先级相同，按照从左到右的方式组合运算对象</p>
+<p><strong>赋值运算符满足的是右结合律</strong></p>
+<h2 id="求值顺序"><a href="#求值顺序" class="headerlink" title="求值顺序"></a>求值顺序</h2><p>在一个复合表达式中，各个运算对象的求值顺序是不固定的。</p>
+<p><code>cout &lt;&lt; i &lt;&lt; ++i &lt;&lt; end;//错误！未定义的行为，不知道先求 i 还是先求 ++i</code></p>
+<p>4种运算符明确规定了运算对象的求值顺序：逻辑与(&amp;&amp;)、逻辑或(||)、条件(?:)、逗号(,)</p>
+<p>处理复合表达式的两个建议：</p>
+<ol>
+<li>不确定优先级与结合律时使用括号</li>
+<li>如果改变了某个运算对象的值，在同一表达式中不要再使用该运算对象。</li>
+</ol>
+<h1 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h1><p>算术运算符有 3 组，按优先级从高到低依次是</p>
+<ol>
+<li>+、- ：一元正号与一元负号</li>
+<li><ul>
+<li>、&#x2F;、% ：乘法、除法、求余</li>
+</ul>
+</li>
+<li>+、- ：加法、减法<br>注意一元正负号的优先级最高，求余也是一种算术运算。</li>
+</ol>
+<p>整数除法的结果是向零舍入。</p>
+<p>求余运算符的运算对象必须是整数，运算结果始终与被除数符号相同</p>
+<h1 id="逻辑和关系运算符"><a href="#逻辑和关系运算符" class="headerlink" title="逻辑和关系运算符"></a>逻辑和关系运算符</h1><ul>
+<li>逻辑运算符：！、&amp;&amp;、||。逻辑运算符的作用对象必须是能转换成布尔值的类型</li>
+<li>关系运算符：&lt;, &lt;&#x3D;, &gt;, &gt;&#x3D;, !&#x3D;, &#x3D;&#x3D; ：大于小于的优先级高于等于和不等于</li>
+</ul>
+<p><strong>&amp;&amp;、||都是短路求值，即先求左值，若无法判定整体布尔值，再求右值</strong></p>
+<h2 id="布尔字面值"><a href="#布尔字面值" class="headerlink" title="布尔字面值"></a>布尔字面值</h2><p>使用算术值做条件时直接用，不要与布尔值做比较</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(a);<span class="comment">//正确 </span></span><br><span class="line"><span class="keyword">if</span>(a == <span class="literal">true</span>);<span class="comment">//错误：会将 true 先转换为 int 再比较，比较结果是不相等</span></span><br></pre></td></tr></table></figure>
+<h1 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h1><p>赋值运算符的左侧对象必须是一个可修改的左值</p>
+<p>C++ 11 允许使用花括号括起来的初始值列表作为右侧运算对象。初始化列表可以为空，此时将进行值初始化。</p>
+<p>赋值运算符满足右结合律。同时优先级较低</p>
+<p>复合赋值运算符只求值一次，而普通运算符需要两次。(a&#x3D;a+1 要先求一次 a+1，再将结果赋值给 a)</p>
+<p><code>+=; -=; *=; /=; %=; &lt;&lt;=; &gt;&gt;=; &amp;=; ^=; |=;</code></p>
+<h1 id="递增和递减运算符"><a href="#递增和递减运算符" class="headerlink" title="递增和递减运算符"></a>递增和递减运算符</h1><h2 id="前置版本"><a href="#前置版本" class="headerlink" title="前置版本"></a>前置版本</h2><p>首先将运算对象加1，再将改变后的对象作为求值结果</p>
+<h2 id="后置版本"><a href="#后置版本" class="headerlink" title="后置版本"></a>后置版本</h2><p>也是将运算对象加 1，但是求值结果是运算对象改变之前那个值的副本</p>
+<blockquote>
+<p>[!NOTE] 关键区别<br>前置版本将对象本身作为左值返回，后置版本将对象的原始值的副本返回。</p>
+<p>前置版本直接返回改变了的运算对象，后置版本需要将原始值保存下来以便于返回，是一种浪费。</p>
+<p>整体而言，后置版本对于整数和指针来说影响不大，但是对于迭代器而言消耗巨大</p>
+</blockquote>
+<h2 id="在一条语句中混用解引用和递增运算符"><a href="#在一条语句中混用解引用和递增运算符" class="headerlink" title="在一条语句中混用解引用和递增运算符"></a>在一条语句中混用解引用和递增运算符</h2><p><code>*p++</code> ：p++将 p 的值加一，然后返回 p 的初始值的副本作为求值结果用于解引用。(递增运算符优先级高于解引用)</p>
+<p>这是一种提倡的写法，更加简洁，应该习惯于这种写法。</p>
+<h1 id="成员访问运算符"><a href="#成员访问运算符" class="headerlink" title="成员访问运算符"></a>成员访问运算符</h1><p>对于一个指针而言，点运算符和箭头运算符都可以用来访问成员。</p>
+<p><code>ptr-&gt;mem 等价于 (*ptr)-&gt;mem</code></p>
+<h1 id="条件运算符"><a href="#条件运算符" class="headerlink" title="条件运算符"></a>条件运算符</h1><p>cond ? expr1 : expr2。</p>
+<p>可以嵌套使用<br><code>finalgrade = (grade&gt;90) ? &quot;high pass&quot; : (grade&lt;60) ? &quot;fail&quot; : &quot;pass&quot;;</code></p>
+<p>条件运算符优先级非常低，一般都要加括号</p>
+<h1 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h1><p>位运算符作用于整数类型的对象。</p>
+<p>位运算符有六种：位求反、位与、位或、位异或、左移、右移</p>
+<p><code>~a; a&amp;b; a|b; a^b; a&lt;&lt;2; a&gt;&gt;2</code></p>
+<p>如果运算对象是个小整型，会被自动提升为较大的整型类型</p>
+<p>可以带符号，也可以不带。如果不带，那么运算结果是固定的，否则要看机器</p>
+<p><strong>左移操作处理带符号值是未定义行为</strong></p>
+<p>在 C++ 中，建议仅用位运算符来处理无符号类型。</p>
+<h2 id="移位运算符"><a href="#移位运算符" class="headerlink" title="移位运算符"></a>移位运算符</h2><p>使用移位运算符，移动的位数必须严格小于结果的位数，否则会产生未定义的行为</p>
+<p><code>&lt;&lt;</code>运算符在右侧插入 0，左侧移动超出边界的值舍弃掉。</p>
+<p><code>&gt;&gt;</code>运算符处理无符号数时在左侧插入 0，右侧移动超出边界的值舍弃掉。</p>
+<p><code>&gt;&gt;</code>运算符处理有符号数时可能在左侧插入 0 也可能插入符号位的副本，由机器决定使用哪种方式</p>
+<p>标注IO库里重载了这两个运算符，使得可以接受输入输出流。</p>
+<p>重载后满足左结合律</p>
+<h2 id="位求反、位与、位或、位异或"><a href="#位求反、位与、位或、位异或" class="headerlink" title="位求反、位与、位或、位异或"></a>位求反、位与、位或、位异或</h2><p>这几种运算符处理 char 时，都会把 char 类型的运算对象首先零扩展提升成 int 类型再进行位运算。</p>
+<h1 id="sizeof运算符"><a href="#sizeof运算符" class="headerlink" title="sizeof运算符"></a>sizeof运算符</h1><p>sizeof返回一个表达式或者一个类型名字所占的字节数，值为size_t类型</p>
+<p>对数组执行sizeof运算将得到数组所占的空间，这里不会把数组转换为指针进行处理</p>
+<p>对指针执行sizeof运算将得到指针类型的大小，8</p>
+<p>如果对string或者vector执行sizeof只返回该类型固定部分的大小，不会计算对象中的元素占多少空间</p>
+<blockquote>
+<p>[!Hint] 可以用 sizeof 获得数组中元素的个数<br><code>sizeof(arr)/sizeof(*arr);//返回的是数组 arr 的元素数量</code></p>
+</blockquote>
+<h1 id="逗号运算符"><a href="#逗号运算符" class="headerlink" title="逗号运算符"></a>逗号运算符</h1><p>在 for 循环中可以用逗号分隔两个不同的条件，或者定义多个值（类型完全相同）<br><code>for(int i=0,j = 0; i!=n; i++,j++)</code></p>
+<p><strong>注意，如果在条件判断的部分用逗号分割了若干部分，则只会返回最后一个条件判定的布尔值</strong></p>
+<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>c++ 不会直接将两个不同类型的值相加，会先通过类型转换把运算对象的类型统一后再求值</p>
+<h2 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h2><ul>
+<li>比int类型小的整型值转换为int类型或者更大的整数类型</li>
+<li>在条件里，把非布尔值转换成布尔值</li>
+<li>初始化过程中，初始值转换为变量的类型</li>
+<li>赋值时，右侧运算对象转换成左侧类型</li>
+<li>算数运算或关系运算的运算对象有多种类型，转换成一种（一般取最宽的那种）</li>
+</ul>
+<h2 id="整型提升"><a href="#整型提升" class="headerlink" title="整型提升"></a>整型提升</h2><p>整型提升把小整数类型（包括 char、bool等）转换成较大的整数类型。如果 int 可以就转换成 int，否则提升成 unsigned int 类型</p>
+<p>如果一个是无符号一个带符号。如果无符号类型不小于带符号类型（比如都是 4 字节），则带符号转换为无符号</p>
+<p>如果无符号类型小于带符号，转换结果依赖机器。尽量避免这种操作。</p>
+<h2 id="其他隐式转换"><a href="#其他隐式转换" class="headerlink" title="其他隐式转换"></a>其他隐式转换</h2><ol>
+<li>数组转换为指针：大多数情况下数组自动转换成指向数组首元素的指针。（decltype关键字参数、取地址符(&amp;)、sizeof、typeid都不会发生这种转换）</li>
+<li>指针的转换：0 或 nullptr 都能转换成任意指针类型。指向非常量的指针能转换成 void*。指向所有对象的指针都能转换成 const void*</li>
+<li>转换成常量：指向非常量的指针转换成指向相应常量类型的指针</li>
+<li>类类型的转换：<ol>
+<li><code>while(cin&gt;&gt;s);//将 cin 转换为 bool 值</code></li>
+<li><code>string s = &quot;value&quot;;//将 c 风格字符串转换为 string</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="显式转换"><a href="#显式转换" class="headerlink" title="显式转换"></a>显式转换</h2><p>使用强制类型转换，非常危险，一般考虑能否用其他方式避免</p>
+<p><code>castname&lt;type&gt;(expression);</code></p>
+<p>有以下四种：</p>
+<h3 id="static-cast"><a href="#static-cast" class="headerlink" title="static cast"></a>static cast</h3><p>任何类型转换，只要不包含底层const，都可以用static cast</p>
+<p><code>double slope = static_cast&lt;double&gt;(j)/i; //将 j 转换成 double 以便执行浮点数除法</code></p>
+<p>当把较大的类型转换为较小的类型时，static_cast 很有用。这时它告诉读者和编译器：我们知道且不在乎精度损失。平时编译器会给警告，显式转换后就不警告了</p>
+<h3 id="const-cast"><a href="#const-cast" class="headerlink" title="const cast"></a>const cast</h3><p>只能改变对象的底层const，可以去掉或增加const性质</p>
+<p>只有const cast可以改变表达式的常量属性，其他均不可以</p>
+<p>cosnt_cast 常用于有函数重载的上下文中。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">string&amp; s; </span><br><span class="line"><span class="keyword">const_cast</span> &lt;<span class="type">const</span> string&amp;&gt; (s);<span class="comment">// 将 s 转换为常量引用 </span></span><br><span class="line"><span class="keyword">const_cast</span> &lt;string&amp;&gt; (s);<span class="comment">// 将 s 转换回非常量引用</span></span><br></pre></td></tr></table></figure>
+<h3 id="reinterpret-cast"><a href="#reinterpret-cast" class="headerlink" title="reinterpret_cast"></a>reinterpret_cast</h3><p>依赖于机器，门槛高而且危险，不要用</p>
+<h3 id="旧式的强制类型转换"><a href="#旧式的强制类型转换" class="headerlink" title="旧式的强制类型转换"></a>旧式的强制类型转换</h3><p>本质上采用 const_cast、static_cast 或 reinterpret_cast 中的一种。</p>
+<p>旧式与新式相比没那么清晰明了，如果出现问题，追踪困难</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">int</span>(a);<span class="comment">// 函数形式的强制类型转换 </span></span><br><span class="line">(<span class="type">int</span>)a;<span class="comment">// c 语言风格的强制类型转换</span></span><br></pre></td></tr></table></figure>
+<h1 id="附录：优先级表"><a href="#附录：优先级表" class="headerlink" title="附录：优先级表"></a>附录：优先级表</h1><p><img src="https://tc.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/ZzOK/627X605/priority_level_1.png" alt="627X605&#x2F;priority_level_1.png"></p>
+<p><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/N7CE/631X880/priority_level_2.png" alt="631X880&#x2F;priority_level_2.png"></p>
+]]></content>
+      <categories>
+        <category>C++ primer</category>
+      </categories>
+  </entry>
+  <entry>
     <title>线程模块-知识储备</title>
     <url>/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/</url>
     <content><![CDATA[<p>先做一点基础的线程知识介绍（也算刚考完试做个总结）</p>
@@ -967,6 +967,106 @@
       </categories>
   </entry>
   <entry>
+    <title>线程模块-代码</title>
+    <url>/2024/07/04/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E4%BB%A3%E7%A0%81/</url>
+    <content><![CDATA[<h1 id="pthread的封装"><a href="#pthread的封装" class="headerlink" title="pthread的封装"></a>pthread的封装</h1><h2 id="为什么要封装"><a href="#为什么要封装" class="headerlink" title="为什么要封装"></a>为什么要封装</h2><p>首先我们主要是面向对象编程。面向对象编程有三个特点：【封装】、【继承】、【多态】。</p>
+<p>这里封装pthread是为了使用上更方便，因为虽然pthread提供了以下的一些功能：【Thread】,【Semaphore】,【Mutex】,【RWMutex】,【Spinlock】等</p>
+<p>但是都是最基本的功能，而我们开发中往往是多个功能相互结合相互配合着来使用的。</p>
+<p>这里封装是为了提供一些新的功能接口供方便使用</p>
+<h2 id="thread-h"><a href="#thread-h" class="headerlink" title="thread.h"></a>thread.h</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Thread</span>(std::function&lt;<span class="built_in">void</span>()&gt; cb, <span class="type">const</span> std::string&amp; name);</span><br><span class="line">	~<span class="built_in">Thread</span>();</span><br><span class="line">	<span class="function"><span class="type">pid_t</span> <span class="title">getId</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_id; &#125;<span class="comment">// 线程ID</span></span><br><span class="line">	<span class="function"><span class="type">const</span> std::string&amp; <span class="title">getName</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_name; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">join</span><span class="params">()</span></span>;<span class="comment">//线程结合</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// 获取系统分配的线程id</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">pid_t</span> <span class="title">GetThreadId</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 获取当前所在线程	</span></span><br><span class="line">	<span class="function"><span class="type">static</span> Thread* <span class="title">GetThis</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 获取当前线程的名字</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">const</span> std::string&amp; <span class="title">GetName</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 设置当前线程的名字</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">SetName</span><span class="params">(<span class="type">const</span> std::string&amp; name)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="comment">// 线程函数</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">void</span>* <span class="title">run</span><span class="params">(<span class="type">void</span>* arg)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="type">pid_t</span> m_id = <span class="number">-1</span>;<span class="comment">//进程的id</span></span><br><span class="line">	<span class="type">pthread_t</span> m_thread = <span class="number">0</span>;<span class="comment">//线程</span></span><br><span class="line">	<span class="comment">// 线程需要运行的函数</span></span><br><span class="line">	std::function&lt;<span class="type">void</span>()&gt; m_cb;</span><br><span class="line">	std::string m_name;<span class="comment">//线程的name</span></span><br><span class="line">	Semaphore m_semaphore;<span class="comment">//引入信号量的类来完成线程的同步创建。</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里涉及到的信号量封装会在后面介绍</p>
+<h2 id="thread-cpp"><a href="#thread-cpp" class="headerlink" title="thread.cpp"></a>thread.cpp</h2><p>初始化时通过pthread_create()绑定run函数为线程的入口函数。</p>
+<p>在这里run方法负责初始化线程和真正调用线程需要运行任务(函数对象cb)，</p>
+<p>使用Semaphore类控制线程初始化的同步，保证所有的线程都能初始化，防止未初始化的线程出现，</p>
+<p>GetThreadId()主要是使用系统调用获取真实的线程id，和getpid()返回的线程ID是一样的。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/syscall.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> mycoroutine &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程信息</span></span><br><span class="line"><span class="type">static</span> <span class="keyword">thread_local</span> Thread* t_thread          = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="type">static</span> <span class="keyword">thread_local</span> std::string t_thread_name = <span class="string">&quot;UNKNOWN&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">pid_t</span> <span class="title">Thread::GetThreadId</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">syscall</span>(SYS_gettid);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Thread* <span class="title">Thread::GetThis</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t_thread;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> std::string&amp; <span class="title">Thread::GetName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t_thread_name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Thread::SetName</span><span class="params">(<span class="type">const</span> std::string &amp;name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t_thread) &#123;</span><br><span class="line">        t_thread-&gt;m_name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    t_thread_name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Thread::<span class="built_in">Thread</span>(std::function&lt;<span class="built_in">void</span>()&gt; cb, <span class="type">const</span> std::string &amp;name): </span><br><span class="line"><span class="built_in">m_cb</span>(cb), <span class="built_in">m_name</span>(name) </span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 将新创建线程的入口函数绑定到run</span></span><br><span class="line">    <span class="type">int</span> rt = <span class="built_in">pthread_create</span>(&amp;m_thread, <span class="literal">nullptr</span>, &amp;Thread::run, <span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">if</span> (rt) </span><br><span class="line">    &#123;</span><br><span class="line">        std::cerr &lt;&lt; <span class="string">&quot;pthread_create thread fail, rt=&quot;</span> &lt;&lt; rt &lt;&lt; <span class="string">&quot; name=&quot;</span> &lt;&lt; name;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(<span class="string">&quot;pthread_create error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 等待线程函数完成初始化</span></span><br><span class="line">    m_semaphore.<span class="built_in">wait</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//析构时对线程分离以确定会自动销毁</span></span><br><span class="line">Thread::~<span class="built_in">Thread</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_thread) &#123;</span><br><span class="line">        <span class="built_in">pthread_detach</span>(m_thread);</span><br><span class="line">        m_thread = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Thread::join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_thread) &#123;</span><br><span class="line">	    <span class="comment">// 因为不关心返回值去哪，所以直接设置为nullptr</span></span><br><span class="line">        <span class="type">int</span> rt = <span class="built_in">pthread_join</span>(m_thread, <span class="literal">nullptr</span>);</span><br><span class="line">        <span class="keyword">if</span> (rt) &#123;</span><br><span class="line">            std::cerr &lt;&lt; <span class="string">&quot;pthread_join failed, rt = &quot;</span> &lt;&lt; rt &lt;&lt; <span class="string">&quot;, name = &quot;</span> &lt;&lt; m_name &lt;&lt; std::endl;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(<span class="string">&quot;pthread_join error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 防止后续再次被join</span></span><br><span class="line">        m_thread = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">Thread::run</span><span class="params">(<span class="type">void</span>* arg)</span> </span>&#123;</span><br><span class="line">    Thread* thread = (Thread*)arg;</span><br><span class="line"></span><br><span class="line">    t_thread       = thread;</span><br><span class="line">    t_thread_name  = thread-&gt;m_name;</span><br><span class="line">    thread-&gt;m_id   = <span class="built_in">GetThreadId</span>();</span><br><span class="line">    <span class="comment">//pthread_self()获取当前线程的ID，设置m_name是前15个字节取，因为linux设置最多15</span></span><br><span class="line">    <span class="built_in">pthread_setname_np</span>(<span class="built_in">pthread_self</span>(), thread-&gt;m_name.<span class="built_in">substr</span>(<span class="number">0</span>, <span class="number">15</span>).<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; cb;</span><br><span class="line">    cb.<span class="built_in">swap</span>(thread-&gt;m_cb); <span class="comment">// swap -&gt; 可以减少m_cb中只能指针的引用计数</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化完成</span></span><br><span class="line">    thread-&gt;m_semaphore.<span class="built_in">signal</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cb</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<h2 id="static-thread-local又是什么意思？"><a href="#static-thread-local又是什么意思？" class="headerlink" title="static thread_local又是什么意思？"></a>static thread_local又是什么意思？</h2><p>static代表生命周期知道程序运行结束时候销毁，<strong>被 <code>thread_local</code> 修饰的变量，在每个线程中都有一个独立的副本</strong>。</p>
+<h2 id="对pthread-create、pthread-detch、pthread-join的详解"><a href="#对pthread-create、pthread-detch、pthread-join的详解" class="headerlink" title="对pthread_create、pthread_detch、pthread_join的详解"></a>对pthread_create、pthread_detch、pthread_join的详解</h2><h3 id="pthread-create"><a href="#pthread-create" class="headerlink" title="pthread_create"></a>pthread_create</h3><p>&#96;int pthread_create(pthread_t* restrict tidp,const pthread_attr_t* restrict_attr,void* (<em>start_rtn)(void</em>),void *restrict arg);</p>
+<ul>
+<li>输入参数： tidp:填入pthread_t类型参数。  </li>
+<li>attr:通常设置为NULL，用于定制各种不同的线程属性。  </li>
+<li>start_rtn:新创建线程的入口函数由此绑定。无参数把arg设置为NULL即可  </li>
+<li>返回值：成功返回0，否则返回错误码。</li>
+</ul>
+<p>线程的入口函数最开始都要先获取传入的参数:&#96;比如pthread_create(&amp;m_thread, nullptr, &amp;Thread::run, this);</p>
+<p>在run函数里先执行&#96;Thread* thread &#x3D; (Thread*)arg;</p>
+<h3 id="pthread-detch"><a href="#pthread-detch" class="headerlink" title="pthread_detch"></a>pthread_detch</h3><p>目的是为了确保线程在结束后能够正确的释放资源，而不需要主线程或其他线程进行join操作。一般适用的场景是在子线程要脱离主线程的管理，并且主线程不需要担心其资源的释放，简化了使用的复杂性。  </p>
+<p>避免了内存泄漏防止忘记调用join导致的内存泄露  </p>
+<h3 id="pthread-join"><a href="#pthread-join" class="headerlink" title="pthread_join"></a>pthread_join</h3><p>pthread_Join是POSIX线程库的一个函数，用于等待一个线程的终止并回收它的资源  </p>
+<p>值得说的一点就是一般都可以写nullptr。如果你需要接受某个实际的值，那就写一个实际的指针去接受它。</p>
+<h1 id="信号量的封装"><a href="#信号量的封装" class="headerlink" title="信号量的封装"></a>信号量的封装</h1><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Semaphore</span> </span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::mutex mtx;                </span><br><span class="line">    std::condition_variable cv;    </span><br><span class="line">    <span class="type">int</span> count;                   </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 信号量初始化为0</span></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Semaphore</span><span class="params">(<span class="type">int</span> count_ = <span class="number">0</span>)</span> : count(count_) &#123;</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// P操作</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">wait</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (count == <span class="number">0</span>) &#123; </span><br><span class="line">            cv.<span class="built_in">wait</span>(lock); <span class="comment">// wait for signals</span></span><br><span class="line">        &#125;</span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// V操作</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">signal</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        count++;</span><br><span class="line">        cv.<span class="built_in">notify_one</span>();  <span class="comment">// signal</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>协程库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>分层结构</title>
+    <url>/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<p>计算机网络的模型主要有OSI模型和TCP&#x2F;IP模型两种，本文将分别介绍对应模型中每一层的功能与最终的对比。</p>
+<span id="more"></span>
+<h1 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h1><ul>
+<li>协议数据单元（PDU）：对等层之间传送的数据单位。第n层的记为n-PDU。各层PDU都分为服务数据单元和协议控制信息</li>
+<li>服务数据单元（SDU）：层与层之间交换的数据单位，第n层的SDU记为n-SDU</li>
+<li>协议控制信息（PCI）：控制协议操作的信息。第n层的PCI记为n-PCI<br>每层的协议数据单元都有额外名称，如物理层的称为比特流，链路层的称为帧，网络层的称为分组，传输层的称为报文段</li>
+</ul>
+<p>在各层间传输数据时满足：n-SDU + n-PCI &#x3D; n-PDU &#x3D; (n-1)-SDU</p>
+<h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>为了在网络中进行数据交换而建立的规则、标准或约定称为网络协议，是控制在对等实体间进行通信的规则的集合，是水平的，不对等实体间没有协议。</p>
+<p>由以下三部分组成：</p>
+<ul>
+<li>语法：数据与控制信息的格式</li>
+<li>语义：即需要发出何种控制信息、完成何种动作以及做出何种应答</li>
+<li>同步：执行各种操作的条件、时序关系等，即事件实现顺序的详细说明</li>
+</ul>
+<h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><p>同一节点内相邻两层的实体交换信息的逻辑接口称为服务访问点（SAP），每层只能在紧邻的层间定义接口，而不能跨层定义。</p>
+<h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>指下层为紧邻的上层提供的功能调用，是垂直的。对等实体在协议的控制下，使本层能为上层提供服务。</p>
+<p>可以分为以下三种：</p>
+<ul>
+<li>面向连接和无连接服务：<ul>
+<li>面向连接服务中，通信双方必须先建立连接，分配相应的资源，以保证通信正常进行，传输结束后释放连接和占用的资源。</li>
+<li>无连接服务中，通信双方不需要提前建立连接，发送数据时直接发送。</li>
+</ul>
+</li>
+<li>可靠服务和不可靠服务<ul>
+<li>可靠服务：指网络具有纠错、检错、应答机制，能保证数据正确、可靠地传送到目的地。</li>
+<li>不可靠服务：指网络只是尽量让数据正确、可靠地传送到目的地</li>
+</ul>
+</li>
+<li>有应答服务和无应答服务<ul>
+<li>有应答服务：指接收方在收到数据后向发送方给出相应的应答，由传输系统内部自动实现</li>
+<li>无应答服务：接收方收到数据后不自动给出应答。如果需要，由高层实现</li>
+</ul>
+</li>
+</ul>
+<h1 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h1><p>有七层，分别为物理层、数据链路层、网络层、传输层、会话层、表示层、应用层</p>
+<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>传输单位是比特，功能是在物理介质上为数据端设备透明地传输原始比特流。但是注意传输信息所用的物理介质（如光缆、无线信道等等）不在物理层协议内</p>
+<h2 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h2><p>传输单位是帧，功能是将物理层提供的可能出错的物理连接改造为逻辑上无差错的数据链路，同时实现节点间的差错控制和流量控制的功能</p>
+<p>广播式网络还要处理如何控制对共享信道的访问</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>传输单位是数据报。主要任务是将网络层的协议数据单元（分组）从源主机传输到目的主机。关键在于对分组进行路由选择，并实现流量控制、拥塞控制、差错控制和网际互联等功能。</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>负责两个进程间的通信，提供端到端的流量控制、差错控制、连接建立和释放、可靠传输管理等服务。</p>
+<p>数据链路层提供点对点通信，可以理解为主机与主机的通信（主机通过硬件地址或IP地址标识）</p>
+<p>端到端的通信指运行在不同主机内两个进程间的通信，每个进程都由一个端口来标识</p>
+<p>因为一台主机可以运行多个进程，因此传输层具有复用和分用的功能。复用指多个进程可以同时使用传输层的服务，分用指传输层将收到的信息分别交付给上层的对应进程</p>
+<h2 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h2><p>允许不同主机上各个进程进行会话，为进程建立连接，并在连接上有序传输数据，这就是会话。</p>
+<p>负责管理主机间的会话进程，包括建立、管理和终止进程间的会话。</p>
+<p>包含一种称为检查点的机制来维持可靠会话，使通信会话在通信失效时从检查点继续恢复通信。</p>
+<h2 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h2><p>主要处理不同主机间交换信息的方式，此外数据压缩、加密和解密也是表示层的功能</p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>是用户与网络的接口</p>
+<h1 id="TCP-IP模型"><a href="#TCP-IP模型" class="headerlink" title="TCP&#x2F;IP模型"></a>TCP&#x2F;IP模型</h1><p>分为五层：物理层、链路层、网络层、传输层、应用层</p>
+<p>主要内容上面已经有对应的了，只不过应用层整合了会话层、表示层、应用层三层的功能</p>
+<h1 id="不同"><a href="#不同" class="headerlink" title="不同"></a>不同</h1><ul>
+<li>OSI模型精确定义了服务、协议与接口。但是TCP&#x2F;IP模型没有明确区分</li>
+<li>OSI模型先有模型，后有协议规范，通用性好。TCP&#x2F;IP模型先有协议栈后建立模型，不适合其他非TCP&#x2F;IP的网络</li>
+<li>OSI模型在网络层支持无连接和面向连接的服务，但是在传输层仅有面向连接的服务。而TCP&#x2F;IP模型认为可靠性是端到端的问题，因此在网络层仅有一种无连接通信模式，但是在传输层支持无连接和面向连接两种模式</li>
+<li>OSI模型有七层，而TCP&#x2F;IP模型分为五层。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机网络复习</category>
+      </categories>
+  </entry>
+  <entry>
     <title>绪论</title>
     <url>/2025/07/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E7%BB%AA%E8%AE%BA/</url>
     <content><![CDATA[<p>本文将介绍计算机网络的概念以及进行信息交换的方式</p>
@@ -1081,106 +1181,6 @@
 ]]></content>
       <categories>
         <category>计算机网络复习</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>分层结构</title>
-    <url>/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/</url>
-    <content><![CDATA[<p>计算机网络的模型主要有OSI模型和TCP&#x2F;IP模型两种，本文将分别介绍对应模型中每一层的功能与最终的对比。</p>
-<span id="more"></span>
-<h1 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h1><ul>
-<li>协议数据单元（PDU）：对等层之间传送的数据单位。第n层的记为n-PDU。各层PDU都分为服务数据单元和协议控制信息</li>
-<li>服务数据单元（SDU）：层与层之间交换的数据单位，第n层的SDU记为n-SDU</li>
-<li>协议控制信息（PCI）：控制协议操作的信息。第n层的PCI记为n-PCI<br>每层的协议数据单元都有额外名称，如物理层的称为比特流，链路层的称为帧，网络层的称为分组，传输层的称为报文段</li>
-</ul>
-<p>在各层间传输数据时满足：n-SDU + n-PCI &#x3D; n-PDU &#x3D; (n-1)-SDU</p>
-<h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>为了在网络中进行数据交换而建立的规则、标准或约定称为网络协议，是控制在对等实体间进行通信的规则的集合，是水平的，不对等实体间没有协议。</p>
-<p>由以下三部分组成：</p>
-<ul>
-<li>语法：数据与控制信息的格式</li>
-<li>语义：即需要发出何种控制信息、完成何种动作以及做出何种应答</li>
-<li>同步：执行各种操作的条件、时序关系等，即事件实现顺序的详细说明</li>
-</ul>
-<h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><p>同一节点内相邻两层的实体交换信息的逻辑接口称为服务访问点（SAP），每层只能在紧邻的层间定义接口，而不能跨层定义。</p>
-<h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>指下层为紧邻的上层提供的功能调用，是垂直的。对等实体在协议的控制下，使本层能为上层提供服务。</p>
-<p>可以分为以下三种：</p>
-<ul>
-<li>面向连接和无连接服务：<ul>
-<li>面向连接服务中，通信双方必须先建立连接，分配相应的资源，以保证通信正常进行，传输结束后释放连接和占用的资源。</li>
-<li>无连接服务中，通信双方不需要提前建立连接，发送数据时直接发送。</li>
-</ul>
-</li>
-<li>可靠服务和不可靠服务<ul>
-<li>可靠服务：指网络具有纠错、检错、应答机制，能保证数据正确、可靠地传送到目的地。</li>
-<li>不可靠服务：指网络只是尽量让数据正确、可靠地传送到目的地</li>
-</ul>
-</li>
-<li>有应答服务和无应答服务<ul>
-<li>有应答服务：指接收方在收到数据后向发送方给出相应的应答，由传输系统内部自动实现</li>
-<li>无应答服务：接收方收到数据后不自动给出应答。如果需要，由高层实现</li>
-</ul>
-</li>
-</ul>
-<h1 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h1><p>有七层，分别为物理层、数据链路层、网络层、传输层、会话层、表示层、应用层</p>
-<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>传输单位是比特，功能是在物理介质上为数据端设备透明地传输原始比特流。但是注意传输信息所用的物理介质（如光缆、无线信道等等）不在物理层协议内</p>
-<h2 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h2><p>传输单位是帧，功能是将物理层提供的可能出错的物理连接改造为逻辑上无差错的数据链路，同时实现节点间的差错控制和流量控制的功能</p>
-<p>广播式网络还要处理如何控制对共享信道的访问</p>
-<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>传输单位是数据报。主要任务是将网络层的协议数据单元（分组）从源主机传输到目的主机。关键在于对分组进行路由选择，并实现流量控制、拥塞控制、差错控制和网际互联等功能。</p>
-<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>负责两个进程间的通信，提供端到端的流量控制、差错控制、连接建立和释放、可靠传输管理等服务。</p>
-<p>数据链路层提供点对点通信，可以理解为主机与主机的通信（主机通过硬件地址或IP地址标识）</p>
-<p>端到端的通信指运行在不同主机内两个进程间的通信，每个进程都由一个端口来标识</p>
-<p>因为一台主机可以运行多个进程，因此传输层具有复用和分用的功能。复用指多个进程可以同时使用传输层的服务，分用指传输层将收到的信息分别交付给上层的对应进程</p>
-<h2 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h2><p>允许不同主机上各个进程进行会话，为进程建立连接，并在连接上有序传输数据，这就是会话。</p>
-<p>负责管理主机间的会话进程，包括建立、管理和终止进程间的会话。</p>
-<p>包含一种称为检查点的机制来维持可靠会话，使通信会话在通信失效时从检查点继续恢复通信。</p>
-<h2 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h2><p>主要处理不同主机间交换信息的方式，此外数据压缩、加密和解密也是表示层的功能</p>
-<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>是用户与网络的接口</p>
-<h1 id="TCP-IP模型"><a href="#TCP-IP模型" class="headerlink" title="TCP&#x2F;IP模型"></a>TCP&#x2F;IP模型</h1><p>分为五层：物理层、链路层、网络层、传输层、应用层</p>
-<p>主要内容上面已经有对应的了，只不过应用层整合了会话层、表示层、应用层三层的功能</p>
-<h1 id="不同"><a href="#不同" class="headerlink" title="不同"></a>不同</h1><ul>
-<li>OSI模型精确定义了服务、协议与接口。但是TCP&#x2F;IP模型没有明确区分</li>
-<li>OSI模型先有模型，后有协议规范，通用性好。TCP&#x2F;IP模型先有协议栈后建立模型，不适合其他非TCP&#x2F;IP的网络</li>
-<li>OSI模型在网络层支持无连接和面向连接的服务，但是在传输层仅有面向连接的服务。而TCP&#x2F;IP模型认为可靠性是端到端的问题，因此在网络层仅有一种无连接通信模式，但是在传输层支持无连接和面向连接两种模式</li>
-<li>OSI模型有七层，而TCP&#x2F;IP模型分为五层。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机网络复习</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>线程模块-代码</title>
-    <url>/2024/07/04/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E4%BB%A3%E7%A0%81/</url>
-    <content><![CDATA[<h1 id="pthread的封装"><a href="#pthread的封装" class="headerlink" title="pthread的封装"></a>pthread的封装</h1><h2 id="为什么要封装"><a href="#为什么要封装" class="headerlink" title="为什么要封装"></a>为什么要封装</h2><p>首先我们主要是面向对象编程。面向对象编程有三个特点：【封装】、【继承】、【多态】。</p>
-<p>这里封装pthread是为了使用上更方便，因为虽然pthread提供了以下的一些功能：【Thread】,【Semaphore】,【Mutex】,【RWMutex】,【Spinlock】等</p>
-<p>但是都是最基本的功能，而我们开发中往往是多个功能相互结合相互配合着来使用的。</p>
-<p>这里封装是为了提供一些新的功能接口供方便使用</p>
-<h2 id="thread-h"><a href="#thread-h" class="headerlink" title="thread.h"></a>thread.h</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Thread</span>(std::function&lt;<span class="built_in">void</span>()&gt; cb, <span class="type">const</span> std::string&amp; name);</span><br><span class="line">	~<span class="built_in">Thread</span>();</span><br><span class="line">	<span class="function"><span class="type">pid_t</span> <span class="title">getId</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_id; &#125;<span class="comment">// 线程ID</span></span><br><span class="line">	<span class="function"><span class="type">const</span> std::string&amp; <span class="title">getName</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_name; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">join</span><span class="params">()</span></span>;<span class="comment">//线程结合</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// 获取系统分配的线程id</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">pid_t</span> <span class="title">GetThreadId</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 获取当前所在线程	</span></span><br><span class="line">	<span class="function"><span class="type">static</span> Thread* <span class="title">GetThis</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 获取当前线程的名字</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">const</span> std::string&amp; <span class="title">GetName</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 设置当前线程的名字</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">SetName</span><span class="params">(<span class="type">const</span> std::string&amp; name)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="comment">// 线程函数</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">void</span>* <span class="title">run</span><span class="params">(<span class="type">void</span>* arg)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="type">pid_t</span> m_id = <span class="number">-1</span>;<span class="comment">//进程的id</span></span><br><span class="line">	<span class="type">pthread_t</span> m_thread = <span class="number">0</span>;<span class="comment">//线程</span></span><br><span class="line">	<span class="comment">// 线程需要运行的函数</span></span><br><span class="line">	std::function&lt;<span class="type">void</span>()&gt; m_cb;</span><br><span class="line">	std::string m_name;<span class="comment">//线程的name</span></span><br><span class="line">	Semaphore m_semaphore;<span class="comment">//引入信号量的类来完成线程的同步创建。</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>这里涉及到的信号量封装会在后面介绍</p>
-<h2 id="thread-cpp"><a href="#thread-cpp" class="headerlink" title="thread.cpp"></a>thread.cpp</h2><p>初始化时通过pthread_create()绑定run函数为线程的入口函数。</p>
-<p>在这里run方法负责初始化线程和真正调用线程需要运行任务(函数对象cb)，</p>
-<p>使用Semaphore类控制线程初始化的同步，保证所有的线程都能初始化，防止未初始化的线程出现，</p>
-<p>GetThreadId()主要是使用系统调用获取真实的线程id，和getpid()返回的线程ID是一样的。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/syscall.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> mycoroutine &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程信息</span></span><br><span class="line"><span class="type">static</span> <span class="keyword">thread_local</span> Thread* t_thread          = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="type">static</span> <span class="keyword">thread_local</span> std::string t_thread_name = <span class="string">&quot;UNKNOWN&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">pid_t</span> <span class="title">Thread::GetThreadId</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">syscall</span>(SYS_gettid);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Thread* <span class="title">Thread::GetThis</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t_thread;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> std::string&amp; <span class="title">Thread::GetName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t_thread_name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Thread::SetName</span><span class="params">(<span class="type">const</span> std::string &amp;name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t_thread) &#123;</span><br><span class="line">        t_thread-&gt;m_name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    t_thread_name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Thread::<span class="built_in">Thread</span>(std::function&lt;<span class="built_in">void</span>()&gt; cb, <span class="type">const</span> std::string &amp;name): </span><br><span class="line"><span class="built_in">m_cb</span>(cb), <span class="built_in">m_name</span>(name) </span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 将新创建线程的入口函数绑定到run</span></span><br><span class="line">    <span class="type">int</span> rt = <span class="built_in">pthread_create</span>(&amp;m_thread, <span class="literal">nullptr</span>, &amp;Thread::run, <span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">if</span> (rt) </span><br><span class="line">    &#123;</span><br><span class="line">        std::cerr &lt;&lt; <span class="string">&quot;pthread_create thread fail, rt=&quot;</span> &lt;&lt; rt &lt;&lt; <span class="string">&quot; name=&quot;</span> &lt;&lt; name;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(<span class="string">&quot;pthread_create error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 等待线程函数完成初始化</span></span><br><span class="line">    m_semaphore.<span class="built_in">wait</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//析构时对线程分离以确定会自动销毁</span></span><br><span class="line">Thread::~<span class="built_in">Thread</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_thread) &#123;</span><br><span class="line">        <span class="built_in">pthread_detach</span>(m_thread);</span><br><span class="line">        m_thread = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Thread::join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_thread) &#123;</span><br><span class="line">	    <span class="comment">// 因为不关心返回值去哪，所以直接设置为nullptr</span></span><br><span class="line">        <span class="type">int</span> rt = <span class="built_in">pthread_join</span>(m_thread, <span class="literal">nullptr</span>);</span><br><span class="line">        <span class="keyword">if</span> (rt) &#123;</span><br><span class="line">            std::cerr &lt;&lt; <span class="string">&quot;pthread_join failed, rt = &quot;</span> &lt;&lt; rt &lt;&lt; <span class="string">&quot;, name = &quot;</span> &lt;&lt; m_name &lt;&lt; std::endl;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(<span class="string">&quot;pthread_join error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 防止后续再次被join</span></span><br><span class="line">        m_thread = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">Thread::run</span><span class="params">(<span class="type">void</span>* arg)</span> </span>&#123;</span><br><span class="line">    Thread* thread = (Thread*)arg;</span><br><span class="line"></span><br><span class="line">    t_thread       = thread;</span><br><span class="line">    t_thread_name  = thread-&gt;m_name;</span><br><span class="line">    thread-&gt;m_id   = <span class="built_in">GetThreadId</span>();</span><br><span class="line">    <span class="comment">//pthread_self()获取当前线程的ID，设置m_name是前15个字节取，因为linux设置最多15</span></span><br><span class="line">    <span class="built_in">pthread_setname_np</span>(<span class="built_in">pthread_self</span>(), thread-&gt;m_name.<span class="built_in">substr</span>(<span class="number">0</span>, <span class="number">15</span>).<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; cb;</span><br><span class="line">    cb.<span class="built_in">swap</span>(thread-&gt;m_cb); <span class="comment">// swap -&gt; 可以减少m_cb中只能指针的引用计数</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化完成</span></span><br><span class="line">    thread-&gt;m_semaphore.<span class="built_in">signal</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cb</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-<h2 id="static-thread-local又是什么意思？"><a href="#static-thread-local又是什么意思？" class="headerlink" title="static thread_local又是什么意思？"></a>static thread_local又是什么意思？</h2><p>static代表生命周期知道程序运行结束时候销毁，<strong>被 <code>thread_local</code> 修饰的变量，在每个线程中都有一个独立的副本</strong>。</p>
-<h2 id="对pthread-create、pthread-detch、pthread-join的详解"><a href="#对pthread-create、pthread-detch、pthread-join的详解" class="headerlink" title="对pthread_create、pthread_detch、pthread_join的详解"></a>对pthread_create、pthread_detch、pthread_join的详解</h2><h3 id="pthread-create"><a href="#pthread-create" class="headerlink" title="pthread_create"></a>pthread_create</h3><p>&#96;int pthread_create(pthread_t* restrict tidp,const pthread_attr_t* restrict_attr,void* (<em>start_rtn)(void</em>),void *restrict arg);</p>
-<ul>
-<li>输入参数： tidp:填入pthread_t类型参数。  </li>
-<li>attr:通常设置为NULL，用于定制各种不同的线程属性。  </li>
-<li>start_rtn:新创建线程的入口函数由此绑定。无参数把arg设置为NULL即可  </li>
-<li>返回值：成功返回0，否则返回错误码。</li>
-</ul>
-<p>线程的入口函数最开始都要先获取传入的参数:&#96;比如pthread_create(&amp;m_thread, nullptr, &amp;Thread::run, this);</p>
-<p>在run函数里先执行&#96;Thread* thread &#x3D; (Thread*)arg;</p>
-<h3 id="pthread-detch"><a href="#pthread-detch" class="headerlink" title="pthread_detch"></a>pthread_detch</h3><p>目的是为了确保线程在结束后能够正确的释放资源，而不需要主线程或其他线程进行join操作。一般适用的场景是在子线程要脱离主线程的管理，并且主线程不需要担心其资源的释放，简化了使用的复杂性。  </p>
-<p>避免了内存泄漏防止忘记调用join导致的内存泄露  </p>
-<h3 id="pthread-join"><a href="#pthread-join" class="headerlink" title="pthread_join"></a>pthread_join</h3><p>pthread_Join是POSIX线程库的一个函数，用于等待一个线程的终止并回收它的资源  </p>
-<p>值得说的一点就是一般都可以写nullptr。如果你需要接受某个实际的值，那就写一个实际的指针去接受它。</p>
-<h1 id="信号量的封装"><a href="#信号量的封装" class="headerlink" title="信号量的封装"></a>信号量的封装</h1><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Semaphore</span> </span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::mutex mtx;                </span><br><span class="line">    std::condition_variable cv;    </span><br><span class="line">    <span class="type">int</span> count;                   </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 信号量初始化为0</span></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Semaphore</span><span class="params">(<span class="type">int</span> count_ = <span class="number">0</span>)</span> : count(count_) &#123;</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// P操作</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">wait</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (count == <span class="number">0</span>) &#123; </span><br><span class="line">            cv.<span class="built_in">wait</span>(lock); <span class="comment">// wait for signals</span></span><br><span class="line">        &#125;</span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// V操作</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">signal</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        count++;</span><br><span class="line">        cv.<span class="built_in">notify_one</span>();  <span class="comment">// signal</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>协程库</category>
       </categories>
   </entry>
 </search>
