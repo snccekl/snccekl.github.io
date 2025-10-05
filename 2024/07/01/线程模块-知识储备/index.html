@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="先做一点基础的线程知识介绍（也算刚考完试做个总结）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程模块-知识储备">
+<meta property="og:url" content="https://snccekl.github.io/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/index.html">
+<meta property="og:site_name" content="Snccekl">
+<meta property="og:description" content="先做一点基础的线程知识介绍（也算刚考完试做个总结）">
+<meta property="og:locale">
+<meta property="og:image" content="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251005/ULgi/1536X1024/memory_level.png">
+<meta property="article:published_time" content="2024-06-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-05T11:12:49.979Z">
+<meta property="article:author" content="snccekl">
+<meta property="article:tag" content="java and Compiler security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251005/ULgi/1536X1024/memory_level.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://snccekl.github.io/2024/07/01/线程模块-知识储备/"/>
+
+
+
+
+
+  <title>线程模块-知识储备 | Snccekl</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Snccekl</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">线程模块-知识储备</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-07-01T00:00:00+08:00">
+                2024-07-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%8F%E7%A8%8B%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">协程库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span id="busuanzi_value_page_pv"></span>次阅读
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>先做一点基础的线程知识介绍（也算刚考完试做个总结）</p>
+<span id="more"></span>
+<h1 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h1><p><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251005/ULgi/1536X1024/memory_level.png" alt="1536X1024&#x2F;memory_level.png"></p>
+<h2 id="读取"><a href="#读取" class="headerlink" title="读取"></a>读取</h2><p>假设CPU要读取某个内存地址的数据：</p>
+<h3 id="寄存器检查"><a href="#寄存器检查" class="headerlink" title="寄存器检查"></a>寄存器检查</h3><ul>
+<li>CPU首先查看这个数据是不是已经在<strong>寄存器</strong>里（最快的存储单元）。</li>
+<li>若在寄存器中，直接读取，延迟极低（几个时钟周期内）。</li>
+</ul>
+<h3 id="L1-Cache（一级缓存）"><a href="#L1-Cache（一级缓存）" class="headerlink" title="L1 Cache（一级缓存）"></a>L1 Cache（一级缓存）</h3><ul>
+<li>若寄存器没有，CPU从<strong>L1 Cache</strong>中查找。</li>
+<li>L1分为两部分：<strong>L1D（数据）</strong> 和 <strong>L1I（指令）</strong></li>
+<li>命中（Hit）：直接读取。</li>
+<li>未命中（Miss）：进入下一级。</li>
+</ul>
+<h3 id="L2-Cache（二级缓存）"><a href="#L2-Cache（二级缓存）" class="headerlink" title="L2 Cache（二级缓存）"></a>L2 Cache（二级缓存）</h3><ul>
+<li>查找L2 Cache（比L1大、速度稍慢）。</li>
+<li>若命中，则把数据传回CPU，并且通常也更新L1。</li>
+</ul>
+<h3 id="L3-Cache（三级缓存）"><a href="#L3-Cache（三级缓存）" class="headerlink" title="L3 Cache（三级缓存）"></a>L3 Cache（三级缓存）</h3><ul>
+<li>若L2未命中，CPU访问共享的<strong>L3 Cache</strong>（多核共享，容量更大）。</li>
+<li>命中：把数据拷回L2和L1供CPU使用</li>
+</ul>
+<h3 id="主存（DRAM）"><a href="#主存（DRAM）" class="headerlink" title="主存（DRAM）"></a>主存（DRAM）</h3><ul>
+<li>如果三级缓存都未命中（称为“三次Cache Miss”），CPU才会：<ul>
+<li>通过**内存控制器（Memory Controller）**访问主存（DRAM）。</li>
+<li>主存的访问延迟可达几百个时钟周期（相对Cache非常慢）。</li>
+<li>数据取回后，会先填充到各级Cache，再给CPU使用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="SSD"><a href="#SSD" class="headerlink" title="SSD"></a>SSD</h3><p>如果内存中也没有，即涉及到键盘等输入或者就是需要从磁盘读取，则需要继续访问SSD</p>
+<h3 id="表格所示"><a href="#表格所示" class="headerlink" title="表格所示"></a>表格所示</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>访问延迟（时钟周期）</th>
+<th>容量</th>
+<th>速度</th>
+<th>成本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>寄存器</td>
+<td>1</td>
+<td>极小</td>
+<td>极快</td>
+<td>极高</td>
+</tr>
+<tr>
+<td>L1 Cache</td>
+<td>2–4</td>
+<td>数十 KB</td>
+<td>很快</td>
+<td>高</td>
+</tr>
+<tr>
+<td>L2 Cache</td>
+<td>10–20</td>
+<td>数百 KB</td>
+<td>快</td>
+<td>中高</td>
+</tr>
+<tr>
+<td>L3 Cache</td>
+<td>30–60</td>
+<td>数 MB</td>
+<td>较慢</td>
+<td>中</td>
+</tr>
+<tr>
+<td>主存 (DRAM)</td>
+<td>100–300</td>
+<td>GB级</td>
+<td>慢</td>
+<td>低</td>
+</tr>
+<tr>
+<td>SSD&#x2F;HDD</td>
+<td>10⁵–10⁷</td>
+<td>TB级</td>
+<td>极慢</td>
+<td>极低</td>
+</tr>
+</tbody></table>
+<h2 id="时间片"><a href="#时间片" class="headerlink" title="时间片"></a>时间片</h2><p>CPU时间片是指操作系统调度程序为每个可运行进程分配的一段<strong>固定长度的CPU时间</strong>。</p>
+<ul>
+<li>当进程在这段时间内<strong>未执行完</strong>，操作系统会<strong>剥夺其CPU使用权</strong>，将其放回就绪队列；</li>
+<li>然后CPU切换到下一个进程；</li>
+<li>如果进程在时间片内<strong>执行完毕</strong>，则主动释放CPU</li>
+</ul>
+<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p>CPU 上下文切换，就是先把前一个任务的 CPU 上下文（也就是 CPU 寄存器和程序计数器）保存起来，</p>
+<p>然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的新位置，运行新任务。</p>
+<p>而这些保存下来的上下文，会存储在系统内核中，并在任务重新调度执行时再次加载进来。<br>这样就能保证任务原来的状态不受影响，让任务看起来还是连续运行。</p>
+<h1 id="线程并发"><a href="#线程并发" class="headerlink" title="线程并发"></a>线程并发</h1><p>只是稍微介绍一下概念以及几种锁的种类，深入了解请移步并发编程的部分</p>
+<h2 id="与进程的区别"><a href="#与进程的区别" class="headerlink" title="与进程的区别"></a>与进程的区别</h2><p>进程是操作系统分配资源的基本单位，每个进程独享属于自己的文件描述符、存储器资源等等。</p>
+<p>线程是操作系统进行调度的基本单位，一个进程可以有多个线程，线程之间是共享所属进程的资源的。</p>
+<h2 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h2><p>互斥是进程(线程)之间的间接制约关系。</p>
+<p>当一个进程(线程)进入临界区使用临界资源时，另一个进程(线程)必须等待。 只有当使用临界资源的进程(线程)退出临界区后，这个进程(线程)才会解除阻塞状态。</p>
+<blockquote>
+<p>[!NOTE] 临界资源<br>对于某些资源来说，其在同一时间只能被一个进程所占用。 这些一次只能被一个进程所占用的资源就是所谓的临界资源。</p>
+</blockquote>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>同步是进程(线程)之间的直接制约关系。 </p>
+<p>是指多个相互合作的进程(线程)之间互相通信、互相等待，这种相互制约的现象称为进程(线程)的同步</p>
+<h2 id="互斥量"><a href="#互斥量" class="headerlink" title="互斥量"></a>互斥量</h2><p>我觉得在并发管理中应该认为<code>mutex</code>是互斥量，当上锁后才是互斥锁</p>
+<p>这是最基础的锁。<code>std::mutex</code> 保证在任何时刻，只有一个线程能够获得锁，从而进入由它保护的临界区（Critical Section）。</p>
+<p><strong>特点</strong>:</p>
+<ul>
+<li>独占式：一个线程获取锁之后，其他线程必须等待它释放锁。</li>
+<li>非递归：同一个线程不能在释放之前再次获取同一个 <code>std::mutex</code>，否则会造成死锁。</li>
+</ul>
+<p><strong>使用方法</strong>: 直接调用 <code>lock()</code> 和 <code>unlock()</code> 方法。但这种方式很危险，如果在 <code>lock()</code> 和 <code>unlock()</code>  之间发生异常，<code>unlock()</code> 将不会被调用，导致锁无法释放，所有等待该锁的线程都会被永久阻塞。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;thread&gt;</span><br><span class="line">#include &lt;mutex&gt;</span><br><span class="line"></span><br><span class="line">std::mutex mtx; // 创建一个互斥锁实例</span><br><span class="line">int shared_counter = 0;</span><br><span class="line"></span><br><span class="line">void increment() &#123;</span><br><span class="line">    for (int i = 0; i &lt; 10000; ++i) &#123;</span><br><span class="line">        mtx.lock(); // 获取锁</span><br><span class="line"></span><br><span class="line">        // --- 临界区开始 ---</span><br><span class="line"></span><br><span class="line">        shared_counter++;</span><br><span class="line"></span><br><span class="line">        // --- 临界区结束 ---</span><br><span class="line"></span><br><span class="line">        mtx.unlock(); // 释放锁</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    std::thread t1(increment);</span><br><span class="line">    std::thread t2(increment);</span><br><span class="line">    t1.join();</span><br><span class="line">    t2.join();</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; &quot;Shared counter: &quot; &lt;&lt; shared_counter &lt;&lt; std::endl; // 输出应该是 20000</span><br><span class="line">    return 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h2><p><strong>条件变量（Condition Variable）</strong> 是一种<strong>线程间通信机制</strong>，允许一个线程在某个条件不满足时<strong>进入等待状态（阻塞）</strong>，直到另一个线程<strong>通知它条件已满足</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cv.wait(lock)</code></td>
+<td>线程阻塞，并释放锁</td>
+</tr>
+<tr>
+<td><code>cv.notify_one()</code></td>
+<td>唤醒一个等待线程</td>
+</tr>
+<tr>
+<td><code>cv.notify_all()</code></td>
+<td>唤醒所有等待线程</td>
+</tr>
+<tr>
+<td>必须持有锁</td>
+<td>修改条件变量所依赖的共享状态时，必须先加锁</td>
+</tr>
+<tr>
+<td>防止伪唤醒</td>
+<td>使用 <code>cv.wait(lock, predicate)</code> 版本更安全</td>
+</tr>
+<tr>
+<td>典型用途</td>
+<td>生产者-消费者模型、线程池任务队列等</td>
+</tr>
+</tbody></table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">std::mutex mtx;</span><br><span class="line">std::condition_variable cv;</span><br><span class="line"><span class="type">bool</span> ready = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">consumer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">    cv.<span class="built_in">wait</span>(lock, [] &#123; <span class="keyword">return</span> ready; &#125;); <span class="comment">// 等待条件成立</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;条件满足，开始执行任务\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>C++ 标准库<strong>早期（C++11、C++14、C++17）没有内置信号量</strong>，但从 <strong>C++20</strong> 开始，标准库正式引入了 <strong>信号量（<code>std::counting_semaphore</code> 和 <code>std::binary_semaphore</code>）</strong>。</p>
+<hr>
+<h3 id="标准信号量"><a href="#标准信号量" class="headerlink" title="标准信号量"></a>标准信号量</h3><p>头文件：<code>#include &lt;semaphore&gt;</code></p>
+<h4 id="1-std-counting-semaphore"><a href="#1-std-counting-semaphore" class="headerlink" title="1. std::counting_semaphore"></a>1. <code>std::counting_semaphore</code></h4><ul>
+<li>是通用的<strong>计数信号量</strong>。</li>
+<li>内部有一个整型计数器，控制可用资源数。<br>示例：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;semaphore&gt;</span>  </span></span><br><span class="line"><span class="function">std::counting_semaphore&lt;3&gt; <span class="title">sem</span><span class="params">(<span class="number">3</span>)</span></span>; <span class="comment">// 最大资源数3，初始值3  </span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">task</span><span class="params">(<span class="type">int</span> id)</span> </span>&#123;     </span><br><span class="line">	sem.<span class="built_in">acquire</span>(); <span class="comment">// P操作，尝试获取资源    </span></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Thread &quot;</span> &lt;&lt; id &lt;&lt; <span class="string">&quot; working\n&quot;</span>;</span><br><span class="line">	std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">seconds</span>(<span class="number">1</span>));     </span><br><span class="line">	sem.<span class="built_in">release</span>(); <span class="comment">// V操作，释放资源 </span></span><br><span class="line">&#125;  </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;     </span><br><span class="line">	<span class="function">std::thread <span class="title">t1</span><span class="params">(task, <span class="number">1</span>)</span>, <span class="title">t2</span><span class="params">(task, <span class="number">2</span>)</span>, <span class="title">t3</span><span class="params">(task, <span class="number">3</span>)</span>, <span class="title">t4</span><span class="params">(task, <span class="number">4</span>)</span></span>;     </span><br><span class="line">	t<span class="number">1.</span><span class="built_in">join</span>(); t<span class="number">2.</span><span class="built_in">join</span>(); t<span class="number">3.</span><span class="built_in">join</span>(); t<span class="number">4.</span><span class="built_in">join</span>(); </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最多同时有3个线程能执行“工作”，第4个线程会阻塞直到有资源释放。</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="2-std-binary-semaphore"><a href="#2-std-binary-semaphore" class="headerlink" title="2. std::binary_semaphore"></a>2. <code>std::binary_semaphore</code></h4><ul>
+<li>相当于最大计数为 1 的信号量，也就是“二元信号量”（互斥信号量）。</li>
+<li>类似于互斥锁，但可以手动 release，而不需要RAII封装。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;semaphore&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  </span></span><br><span class="line"><span class="function">std::binary_semaphore <span class="title">sem</span><span class="params">(<span class="number">1</span>)</span></span>;  </span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">work</span><span class="params">(<span class="type">int</span> id)</span> </span>&#123;     </span><br><span class="line">	sem.<span class="built_in">acquire</span>();     </span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Thread &quot;</span> &lt;&lt; id &lt;&lt; <span class="string">&quot; in critical section\n&quot;</span>;</span><br><span class="line">	std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">500</span>)); </span><br><span class="line">	sem.<span class="built_in">release</span>(); </span><br><span class="line">&#125;  </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;     </span><br><span class="line">	<span class="function">std::thread <span class="title">t1</span><span class="params">(work, <span class="number">1</span>)</span>, <span class="title">t2</span><span class="params">(work, <span class="number">2</span>)</span></span>;     </span><br><span class="line">	t<span class="number">1.</span><span class="built_in">join</span>(); t<span class="number">2.</span><span class="built_in">join</span>(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h2><p>读写锁是一对互斥锁，分为读锁和写锁。 </p>
+<p>读锁和写锁互斥，让一个线程在进行读操作时，不允许其他线程的写操作，但是不影响其他线程的读操作。 当一个线程在进行写操作时，不允许任何线程进行读操作或者写操作。</p>
+<blockquote>
+<p>[!NOTE] 使用<br>考虑到RAII，虽然读写锁本身提供了对应的加锁和解锁方式，但是还是用提供的RAII锁类，帮助<br>自动管理锁的获取与释放</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>锁类型</th>
+<th>对应操作</th>
+<th>常用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>std::unique_lock&lt;std::shared_mutex&gt;</code></td>
+<td>写锁</td>
+<td>独占修改数据</td>
+</tr>
+<tr>
+<td><code>std::shared_lock&lt;std::shared_mutex&gt;</code></td>
+<td>读锁</td>
+<td>并发只读访问</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>自旋锁是一种<strong>忙等待锁（busy waiting lock）</strong>：</p>
+<ul>
+<li>当线程尝试获取锁时，如果锁已被占用，它<strong>不会挂起（不睡眠）</strong>，<br>  而是一直<strong>在循环中检查锁是否可用</strong>。</li>
+<li>直到锁可用时立即获取，从而<strong>避免线程上下文切换</strong>的开销。</li>
+</ul>
+<p>适合场景：</p>
+<ul>
+<li>锁持有时间极短；</li>
+<li>线程数量少；</li>
+<li>临界区工作量小；</li>
+<li>不希望发生线程切换。<br>不适合：</li>
+<li>临界区耗时较长；</li>
+<li>核心数量较少（容易浪费CPU）。</li>
+</ul>
+<p>没有提供标准库实现，但是可以通过<code>atomic_flag</code>实现</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::atomic_flag lock = ATOMIC_FLAG_INIT;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (lock.<span class="built_in">test_and_set</span>()) &#123;</span><br><span class="line">        <span class="comment">// 如果锁被其他线程持有，则等待（自旋）</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 临界区代码</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Thread &quot;</span> &lt;&lt; std::this_thread::<span class="built_in">get_id</span>() &lt;&lt; <span class="string">&quot; is in the critical section.\n&quot;</span>;</span><br><span class="line">    <span class="comment">// 释放锁</span></span><br><span class="line">    lock.<span class="built_in">clear</span>(); </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(critical_section)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(critical_section)</span></span>;</span><br><span class="line">    </span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    snccekl
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://snccekl.github.io/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/" title="线程模块-知识储备">https://snccekl.github.io/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/" rel="next" title="浅谈协程">
+                <i class="fa fa-chevron-left"></i> 浅谈协程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2024/07/04/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E4%BB%A3%E7%A0%81/" rel="prev" title="线程模块-代码">
+                线程模块-代码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/snccekl" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="jksnc@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU"><span class="nav-number">1.</span> <span class="nav-text">CPU</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96"><span class="nav-number">1.1.</span> <span class="nav-text">读取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E6%A3%80%E6%9F%A5"><span class="nav-number">1.1.1.</span> <span class="nav-text">寄存器检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L1-Cache%EF%BC%88%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">L1 Cache（一级缓存）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L2-Cache%EF%BC%88%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%89"><span class="nav-number">1.1.3.</span> <span class="nav-text">L2 Cache（二级缓存）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L3-Cache%EF%BC%88%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%89"><span class="nav-number">1.1.4.</span> <span class="nav-text">L3 Cache（三级缓存）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E5%AD%98%EF%BC%88DRAM%EF%BC%89"><span class="nav-number">1.1.5.</span> <span class="nav-text">主存（DRAM）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSD"><span class="nav-number">1.1.6.</span> <span class="nav-text">SSD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BC%E6%89%80%E7%A4%BA"><span class="nav-number">1.1.7.</span> <span class="nav-text">表格所示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%87"><span class="nav-number">1.2.</span> <span class="nav-text">时间片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-number">1.3.</span> <span class="nav-text">上下文切换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">线程并发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.1.</span> <span class="nav-text">与进程的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E6%96%A5"><span class="nav-number">2.2.</span> <span class="nav-text">互斥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5"><span class="nav-number">2.3.</span> <span class="nav-text">同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E9%87%8F"><span class="nav-number">2.4.</span> <span class="nav-text">互斥量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F"><span class="nav-number">2.5.</span> <span class="nav-text">条件变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.6.</span> <span class="nav-text">信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.6.1.</span> <span class="nav-text">标准信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-std-counting-semaphore"><span class="nav-number">2.6.1.1.</span> <span class="nav-text">1. std::counting_semaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-std-binary-semaphore"><span class="nav-number">2.6.1.2.</span> <span class="nav-text">2. std::binary_semaphore</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E9%94%81"><span class="nav-number">2.7.</span> <span class="nav-text">读写锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-number">2.8.</span> <span class="nav-text">自旋锁</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">snccekl</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

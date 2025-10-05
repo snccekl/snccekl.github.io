@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="探讨协程的底层实现，剖析开源库 libco 的实现，并在此基础之上实现一个简单的协程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈协程">
+<meta property="og:url" content="https://snccekl.github.io/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Snccekl">
+<meta property="og:description" content="探讨协程的底层实现，剖析开源库 libco 的实现，并在此基础之上实现一个简单的协程">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-06-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-05T11:14:18.663Z">
+<meta property="article:author" content="snccekl">
+<meta property="article:tag" content="java and Compiler security">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://snccekl.github.io/2024/06/30/浅谈协程/"/>
+
+
+
+
+
+  <title>浅谈协程 | Snccekl</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Snccekl</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈协程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-06-30T00:00:00+08:00">
+                2024-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%8F%E7%A8%8B%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">协程库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span id="busuanzi_value_page_pv"></span>次阅读
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>探讨协程的底层实现，剖析开源库 libco 的实现，并在此基础之上实现一个简单的协程</p>
+<span id="more"></span>
+<h1 id="浅谈协程"><a href="#浅谈协程" class="headerlink" title="浅谈协程"></a>浅谈协程</h1><h2 id="协程是什么"><a href="#协程是什么" class="headerlink" title="协程是什么"></a>协程是什么</h2><p>协程就是用户态的线程，但是上下文切换的时机是靠调用方（写代码的开发人员）自身去控制的。</p>
+<p>下面是一个简单的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">B</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;y&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;z&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">A</span>();</span><br><span class="line">  <span class="built_in">B</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在单线程中，上述函数的输出为：<code>1 2 3 x y z</code></p>
+<p>如果我们用 libco 库将上面程序改造一下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">A</span><span class="params">()</span> &#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   co_yield_ct();  <span class="comment">// 切出到主协程</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">B</span><span class="params">()</span> &#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;x&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   co_yield_ct();  <span class="comment">// 切出到主协程</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;y&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;z&quot;</span> &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  ...  <span class="comment">// 主协程</span></span><br><span class="line">  co_resume(A);  <span class="comment">// 启动协程 A</span></span><br><span class="line">  co_resume(B);  <span class="comment">// 启动协程 B</span></span><br><span class="line">  co_resume(A);  <span class="comment">// 从协程 A 切出处继续执行</span></span><br><span class="line">  co_resume(B);  <span class="comment">// 从协程 B 切出处继续执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样在单线程中，改造后的程序输出如下：<code>1 2 x 3 y z</code></p>
+<p>xxxxxxxxxx23 1#include &lt;bits&#x2F;stdc++.h&gt;2using namespace std;3​4vector<string> vec(25);5​6bool cmp(const string &amp;a, const string &amp;b){7    return a+b &gt; b+a;8}9​10int main(){11    int n;12    cin &gt;&gt; n;13    for(int i &#x3D; 0; i &lt; n; i++){14        cin &gt;&gt; vec[i];15    }16    sort(vec.begin(), vec.begin() + n, cmp);17    string ans;18    for(int i &#x3D; 0; i &lt; n; i++){19        ans +&#x3D; vec[i];20    }21    cout &lt;&lt; ans &lt;&lt; endl;22    return 0;23}cpp</string></p>
+<p>函数 A() 和 B() 并不是一个执行完才执行另一个，而是产生了 “交叉执行“ 的效果，这就是通过协程实现的</p>
+<h2 id="为什么不用线程而用协程"><a href="#为什么不用线程而用协程" class="headerlink" title="为什么不用线程而用协程"></a>为什么不用线程而用协程</h2><p>有些时候我们在执行一些操作（尤其是IO操作）时，不希望去做“创建一个新的线程”这种重量级的操作来异步处理。而是希望：<strong>在当前线程执行中，暂时切换到其他任务中执行，同时在IO真正准备好了之后，再切换回来继续执行！</strong></p>
+<p>相比于多开一个线程来操作，使用协程的好处：</p>
+<ul>
+<li><strong>减少了线程的重复高频创建；</strong></li>
+<li><strong>尽量避免线程的阻塞；</strong></li>
+<li><strong>提升代码的可维护与可理解性（毕竟不需要考虑多线程那一套东西了）</strong></li>
+</ul>
+<p>下面是一些协程的特点：</p>
+<ul>
+<li><strong>协程可以主动让出 CPU 时间片；（注意：不是当前线程让出 CPU 时间片，而是线程内的某个协程让出时间片供同线程内其他协程运行；）</strong></li>
+<li><strong>协程可以恢复 CPU 上下文；当另一个协程继续执行时，其需要恢复 CPU 上下文环境；</strong></li>
+<li><strong>协程有个管理者，管理者可以选择一个协程来运行，其他协程要么阻塞，要么ready，或者died；</strong></li>
+<li><strong>运行中的协程将占有当前线程的所有计算资源；</strong></li>
+<li><strong>协程天生有栈属性，而且是 lock free；</strong></li>
+</ul>
+<h1 id="协程的类别"><a href="#协程的类别" class="headerlink" title="协程的类别"></a>协程的类别</h1><p>根据是否存在<strong>调用栈</strong>，可以分为以下两类</p>
+<ul>
+<li>有栈协程：类似于内核态线程，不同协程间切换还是要切换上下文，只是不需要陷入内核。例如goroutine、libco</li>
+<li>无栈协程：上下文放在公共内存中，切换时使用状态机来切换，而不切换对应的上下文（因为已经在堆里了），更轻量，例如：C++20、Rust、JavaScript 中的协程</li>
+</ul>
+<p>根据是否存在明显的调用关系，可以分为</p>
+<ul>
+<li>非对称协程：协程间有明显的调用关系</li>
+<li>对称协程：无明显调用关系</li>
+</ul>
+<h2 id="有栈协程"><a href="#有栈协程" class="headerlink" title="有栈协程"></a>有栈协程</h2><p>开源库 libco 就是通过汇编语言实现的有栈协程库。</p>
+<p>通过分析代码可以看到，无论是<code>co_yield</code>还是<code>co_resume</code>，在协程切出和恢复时，都调用了同一个函数<code>co_swap</code>，在这个函数中调用了 <code>coctx_swap</code> 来实现协程的切换，这一函数的原型是<br><code>void coctx_swap( coctx_t *,coctx_t* ) asm(&quot;coctx_swap&quot;);</code></p>
+<p>两个参数都是 <code>coctx_t *</code> 指针类型，其中第一个参数表示要切出的协程，第二个参数表示切出后要进入的协程；</p>
+<p>并不会像常规被调用函数一样创立新栈帧。而是通过调整 <code>%rsp</code> 的值来恢复新协程的栈，并利用了 <code>ret</code> 语句来实现修改指令寄存器 <code>%rip</code> 的目的，通过修改 <code>%rip</code> 来实现程序运行逻辑跳转；</p>
+<blockquote>
+<p>[!NOTE] %rip的修改<br>不能直接修改，只能通过call或ret来修改</p>
+</blockquote>
+<p><strong>整体上看来，协程的切换其实就是： cpu 寄存器内容特别是 <code>%rip</code> 和 <code>%rsp</code> 的写入和恢复，因为 cpu 的寄存器决定了程序从哪里执行（%rip) 和使用哪个地址作为堆栈 （%rsp）；</strong></p>
+<h2 id="无栈协程"><a href="#无栈协程" class="headerlink" title="无栈协程"></a>无栈协程</h2><p>无栈协程本质上是一个状态机，从另一个角度上：<strong>同一协程切换的本质不过是指令指针寄存器的改变</strong></p>
+<p>先来看一个使用libco的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="title">test</span><span class="params">(<span class="type">void</span>* para)</span></span>&#123; </span><br><span class="line">	<span class="built_in">co_enable_hook_sys</span>(); </span><br><span class="line">	<span class="type">int</span> i = <span class="number">0</span>; </span><br><span class="line">	<span class="built_in">poll</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.</span> <span class="number">1000</span>); <span class="comment">// 协程切换执行权，1000ms后返回 </span></span><br><span class="line">	i++; </span><br><span class="line">	<span class="built_in">poll</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.</span> <span class="number">1000</span>); <span class="comment">// 协程切换执行权，1000ms后返回 </span></span><br><span class="line">	i--; </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123; </span><br><span class="line">	stCoRoutine_t* routine; </span><br><span class="line">	<span class="built_in">co_create</span>(&amp;routine, <span class="literal">NULL</span>, test, <span class="number">0</span>); <span class="comment">// 创建一个协程 </span></span><br><span class="line">	<span class="built_in">co_resume</span>(routine); </span><br><span class="line">	<span class="built_in">co_eventloop</span>(<span class="built_in">co_get_epoll_ct</span>(),<span class="number">0</span>,<span class="number">0</span> ); </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果是无栈协程，实现相同逻辑的代码是怎么样的呢？</p>
+<p>其实就是翻译成类似于以下状态机的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test_coroutine</span> &#123; </span><br><span class="line">	<span class="type">int</span> i; </span><br><span class="line">	<span class="type">int</span> __state = <span class="number">0</span>; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">MoveNext</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		<span class="keyword">switch</span>(__state) &#123; </span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="built_in">frist</span>(); </span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="built_in">second</span>(); </span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> <span class="built_in">third</span>(); </span><br><span class="line">		&#125; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">frist</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i = <span class="number">0</span>; __state = <span class="number">1</span>; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">second</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i++; _state = <span class="number">2</span>; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">third</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		i--; </span><br><span class="line">	&#125; </span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+<p><strong>把整个协程抽象成一个类，以原本需要执行切换的语句处为界限，把函数划分为几个部分，并在某一个部分执行完以后进行状态转移，在下一次调用此函数的时候就会执行下一部分</strong></p>
+<p>这样就完全没有必要像有栈协程那样显式的执行上下文切换了，我们只需要一个简易的调度器来调度这些函数即可；</p>
+<p>从执行时栈的角度来看：</p>
+<p><strong>其实所有的协程共用的都是一个栈，即系统栈，也就也不必我们自行去给协程分配栈，因为是函数调用，我们当然也不必去显示的保存寄存器的值；</strong></p>
+<p><strong>而且相比有栈协程把局部变量放在新开的空间上，无栈协程直接使用系统栈使得CPU cache局部性更好，同时也使得无栈协程的中断和函数返回几乎没有区别，这样也可以凸显出无栈协程的高效；</strong></p>
+<h2 id="对称协程与非对称协程"><a href="#对称协程与非对称协程" class="headerlink" title="对称协程与非对称协程"></a>对称协程与非对称协程</h2><ul>
+<li><strong>对称协程 Symmetric Coroutine：任何一个协程都是相互独立且平等的，调度权可以在任意协程之间转移；</strong></li>
+<li><strong>非对称协程 Asymmetric Coroutine：协程出让调度权的目标只能是它的调用者，即协程之间存在调用和被调用关系；</strong></li>
+</ul>
+<p>非对称协程就是拥有调用栈，而对称协程则是大家都平等，不需要调用栈，只需要一个数据结构存储未执行完的协程即可</p>
+<p>我个人认为非对称协程相比之下更为符合认知，因为对称协程目前我不知道如何选择一个合适的协程来获得CPU执行权，正如上面所说，此协程可能正在等待事件；当然如果调度算法足够优秀的话，对称协程也是可取的；</p>
+<h1 id="其他内容"><a href="#其他内容" class="headerlink" title="其他内容"></a>其他内容</h1><h2 id="N-1-N-M-协程"><a href="#N-1-N-M-协程" class="headerlink" title="N:1 &amp; N:M 协程"></a>N:1 &amp; N:M 协程</h2><p>线程绑定的协程只有在对应线程运行的时候才有被执行的可能，如果对应线程中的某一个协程完全占有了当前线程，那么当前线程中的其他所有协程都不会被执行</p>
+<p>协程的所有信息都保存在上下文（Contex）对象中，将不同上下文分发给不同的线程就可以实现协程的跨线程执行，如此，协程被阻塞的概率将减小；</p>
+<p>借用 <a target="_blank" rel="noopener" href="https://github.com/apache/incubator-brpc/blob/master/docs/cn/bthread.md">BRPC</a> 中对 <code>N:M</code> 协程的介绍，来解释下什么是 <code>N:M</code> 协程：</p>
+<p>常说的协程是指的N:1协程库，即所有协程运行在一个系统线程中，<strong>计算能力和各类eventloop库等价</strong></p>
+<p>由于不跨线程，那么切换也不需要系统调用，受cache一致性的影响也比较小，可以非常快</p>
+<p>但是代价是无法高效利用多核，而且代码必须非阻塞，否则所有协程都会卡住</p>
+<p><code>bthread</code> 是一个 <code>M:N</code> 线程库，一个<code>bthread</code>被卡住不会影响其他<code>bthread</code>；</p>
+<p>其中的关键技术有两点：</p>
+<ul>
+<li><strong>work stealing 调度；</strong></li>
+<li><strong>butex；</strong></li>
+</ul>
+<p>前者让 bthread 更快地被调度到更多的核心上，后者让 bthread 和 pthread 可以相互等待和唤醒，这两点协程都不需要；</p>
+<p>这么看来 貌似 bthread 自己实现了 golang 的 goroutine？</p>
+<p>表面看起来的却如此：两者都实现了 M:N 用户态线程；</p>
+<p>但是事实上， golang 中的 goroutine 的实现要更为复杂一些：</p>
+<p>bthread 的设计比较接近 go 1.0 版本：OS 线程不会动态增加，在有大量的阻塞性 syscall 下，会有影响；</p>
+<p>而 go 1.1 之后的设计就是动态增减 OS 线程，而且提供了 LockOSThread，可以让 goroutine 和 OS 线程 1:1；</p>
+<h2 id="协程的组成"><a href="#协程的组成" class="headerlink" title="协程的组成"></a>协程的组成</h2><p>N:M模式下的协程其实就是可以由用户来确定调度顺序的用户态线程，对比系统线程可以分为以下几个模块：</p>
+<ul>
+<li>协程上下文：对应系统中的PCB&#x2F;TCB</li>
+<li>保存协程上下文的容器：对应操作系统中保存 PCB&#x2F;TCB 的容器，一般是一个列表（在实际实现时，协程上下文容器可以使用一个也可以使用多个，比如：普通协程队列、定时的协程优先队列等</li>
+<li>协程的执行器<ul>
+<li>协程的调度器：对应操作系统中的进程、线程调度器</li>
+<li>执行协程的worker线程，对应实际进程&#x2F;线程的CPU核心</li>
+</ul>
+</li>
+</ul>
+<h2 id="调度"><a href="#调度" class="headerlink" title="调度"></a>调度</h2><p>参照进程调度即可</p>
+<h2 id="协程相关工具"><a href="#协程相关工具" class="headerlink" title="协程相关工具"></a>协程相关工具</h2><p>系统级线程有锁、条件变量等工具，</p>
+<p><strong>系统级线程和协程处于不同的系统层级，所以两者的同步工具不完全通用，如果在协程中使用了线程的锁（例如：<code>std::mutex</code>），则整个线程将会被阻塞，当前线程将不会再调度与执行其他协程；</strong></p>
+<h2 id="对CPU-IO的影响"><a href="#对CPU-IO的影响" class="headerlink" title="对CPU&#x2F;IO的影响"></a>对CPU&#x2F;IO的影响</h2><p>目的在于剔除线程的阻塞，提供CPU利用率</p>
+<p>很多服务在处理业务时需要请求第三方服务，向第三方服务发起 RPC 调用；RPC 调用的网络耗时一般耗时在毫秒级别，RPC 服务的处理耗时也可能在毫秒级别，如果当前服务使用同步调用，即 RPC 返回后才进行后续逻辑，那么一条线程每秒处理的业务数量是可以估算的；</p>
+<p>假设每次业务处理花费在 RPC 调用上的耗时是 20ms，那么一条线程一秒最多处理 50 次请求！</p>
+<p>如果在等待 RPC 返回时当前线程没有被系统调度转换为 Ready 状态，那当前 CPU 核心就会空转，浪费了 CPU 资源！通过增加线程数量提高系统吞吐量的效果非常有限，而且创建大量线程也会造成其他问题！</p>
+<p>协程虽然不一定能减少一次业务请求的耗时，但一定可以提升系统的吞吐量：</p>
+<ul>
+<li>当前业务只有一次第三方 RPC 的调用，那么协程不会减少业务处理的耗时，但可以提升 QPS；</li>
+<li>当前业务需要多个第三方 RPC 调用，<strong>同时创建多个协程可以让多个 RPC 调用一起执行，则当前业务的 RPC 耗时由耗时最长的 RPC 调用决定；</strong></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    snccekl
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://snccekl.github.io/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/" title="浅谈协程">https://snccekl.github.io/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/06/07/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E8%AF%AD%E5%8F%A5/" rel="next" title="语句">
+                <i class="fa fa-chevron-left"></i> 语句
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/" rel="prev" title="线程模块-知识储备">
+                线程模块-知识储备 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/snccekl" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="jksnc@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">浅谈协程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text">协程是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E7%BA%BF%E7%A8%8B%E8%80%8C%E7%94%A8%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">为什么不用线程而用协程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E7%B1%BB%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">协程的类别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E6%A0%88%E5%8D%8F%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">有栈协程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E6%A0%88%E5%8D%8F%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">无栈协程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E4%B8%8E%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">对称协程与非对称协程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%86%85%E5%AE%B9"><span class="nav-number">3.</span> <span class="nav-text">其他内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#N-1-N-M-%E5%8D%8F%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">N:1 &amp; N:M 协程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E7%BB%84%E6%88%90"><span class="nav-number">3.2.</span> <span class="nav-text">协程的组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6"><span class="nav-number">3.3.</span> <span class="nav-text">调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7"><span class="nav-number">3.4.</span> <span class="nav-text">协程相关工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9CPU-IO%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">3.5.</span> <span class="nav-text">对CPU&#x2F;IO的影响</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">snccekl</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

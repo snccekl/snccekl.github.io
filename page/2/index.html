@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/21/day1/">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/06/04/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -325,7 +325,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2025/07/21/day1/" itemprop="url">7-21 代码随想录之数组</a></h1>
+                <a class="post-title-link" href="/2025/06/04/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E8%A1%A8%E8%BE%BE%E5%BC%8F/" itemprop="url">表达式</a></h1>
         
 
         <div class="post-meta">
@@ -337,8 +337,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-21T00:00:00+08:00">
-                2025-07-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-06-04T00:00:00+08:00">
+                2025-06-04
               </time>
             
 
@@ -360,8 +360,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
-                    <span itemprop="name">算法刷题</span>
+                  <a href="/categories/C-primer/" itemprop="url" rel="index">
+                    <span itemprop="name">C++ primer</span>
                   </a>
                 </span>
 
@@ -401,486 +401,124 @@
       
         
           
-            <h1 id="704-二分查找-力扣（LeetCode）"><a href="#704-二分查找-力扣（LeetCode）" class="headerlink" title="704. 二分查找 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-search/description/">704. 二分查找 - 力扣（LeetCode）</a></h1><p>这是二分查找的模版题。二分查找两种思路：左闭右开和左闭右闭。</p>
-<p>在进行二分查找的循环中，循环的条件就是查找的区间要是合法的，即区间内至少有1个元素，例如，在左闭右闭的方法中，[1, 1]中至少有“1”这个元素，区间合法；而对于左闭右开，[1, 1)中没有元素，这个区间就是非法的。</p>
-<p>在确认区间合法后，才在区间中取中间值</p>
-<p>对于左闭右闭：由于每一次查找都需要在合法区间中寻找，且此次循环的合法区间不能包含上一次循环中已经筛除的值，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标-1。</p>
-<p>对于左闭右开：与上面一样，但是此时区间的右端点不在区间内，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标。</p>
-<p>注意<br>无论是左闭右闭还是左闭右开，在初始化时都必须要让数组中的所有元素都在初始合法区间内，例如数组nums为{1， 2， 3， 4}， 对于左闭右闭，那么初始的合法区间为[0, nums.size() - 1]，而对于左闭右开，初始的合法区间应该为[0, nums.size())</p>
-<p>给出代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//左闭右开</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//左闭右闭</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="27-移除元素-力扣（LeetCode）"><a href="#27-移除元素-力扣（LeetCode）" class="headerlink" title="27. 移除元素 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-element/description/">27. 移除元素 - 力扣（LeetCode）</a></h1><p>双指针，慢的指向最后一个非val的下一个元素，快的就一直遍历。每遇到一个非val的元素，就把它赋值给慢指针对应的位置</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[r] == val)&#123;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                nums[l] = nums[r];</span><br><span class="line">                l++;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="977-有序数组的平方-力扣（LeetCode）"><a href="#977-有序数组的平方-力扣（LeetCode）" class="headerlink" title="977. 有序数组的平方 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/squares-of-a-sorted-array/description/">977. 有序数组的平方 - 力扣（LeetCode）</a></h1><p>最开始想的是从数组左右两边遍历，然后将大的放在右边，小的放在左边。但是如果全是负数就会出错，因为不会有任何一个数的绝对值小于数组最右边那个数，则一旦最右边那个数至于最左边后就不会再交换了。</p>
-<p>所以初始一个新的数组，然后从后往前填空，但是不改变原数组元素的顺序</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortedSquares</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">result</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        <span class="type">int</span> pos = r;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">abs</span>(nums[r]) &gt; <span class="built_in">abs</span>(nums[l]))&#123;</span><br><span class="line">                result[pos--] = nums[r] * nums[r];</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                result[pos--] = nums[l] * nums[l];</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/21/day2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/21/day2/" itemprop="url">7-21 代码随想录之数组</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-21T00:00:00+08:00">
-                2025-07-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
-                    <span itemprop="name">算法刷题</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
+            <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>一般二元运算符都要求两个运算对象的类型相同或者可以转换为相同类型</p>
+<p>运算符作用于类类型的对象时，用户可以自行定义含义，即重载运算符。</p>
+<h2 id="左值和右值"><a href="#左值和右值" class="headerlink" title="左值和右值"></a>左值和右值</h2><p>C++表达式要么是左值，要么是右值</p>
+<ul>
+<li>左值：当一个对象被用作左值时，用的是对象的身份（即内存中的位置）</li>
+<li>右值：当一个对象被用作右值时，用的是对象的值</li>
+</ul>
+<p>右值可以用左值来代替，但是反过来不行</p>
+<p>使用关键字 decltype 时，如果表达式的求值结果是左值，decltype 作用于该表达式（不是变量）得到一个引用类型</p>
+<h2 id="优先级和结合律"><a href="#优先级和结合律" class="headerlink" title="优先级和结合律"></a>优先级和结合律</h2><p>左结合律：如果运算符优先级相同，按照从左到右的方式组合运算对象</p>
+<p><strong>赋值运算符满足的是右结合律</strong></p>
+<h2 id="求值顺序"><a href="#求值顺序" class="headerlink" title="求值顺序"></a>求值顺序</h2><p>在一个复合表达式中，各个运算对象的求值顺序是不固定的。</p>
+<p><code>cout &lt;&lt; i &lt;&lt; ++i &lt;&lt; end;//错误！未定义的行为，不知道先求 i 还是先求 ++i</code></p>
+<p>4种运算符明确规定了运算对象的求值顺序：逻辑与(&amp;&amp;)、逻辑或(||)、条件(?:)、逗号(,)</p>
+<p>处理复合表达式的两个建议：</p>
+<ol>
+<li>不确定优先级与结合律时使用括号</li>
+<li>如果改变了某个运算对象的值，在同一表达式中不要再使用该运算对象。</li>
+</ol>
+<h1 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h1><p>算术运算符有 3 组，按优先级从高到低依次是</p>
+<ol>
+<li>+、- ：一元正号与一元负号</li>
+<li><ul>
+<li>、&#x2F;、% ：乘法、除法、求余</li>
+</ul>
+</li>
+<li>+、- ：加法、减法<br>注意一元正负号的优先级最高，求余也是一种算术运算。</li>
+</ol>
+<p>整数除法的结果是向零舍入。</p>
+<p>求余运算符的运算对象必须是整数，运算结果始终与被除数符号相同</p>
+<h1 id="逻辑和关系运算符"><a href="#逻辑和关系运算符" class="headerlink" title="逻辑和关系运算符"></a>逻辑和关系运算符</h1><ul>
+<li>逻辑运算符：！、&amp;&amp;、||。逻辑运算符的作用对象必须是能转换成布尔值的类型</li>
+<li>关系运算符：&lt;, &lt;&#x3D;, &gt;, &gt;&#x3D;, !&#x3D;, &#x3D;&#x3D; ：大于小于的优先级高于等于和不等于</li>
+</ul>
+<p><strong>&amp;&amp;、||都是短路求值，即先求左值，若无法判定整体布尔值，再求右值</strong></p>
+<h2 id="布尔字面值"><a href="#布尔字面值" class="headerlink" title="布尔字面值"></a>布尔字面值</h2><p>使用算术值做条件时直接用，不要与布尔值做比较</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(a);<span class="comment">//正确 </span></span><br><span class="line"><span class="keyword">if</span>(a == <span class="literal">true</span>);<span class="comment">//错误：会将 true 先转换为 int 再比较，比较结果是不相等</span></span><br></pre></td></tr></table></figure>
+<h1 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h1><p>赋值运算符的左侧对象必须是一个可修改的左值</p>
+<p>C++ 11 允许使用花括号括起来的初始值列表作为右侧运算对象。初始化列表可以为空，此时将进行值初始化。</p>
+<p>赋值运算符满足右结合律。同时优先级较低</p>
+<p>复合赋值运算符只求值一次，而普通运算符需要两次。(a&#x3D;a+1 要先求一次 a+1，再将结果赋值给 a)</p>
+<p><code>+=; -=; *=; /=; %=; &lt;&lt;=; &gt;&gt;=; &amp;=; ^=; |=;</code></p>
+<h1 id="递增和递减运算符"><a href="#递增和递减运算符" class="headerlink" title="递增和递减运算符"></a>递增和递减运算符</h1><h2 id="前置版本"><a href="#前置版本" class="headerlink" title="前置版本"></a>前置版本</h2><p>首先将运算对象加1，再将改变后的对象作为求值结果</p>
+<h2 id="后置版本"><a href="#后置版本" class="headerlink" title="后置版本"></a>后置版本</h2><p>也是将运算对象加 1，但是求值结果是运算对象改变之前那个值的副本</p>
+<blockquote>
+<p>[!NOTE] 关键区别<br>前置版本将对象本身作为左值返回，后置版本将对象的原始值的副本返回。</p>
+<p>前置版本直接返回改变了的运算对象，后置版本需要将原始值保存下来以便于返回，是一种浪费。</p>
+<p>整体而言，后置版本对于整数和指针来说影响不大，但是对于迭代器而言消耗巨大</p>
+</blockquote>
+<h2 id="在一条语句中混用解引用和递增运算符"><a href="#在一条语句中混用解引用和递增运算符" class="headerlink" title="在一条语句中混用解引用和递增运算符"></a>在一条语句中混用解引用和递增运算符</h2><p><code>*p++</code> ：p++将 p 的值加一，然后返回 p 的初始值的副本作为求值结果用于解引用。(递增运算符优先级高于解引用)</p>
+<p>这是一种提倡的写法，更加简洁，应该习惯于这种写法。</p>
+<h1 id="成员访问运算符"><a href="#成员访问运算符" class="headerlink" title="成员访问运算符"></a>成员访问运算符</h1><p>对于一个指针而言，点运算符和箭头运算符都可以用来访问成员。</p>
+<p><code>ptr-&gt;mem 等价于 (*ptr)-&gt;mem</code></p>
+<h1 id="条件运算符"><a href="#条件运算符" class="headerlink" title="条件运算符"></a>条件运算符</h1><p>cond ? expr1 : expr2。</p>
+<p>可以嵌套使用<br><code>finalgrade = (grade&gt;90) ? &quot;high pass&quot; : (grade&lt;60) ? &quot;fail&quot; : &quot;pass&quot;;</code></p>
+<p>条件运算符优先级非常低，一般都要加括号</p>
+<h1 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h1><p>位运算符作用于整数类型的对象。</p>
+<p>位运算符有六种：位求反、位与、位或、位异或、左移、右移</p>
+<p><code>~a; a&amp;b; a|b; a^b; a&lt;&lt;2; a&gt;&gt;2</code></p>
+<p>如果运算对象是个小整型，会被自动提升为较大的整型类型</p>
+<p>可以带符号，也可以不带。如果不带，那么运算结果是固定的，否则要看机器</p>
+<p><strong>左移操作处理带符号值是未定义行为</strong></p>
+<p>在 C++ 中，建议仅用位运算符来处理无符号类型。</p>
+<h2 id="移位运算符"><a href="#移位运算符" class="headerlink" title="移位运算符"></a>移位运算符</h2><p>使用移位运算符，移动的位数必须严格小于结果的位数，否则会产生未定义的行为</p>
+<p><code>&lt;&lt;</code>运算符在右侧插入 0，左侧移动超出边界的值舍弃掉。</p>
+<p><code>&gt;&gt;</code>运算符处理无符号数时在左侧插入 0，右侧移动超出边界的值舍弃掉。</p>
+<p><code>&gt;&gt;</code>运算符处理有符号数时可能在左侧插入 0 也可能插入符号位的副本，由机器决定使用哪种方式</p>
+<p>标注IO库里重载了这两个运算符，使得可以接受输入输出流。</p>
+<p>重载后满足左结合律</p>
+<h2 id="位求反、位与、位或、位异或"><a href="#位求反、位与、位或、位异或" class="headerlink" title="位求反、位与、位或、位异或"></a>位求反、位与、位或、位异或</h2><p>这几种运算符处理 char 时，都会把 char 类型的运算对象首先零扩展提升成 int 类型再进行位运算。</p>
+<h1 id="sizeof运算符"><a href="#sizeof运算符" class="headerlink" title="sizeof运算符"></a>sizeof运算符</h1><p>sizeof返回一个表达式或者一个类型名字所占的字节数，值为size_t类型</p>
+<p>对数组执行sizeof运算将得到数组所占的空间，这里不会把数组转换为指针进行处理</p>
+<p>对指针执行sizeof运算将得到指针类型的大小，8</p>
+<p>如果对string或者vector执行sizeof只返回该类型固定部分的大小，不会计算对象中的元素占多少空间</p>
+<blockquote>
+<p>[!Hint] 可以用 sizeof 获得数组中元素的个数<br><code>sizeof(arr)/sizeof(*arr);//返回的是数组 arr 的元素数量</code></p>
+</blockquote>
+<h1 id="逗号运算符"><a href="#逗号运算符" class="headerlink" title="逗号运算符"></a>逗号运算符</h1><p>在 for 循环中可以用逗号分隔两个不同的条件，或者定义多个值（类型完全相同）<br><code>for(int i=0,j = 0; i!=n; i++,j++)</code></p>
+<p><strong>注意，如果在条件判断的部分用逗号分割了若干部分，则只会返回最后一个条件判定的布尔值</strong></p>
+<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>c++ 不会直接将两个不同类型的值相加，会先通过类型转换把运算对象的类型统一后再求值</p>
+<h2 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h2><ul>
+<li>比int类型小的整型值转换为int类型或者更大的整数类型</li>
+<li>在条件里，把非布尔值转换成布尔值</li>
+<li>初始化过程中，初始值转换为变量的类型</li>
+<li>赋值时，右侧运算对象转换成左侧类型</li>
+<li>算数运算或关系运算的运算对象有多种类型，转换成一种（一般取最宽的那种）</li>
+</ul>
+<h2 id="整型提升"><a href="#整型提升" class="headerlink" title="整型提升"></a>整型提升</h2><p>整型提升把小整数类型（包括 char、bool等）转换成较大的整数类型。如果 int 可以就转换成 int，否则提升成 unsigned int 类型</p>
+<p>如果一个是无符号一个带符号。如果无符号类型不小于带符号类型（比如都是 4 字节），则带符号转换为无符号</p>
+<p>如果无符号类型小于带符号，转换结果依赖机器。尽量避免这种操作。</p>
+<h2 id="其他隐式转换"><a href="#其他隐式转换" class="headerlink" title="其他隐式转换"></a>其他隐式转换</h2><ol>
+<li>数组转换为指针：大多数情况下数组自动转换成指向数组首元素的指针。（decltype关键字参数、取地址符(&amp;)、sizeof、typeid都不会发生这种转换）</li>
+<li>指针的转换：0 或 nullptr 都能转换成任意指针类型。指向非常量的指针能转换成 void*。指向所有对象的指针都能转换成 const void*</li>
+<li>转换成常量：指向非常量的指针转换成指向相应常量类型的指针</li>
+<li>类类型的转换：<ol>
+<li><code>while(cin&gt;&gt;s);//将 cin 转换为 bool 值</code></li>
+<li><code>string s = &quot;value&quot;;//将 c 风格字符串转换为 string</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="显式转换"><a href="#显式转换" class="headerlink" title="显式转换"></a>显式转换</h2><p>使用强制类型转换，非常危险，一般考虑能否用其他方式避免</p>
+<p><code>castname&lt;type&gt;(expression);</code></p>
+<p>有以下四种：</p>
+<h3 id="static-cast"><a href="#static-cast" class="headerlink" title="static cast"></a>static cast</h3><p>任何类型转换，只要不包含底层const，都可以用static cast</p>
+<p><code>double slope = static_cast&lt;double&gt;(j)/i; //将 j 转换成 double 以便执行浮点数除法</code></p>
+<p>当把较大的类型转换为较小的类型时，static_cast 很有用。这时它告诉读者和编译器：我们知道且不在乎精度损失。平时编译器会给警告，显式转换后就不警告了</p>
+<h3 id="const-cast"><a href="#const-cast" class="headerlink" title="const cast"></a>const cast</h3><p>只能改变对象的底层const，可以去掉或增加const性质</p>
+<p>只有const cast可以改变表达式的常量属性，其他均不可以</p>
+<p>cosnt_cast 常用于有函数重载的上下文中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string&amp; s; </span><br><span class="line"><span class="keyword">const_cast</span> &lt;<span class="type">const</span> string&amp;&gt; (s);<span class="comment">// 将 s 转换为常量引用 </span></span><br><span class="line"><span class="keyword">const_cast</span> &lt;string&amp;&gt; (s);<span class="comment">// 将 s 转换回非常量引用</span></span><br></pre></td></tr></table></figure>
+<h3 id="reinterpret-cast"><a href="#reinterpret-cast" class="headerlink" title="reinterpret_cast"></a>reinterpret_cast</h3><p>依赖于机器，门槛高而且危险，不要用</p>
+<h3 id="旧式的强制类型转换"><a href="#旧式的强制类型转换" class="headerlink" title="旧式的强制类型转换"></a>旧式的强制类型转换</h3><p>本质上采用 const_cast、static_cast 或 reinterpret_cast 中的一种。</p>
+<p>旧式与新式相比没那么清晰明了，如果出现问题，追踪困难</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>(a);<span class="comment">// 函数形式的强制类型转换 </span></span><br><span class="line">(<span class="type">int</span>)a;<span class="comment">// c 语言风格的强制类型转换</span></span><br></pre></td></tr></table></figure>
+<h1 id="附录：优先级表"><a href="#附录：优先级表" class="headerlink" title="附录：优先级表"></a>附录：优先级表</h1><p><img src="https://tc.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/ZzOK/627X605/priority_level_1.png" alt="627X605&#x2F;priority_level_1.png"></p>
+<p><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250903/N7CE/631X880/priority_level_2.png" alt="631X880&#x2F;priority_level_2.png"></p>
 
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="209-长度最小的子数组-力扣（LeetCode）"><a href="#209-长度最小的子数组-力扣（LeetCode）" class="headerlink" title="209. 长度最小的子数组 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209. 长度最小的子数组 - 力扣（LeetCode）</a></h1><p>双指针维护子数组的左边界和右边界，一个变量记录和。</p>
-<p><strong>注意：当和大于等于target时，需要循环减去左边界，因为当新加入的数特别大时，只减一次是不够的</strong></p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="type">int</span> s = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> sum = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(f &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sum &gt;= target)&#123;</span><br><span class="line">                <span class="keyword">while</span>(sum &gt;= target)&#123;</span><br><span class="line">                    ans = <span class="built_in">min</span>(ans, f - s + <span class="number">1</span>);</span><br><span class="line">                    sum -= nums[s];</span><br><span class="line">                    s++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum &lt; target)&#123;</span><br><span class="line">                f++;</span><br><span class="line">                <span class="keyword">if</span>(f &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                    sum += nums[f];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == INT_MAX?<span class="number">0</span>:ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="58-区间和（第九期模拟笔试）"><a href="#58-区间和（第九期模拟笔试）" class="headerlink" title="58. 区间和（第九期模拟笔试）"></a><a target="_blank" rel="noopener" href="https://kamacoder.com/problempage.php?pid=1070">58. 区间和（第九期模拟笔试）</a></h1><p>可以暴力，但是太慢了。</p>
-<p>这里引入前缀和。前缀和可以简单理解为「数列的前n项的和」，是一种重要的预处理方式，能大大降低查询的时间复杂度。</p>
-<p>在这道题目中，计算的是区间内的和(设区间为a、b)，则该区间内的和就是前b项的和减去前a项的和。</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prefix</span><span class="params">(n + <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        prefix[i] = prefix[i - <span class="number">1</span>] + nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;a, &amp;b))&#123;</span><br><span class="line">        <span class="keyword">if</span> (a &gt; b) <span class="built_in">swap</span>(a, b);</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, prefix[b]);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = prefix[b] - prefix[a - <span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, ans);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="44-开发商购买土地（第五期模拟笔试）"><a href="#44-开发商购买土地（第五期模拟笔试）" class="headerlink" title="44. 开发商购买土地（第五期模拟笔试）"></a><a target="_blank" rel="noopener" href="https://kamacoder.com/problempage.php?pid=1044">44. 开发商购买土地（第五期模拟笔试）</a></h1><p>其实还是用前缀和的思想，但是这里最好是把整个二维数组观想成一维一维的数组（无论行列）。然后将每一维当作一个元素，去求整体的前缀和。</p>
-<p>因为无论怎么分，都是以一行或者一列为单位的，那么这里面所有的元素都会划在同一个区域</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vec</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m, <span class="number">0</span>)) ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            cin &gt;&gt; vec[i][j];</span><br><span class="line">            sum += vec[i][j];<span class="comment">//计算所有元素的和，因为只有两个区域</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> result = INT_MAX;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span> ; j &lt; m; j++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (j == m - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">            <span class="comment">//每经过一行，计算所有元素的和，然后计算result</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; n; i++) &#123;</span><br><span class="line">            count += vec[i][j];</span><br><span class="line">            <span class="keyword">if</span> (i == n - <span class="number">1</span>) result = <span class="built_in">min</span> (result, <span class="built_in">abs</span>(sum - count - count));</span><br><span class="line">			<span class="comment">//同样作用在列上</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; result &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/" itemprop="url">分层结构</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-11T00:00:00+08:00">
-                2025-07-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络复习</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>计算机网络的模型主要有OSI模型和TCP&#x2F;IP模型两种，本文将分别介绍对应模型中每一层的功能与最终的对比。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E7%BB%AA%E8%AE%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E7%BB%AA%E8%AE%BA/" itemprop="url">绪论</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-09T00:00:00+08:00">
-                2025-07-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络复习</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>本文将介绍计算机网络的概念以及进行信息交换的方式</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2025/07/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E7%BB%AA%E8%AE%BA/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1056,6 +694,1018 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/07/04/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/07/04/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E4%BB%A3%E7%A0%81/" itemprop="url">线程模块-代码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-07-04T00:00:00+08:00">
+                2024-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%8F%E7%A8%8B%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">协程库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="pthread的封装"><a href="#pthread的封装" class="headerlink" title="pthread的封装"></a>pthread的封装</h1><h2 id="为什么要封装"><a href="#为什么要封装" class="headerlink" title="为什么要封装"></a>为什么要封装</h2><p>首先我们主要是面向对象编程。面向对象编程有三个特点：【封装】、【继承】、【多态】。</p>
+<p>这里封装pthread是为了使用上更方便，因为虽然pthread提供了以下的一些功能：【Thread】,【Semaphore】,【Mutex】,【RWMutex】,【Spinlock】等</p>
+<p>但是都是最基本的功能，而我们开发中往往是多个功能相互结合相互配合着来使用的。</p>
+<p>这里封装是为了提供一些新的功能接口供方便使用</p>
+<h2 id="thread-h"><a href="#thread-h" class="headerlink" title="thread.h"></a>thread.h</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Thread</span>(std::function&lt;<span class="built_in">void</span>()&gt; cb, <span class="type">const</span> std::string&amp; name);</span><br><span class="line">	~<span class="built_in">Thread</span>();</span><br><span class="line">	<span class="function"><span class="type">pid_t</span> <span class="title">getId</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_id; &#125;<span class="comment">// 线程ID</span></span><br><span class="line">	<span class="function"><span class="type">const</span> std::string&amp; <span class="title">getName</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_name; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">join</span><span class="params">()</span></span>;<span class="comment">//线程结合</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// 获取系统分配的线程id</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">pid_t</span> <span class="title">GetThreadId</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 获取当前所在线程	</span></span><br><span class="line">	<span class="function"><span class="type">static</span> Thread* <span class="title">GetThis</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 获取当前线程的名字</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">const</span> std::string&amp; <span class="title">GetName</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 设置当前线程的名字</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">SetName</span><span class="params">(<span class="type">const</span> std::string&amp; name)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="comment">// 线程函数</span></span><br><span class="line">	<span class="function"><span class="type">static</span> <span class="type">void</span>* <span class="title">run</span><span class="params">(<span class="type">void</span>* arg)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="type">pid_t</span> m_id = <span class="number">-1</span>;<span class="comment">//进程的id</span></span><br><span class="line">	<span class="type">pthread_t</span> m_thread = <span class="number">0</span>;<span class="comment">//线程</span></span><br><span class="line">	<span class="comment">// 线程需要运行的函数</span></span><br><span class="line">	std::function&lt;<span class="type">void</span>()&gt; m_cb;</span><br><span class="line">	std::string m_name;<span class="comment">//线程的name</span></span><br><span class="line">	Semaphore m_semaphore;<span class="comment">//引入信号量的类来完成线程的同步创建。</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里涉及到的信号量封装会在后面介绍</p>
+<h2 id="thread-cpp"><a href="#thread-cpp" class="headerlink" title="thread.cpp"></a>thread.cpp</h2><p>初始化时通过pthread_create()绑定run函数为线程的入口函数。</p>
+<p>在这里run方法负责初始化线程和真正调用线程需要运行任务(函数对象cb)，</p>
+<p>使用Semaphore类控制线程初始化的同步，保证所有的线程都能初始化，防止未初始化的线程出现，</p>
+<p>GetThreadId()主要是使用系统调用获取真实的线程id，和getpid()返回的线程ID是一样的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/syscall.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> mycoroutine &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程信息</span></span><br><span class="line"><span class="type">static</span> <span class="keyword">thread_local</span> Thread* t_thread          = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="type">static</span> <span class="keyword">thread_local</span> std::string t_thread_name = <span class="string">&quot;UNKNOWN&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">pid_t</span> <span class="title">Thread::GetThreadId</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">syscall</span>(SYS_gettid);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Thread* <span class="title">Thread::GetThis</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t_thread;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> std::string&amp; <span class="title">Thread::GetName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t_thread_name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Thread::SetName</span><span class="params">(<span class="type">const</span> std::string &amp;name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t_thread) &#123;</span><br><span class="line">        t_thread-&gt;m_name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    t_thread_name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Thread::<span class="built_in">Thread</span>(std::function&lt;<span class="built_in">void</span>()&gt; cb, <span class="type">const</span> std::string &amp;name): </span><br><span class="line"><span class="built_in">m_cb</span>(cb), <span class="built_in">m_name</span>(name) </span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 将新创建线程的入口函数绑定到run</span></span><br><span class="line">    <span class="type">int</span> rt = <span class="built_in">pthread_create</span>(&amp;m_thread, <span class="literal">nullptr</span>, &amp;Thread::run, <span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">if</span> (rt) </span><br><span class="line">    &#123;</span><br><span class="line">        std::cerr &lt;&lt; <span class="string">&quot;pthread_create thread fail, rt=&quot;</span> &lt;&lt; rt &lt;&lt; <span class="string">&quot; name=&quot;</span> &lt;&lt; name;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(<span class="string">&quot;pthread_create error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 等待线程函数完成初始化</span></span><br><span class="line">    m_semaphore.<span class="built_in">wait</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//析构时对线程分离以确定会自动销毁</span></span><br><span class="line">Thread::~<span class="built_in">Thread</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_thread) &#123;</span><br><span class="line">        <span class="built_in">pthread_detach</span>(m_thread);</span><br><span class="line">        m_thread = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Thread::join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_thread) &#123;</span><br><span class="line">	    <span class="comment">// 因为不关心返回值去哪，所以直接设置为nullptr</span></span><br><span class="line">        <span class="type">int</span> rt = <span class="built_in">pthread_join</span>(m_thread, <span class="literal">nullptr</span>);</span><br><span class="line">        <span class="keyword">if</span> (rt) &#123;</span><br><span class="line">            std::cerr &lt;&lt; <span class="string">&quot;pthread_join failed, rt = &quot;</span> &lt;&lt; rt &lt;&lt; <span class="string">&quot;, name = &quot;</span> &lt;&lt; m_name &lt;&lt; std::endl;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(<span class="string">&quot;pthread_join error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 防止后续再次被join</span></span><br><span class="line">        m_thread = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">Thread::run</span><span class="params">(<span class="type">void</span>* arg)</span> </span>&#123;</span><br><span class="line">    Thread* thread = (Thread*)arg;</span><br><span class="line"></span><br><span class="line">    t_thread       = thread;</span><br><span class="line">    t_thread_name  = thread-&gt;m_name;</span><br><span class="line">    thread-&gt;m_id   = <span class="built_in">GetThreadId</span>();</span><br><span class="line">    <span class="comment">//pthread_self()获取当前线程的ID，设置m_name是前15个字节取，因为linux设置最多15</span></span><br><span class="line">    <span class="built_in">pthread_setname_np</span>(<span class="built_in">pthread_self</span>(), thread-&gt;m_name.<span class="built_in">substr</span>(<span class="number">0</span>, <span class="number">15</span>).<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; cb;</span><br><span class="line">    cb.<span class="built_in">swap</span>(thread-&gt;m_cb); <span class="comment">// swap -&gt; 可以减少m_cb中只能指针的引用计数</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化完成</span></span><br><span class="line">    thread-&gt;m_semaphore.<span class="built_in">signal</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cb</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<h2 id="static-thread-local又是什么意思？"><a href="#static-thread-local又是什么意思？" class="headerlink" title="static thread_local又是什么意思？"></a>static thread_local又是什么意思？</h2><p>static代表生命周期知道程序运行结束时候销毁，<strong>被 <code>thread_local</code> 修饰的变量，在每个线程中都有一个独立的副本</strong>。</p>
+<h2 id="对pthread-create、pthread-detch、pthread-join的详解"><a href="#对pthread-create、pthread-detch、pthread-join的详解" class="headerlink" title="对pthread_create、pthread_detch、pthread_join的详解"></a>对pthread_create、pthread_detch、pthread_join的详解</h2><h3 id="pthread-create"><a href="#pthread-create" class="headerlink" title="pthread_create"></a>pthread_create</h3><p>&#96;int pthread_create(pthread_t* restrict tidp,const pthread_attr_t* restrict_attr,void* (<em>start_rtn)(void</em>),void *restrict arg);</p>
+<ul>
+<li>输入参数： tidp:填入pthread_t类型参数。  </li>
+<li>attr:通常设置为NULL，用于定制各种不同的线程属性。  </li>
+<li>start_rtn:新创建线程的入口函数由此绑定。无参数把arg设置为NULL即可  </li>
+<li>返回值：成功返回0，否则返回错误码。</li>
+</ul>
+<p>线程的入口函数最开始都要先获取传入的参数:&#96;比如pthread_create(&amp;m_thread, nullptr, &amp;Thread::run, this);</p>
+<p>在run函数里先执行&#96;Thread* thread &#x3D; (Thread*)arg;</p>
+<h3 id="pthread-detch"><a href="#pthread-detch" class="headerlink" title="pthread_detch"></a>pthread_detch</h3><p>目的是为了确保线程在结束后能够正确的释放资源，而不需要主线程或其他线程进行join操作。一般适用的场景是在子线程要脱离主线程的管理，并且主线程不需要担心其资源的释放，简化了使用的复杂性。  </p>
+<p>避免了内存泄漏防止忘记调用join导致的内存泄露  </p>
+<h3 id="pthread-join"><a href="#pthread-join" class="headerlink" title="pthread_join"></a>pthread_join</h3><p>pthread_Join是POSIX线程库的一个函数，用于等待一个线程的终止并回收它的资源  </p>
+<p>值得说的一点就是一般都可以写nullptr。如果你需要接受某个实际的值，那就写一个实际的指针去接受它。</p>
+<h1 id="信号量的封装"><a href="#信号量的封装" class="headerlink" title="信号量的封装"></a>信号量的封装</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Semaphore</span> </span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::mutex mtx;                </span><br><span class="line">    std::condition_variable cv;    </span><br><span class="line">    <span class="type">int</span> count;                   </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 信号量初始化为0</span></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Semaphore</span><span class="params">(<span class="type">int</span> count_ = <span class="number">0</span>)</span> : count(count_) &#123;</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// P操作</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">wait</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (count == <span class="number">0</span>) &#123; </span><br><span class="line">            cv.<span class="built_in">wait</span>(lock); <span class="comment">// wait for signals</span></span><br><span class="line">        &#125;</span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// V操作</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">signal</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        count++;</span><br><span class="line">        cv.<span class="built_in">notify_one</span>();  <span class="comment">// signal</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/" itemprop="url">线程模块-知识储备</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-07-01T00:00:00+08:00">
+                2024-07-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%8F%E7%A8%8B%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">协程库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>先做一点基础的线程知识介绍（也算刚考完试做个总结）</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2024/07/01/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97-%E7%9F%A5%E8%AF%86%E5%82%A8%E5%A4%87/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/" itemprop="url">浅谈协程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-06-30T00:00:00+08:00">
+                2024-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%8F%E7%A8%8B%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">协程库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>探讨协程的底层实现，剖析开源库 libco 的实现，并在此基础之上实现一个简单的协程</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2024/06/30/%E6%B5%85%E8%B0%88%E5%8D%8F%E7%A8%8B/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/06/07/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E8%AF%AD%E5%8F%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/07/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E8%AF%AD%E5%8F%A5/" itemprop="url">语句</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-06-07T00:00:00+08:00">
+                2024-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-primer/" itemprop="url" rel="index">
+                    <span itemprop="name">C++ primer</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="简单语句"><a href="#简单语句" class="headerlink" title="简单语句"></a>简单语句</h1><h2 id="表达式语句"><a href="#表达式语句" class="headerlink" title="表达式语句"></a>表达式语句</h2><p>一个表达式加一个分号就是一个表达式语句，其执行表达式并丢弃掉求值结果</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ival + <span class="number">3</span>;<span class="comment">//一条没有实际用处的表达式语句 </span></span><br><span class="line">cout &lt;&lt; ival;<span class="comment">//一条有用的表达式语句</span></span><br></pre></td></tr></table></figure>
+<h2 id="空语句"><a href="#空语句" class="headerlink" title="空语句"></a>空语句</h2><p>空语句是最简单的语句，只有一个分号</p>
+<p>用在语法上需要一条语句，但是逻辑上不需要的地方。</p>
+<p>使用空语句块最好加注释</p>
+<h2 id="复合语句（块）"><a href="#复合语句（块）" class="headerlink" title="复合语句（块）"></a>复合语句（块）</h2><p>用花括号括起来的语句和声明序列都是复合语句（块），一个复合语句（块）就是一个作用域</p>
+<p>空块的作用等价于一个空语句</p>
+<h1 id="语句作用域"><a href="#语句作用域" class="headerlink" title="语句作用域"></a>语句作用域</h1><p>可以在 if、switch、while、for 语句的控制结构内定义变量。</p>
+<p>这些定义的变量只能在这些语句的复合语句中使用</p>
+<p>常见的语句有条件语句、循环语句、跳转语句三种。</p>
+<h1 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h1><h2 id="if语句"><a href="#if语句" class="headerlink" title="if语句"></a>if语句</h2><p>if 语句有两种形式，一种有 else 分支，另一种没有。</p>
+<p>c++ 规定 else 与离他<strong>最近的在同一作用域的尚未匹配的</strong> if 匹配</p>
+<p>使用 if 语句最好在所有的 if 和 else 之后都用花括号</p>
+<h2 id="switch语句"><a href="#switch语句" class="headerlink" title="switch语句"></a>switch语句</h2><p>switch 语句计算一个整型表达式的值，然后根据这个值从几条执行路径中选择一条。如果没有任何一个 case 标签匹配 switch 表达式的值，就执行 default 分支。</p>
+<p>case 关键字和它对应的值一起被称为 case 标签，case 标签必须为<strong>整型常量表达式</strong>。</p>
+<p>default 也是一种特殊的 case 标签。</p>
+<p>注意：如果switch条件值在某个case标签满足后，程序将从该case标签一直执行到switch末尾或者遇到第一个break。因此一般在每个 case标签后都有一条 break 语句。如果需要两个或多个值共享同一组操作，可以故意省略掉 break 语句</p>
+<p>一条switch语句后可以跟多条语句，而不需要花括号</p>
+<blockquote>
+<p>[!NOTE] 为了代码的可阅读性，一般有以下规范<br>一般不要省略 case 分支最后的 break 语句。如果没有 break 语句，最好注释一下。</p>
+<p>即使不准备在 default 下做任何工作，最好也定义一个 default 标签。</p>
+<p>如果要在 case 分支定义并初始化变量，应该定义在块内以约束其作用域</p>
+</blockquote>
+<h1 id="迭代语句"><a href="#迭代语句" class="headerlink" title="迭代语句"></a>迭代语句</h1><h2 id="while语句"><a href="#while语句" class="headerlink" title="while语句"></a>while语句</h2><p>其条件不能为空，可以是一个表达式或者带初始化的变量声明</p>
+<p>定义在条件部分或者循环体内的变量每次迭代都会重新创建和销毁</p>
+<p>一般使用于不知道多少次的循环</p>
+<h2 id="传统for语句"><a href="#传统for语句" class="headerlink" title="传统for语句"></a>传统for语句</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(init-statement; condition; expression) </span><br><span class="line">	statement;</span><br></pre></td></tr></table></figure>
+<p>init-statement 可以是声明语句、表达式语句或空语句。init-statement 可以定义多个对象，但是只能有一条声明语句。</p>
+<p>expression 在每次循环之后执行。</p>
+<p>for 语句头能省略掉三者中的任意一个或全部。</p>
+<p>如果省略 condition ，条件恒为 true。</p>
+<h2 id="范围for语句"><a href="#范围for语句" class="headerlink" title="范围for语句"></a>范围for语句</h2><p>用来遍历<strong>容器或其他序列</strong>的所有元素</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(declaration : expression) </span><br><span class="line">	statement;</span><br></pre></td></tr></table></figure>
+<p>expression表示的必须是一个序列（可以是用花括号括起来的初始值列表）。共同特点的是都可以返回迭代器的 begin 和 end 成员</p>
+<p>declaration定义一个能从序列中元素转换而来的变量（<strong>不是迭代器</strong>），最简单的方法为用auto</p>
+<p>如果需要执行写操作，必须将循环变量声明成引用类型。不需要写时最好都声明为常量引用</p>
+<p>每次迭代都会重新定义循环控制变量，并将其初始化为序列的下一个值。</p>
+<p><strong>绝对不要在范围 for 语句改变序列的元素数量</strong>。因为其预存了 end() 的值，改变元素数量后 end() 的值就可能失效了</p>
+<h2 id="dowhile语句"><a href="#dowhile语句" class="headerlink" title="dowhile语句"></a>dowhile语句</h2><p>do while 语句与 while 语句的唯一区别就是它先执行循环体后检查条件。即至少执行一次循环。</p>
+<p>注意：do while 后不要忘了加分号。</p>
+<p>因为 condition 在循环体后面，所以 condition 使用的变量应该定义在循环体外面。</p>
+<h1 id="跳转语句"><a href="#跳转语句" class="headerlink" title="跳转语句"></a>跳转语句</h1><h2 id="break"><a href="#break" class="headerlink" title="break"></a>break</h2><p>终止离它最近的 while、do while、for 或 switch 语句，并从这些语句之后的第一条语句开始执行。</p>
+<p>break 语句只能出现在迭代语句或 switch 内部</p>
+<h2 id="continue语句"><a href="#continue语句" class="headerlink" title="continue语句"></a>continue语句</h2><p>终止最近的循环中的当前迭代并开始下一次迭代。</p>
+<p>continue 只能出现在迭代语句内部</p>
+<h2 id="goto语句"><a href="#goto语句" class="headerlink" title="goto语句"></a>goto语句</h2><p>作用是从 goto 语句无条件跳转到同一函数内的另一条语句</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">label: <span class="type">int</span> a = <span class="number">1</span>; </span><br><span class="line"><span class="keyword">goto</span> label;</span><br></pre></td></tr></table></figure>
+<p>label 是用于标识一条语句的标示符</p>
+<p>标签标示符独立于变量或其他标示符的名字，标签标示符可以和程序中其他实体的标示符使用同一个名字而不会相互干扰。</p>
+<p>如果 goto 语句跳回了一条变量的定义之前意味着系统将会销毁该变量，然后重新创建它。</p>
+<p><strong>不要使用 goto，它会令程序又难理解又难修改</strong></p>
+<h1 id="try和异常处理"><a href="#try和异常处理" class="headerlink" title="try和异常处理"></a>try和异常处理</h1><p>异常是指存在于运行时的反常行为，典型的有失去数据库连接和意外输入等等。</p>
+<p><strong>处理异常可能是最难的部分</strong></p>
+<p>当程序检测到一个无法处理的问题时，就需要异常处理，此时检测到问题的部分应该发出检测信号。</p>
+<p>如果程序里有可能引发异常的代码，也应该有专门的代码处理问题</p>
+<p>C++的异常处理机制为异常检测和异常处理提供支持。包括：</p>
+<ol>
+<li>throw表达式：异常检测部分使用throw表达式来表示遇到了无法处理的问题</li>
+<li>try语句块：异常处理部分使用try语句块处理异常，以关键字try开始，一个或多个catch结束</li>
+<li>一套异常类：用于在 throw 表达式和相关的 catch 子句间传递异常的具体信息</li>
+</ol>
+<h2 id="throw表达式"><a href="#throw表达式" class="headerlink" title="throw表达式"></a>throw表达式</h2><p>throw 表达式包含关键字 throw 和紧随其后的一个表达式，表达式的类型就是抛出的异常类型</p>
+<p>即 throw 后面跟一个异常类型的对象（必须同时使用 string 或 C 风格字符串对其初始化）</p>
+<p><code>throw runtime_error(&quot;Data must be same as size&quot;);//使用 throw 表达式抛出一个运行时错误。</code></p>
+<h2 id="try语句块"><a href="#try语句块" class="headerlink" title="try语句块"></a>try语句块</h2><p>跟在 try 块后面的是一个或多个 catch 子句。catch子句包括三部分：关键字catch、括号内一个异常类型的对象的声明（即异常声明）、一个块</p>
+<p>当try语句中抛出了一个异常，如果该异常类型与catch子句中的异常类型相同，就会执行该catch子句</p>
+<p>catch一旦完成，程序跳转到try语句块最后一个catch子句之后的那条语句执行</p>
+<p>在catch后的括号中使用省略号…可以让catch捕获所有异常</p>
+<p>每个标准库异常类都有一个 what 成员函数，它没有参数，返回初始化该对象时所用的 C 风格字符串</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123; </span><br><span class="line">	<span class="keyword">throw</span> <span class="built_in">runtime_error</span>(<span class="string">&quot;Data must be same as size&quot;</span>);<span class="comment">//try 语句块抛出了一个异常 </span></span><br><span class="line">&#125; </span><br><span class="line"><span class="built_in">catch</span>(runtime_error err)<span class="comment">//在 catch 后面的括号中声明了一个“runtime_error”类型的对象，与 try 抛出的异常类型相同，接下来执行此子句。 </span></span><br><span class="line">	&#123; </span><br><span class="line">		cout &lt;&lt; err.<span class="built_in">what</span>();<span class="comment">//输出 &quot;Data must be same as size&quot; </span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[!NOTE] 函数在寻找处理代码的过程中退出<br>throw 语句可能出现在嵌套的 try 语句块中或在 try 语句块中调用的某个函数内。</p>
+<p>当异常抛出的时候，会从内到外一层层寻找相应类型的catch子句。如果最后还是没找到，会调用terminate函数调用来终止程序</p>
+<p>如果 throw 语句外就没有 try 语句块，也会执行 terminate 函数</p>
+<p>异常中断了程序的正常流程。当发生异常，程序执行到一半就中断了，可能会存在如资源没有正常释放，对象没有处理完成等情况。异常安全的代码要求在异常发生时能正确执行清理工作。这个非常困难</p>
+</blockquote>
+<h2 id="标准异常"><a href="#标准异常" class="headerlink" title="标准异常"></a>标准异常</h2><p>C++ 标准库定义了一组异常类，用于报告标准库函数遇到的问题。他们定义在 4 个头文件中</p>
+<p>定义在stdexcept头文件中的类型必须使用string对象或者C风格字符串来初始化，其他的3个头文件中的类型则只能默认初始化，</p>
+<p>异常类型只有一个 what 成员函数，该函数没有参数，返回是一个 C 风格字符串的指针，目的是提供关于异常的文本信息</p>
+<p>对于无初始值的异常类型，what 返回的内容由编译器决定，有初始值的返回初始值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//exception头文件 </span></span><br><span class="line">exception           <span class="comment">// 异常类 exception 是最通用的异常类。它只报告异常的发生，不提供额外信息。 </span></span><br><span class="line"><span class="comment">//new头文件</span></span><br><span class="line">bad_alloc           <span class="comment">// 异常类 bad_alloc。在使用 new 分配动态内存失败时抛出 </span></span><br><span class="line"><span class="comment">//type_info头文件 </span></span><br><span class="line">bad_cast            <span class="comment">// 异常类型 bad_cast。经常发生在使用 dynamic_cast 时发生。 //stdexcept头文件 </span></span><br><span class="line">exception runtime_error       <span class="comment">// 只有在运行时才能检测出的问题 </span></span><br><span class="line">range_error         <span class="comment">// 运行时错误：生成的结果超出了有意义的值域范围 overflow_error      // 运行时错误：计算上溢 </span></span><br><span class="line">underflow_error     <span class="comment">// 运行时错误：计算下溢 </span></span><br><span class="line">logic_error         <span class="comment">// 程序逻辑错误 </span></span><br><span class="line">domain_error        <span class="comment">// 逻辑错误：参数对象的结果值不存在 </span></span><br><span class="line">invalid_argument    <span class="comment">// 逻辑错误：无效参数 </span></span><br><span class="line">length_error        <span class="comment">// 逻辑错误：试图创建一个超出该类型最大长度的对象 out_of_range        // 逻辑错误：使用一个超出有效范围的值</span></span><br></pre></td></tr></table></figure>
+<p>上述几个类的具体继承关系如下图<br><img src="https://tc-new.z.wiki/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20250904/pYAn/656X562/exception_inherit.png" alt="656X562&#x2F;exception_inherit.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/05/31/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/05/31/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/" itemprop="url">字符串、向量和数组</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-05-31T00:00:00+08:00">
+                2024-05-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-primer/" itemprop="url" rel="index">
+                    <span itemprop="name">C++ primer</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>本文为阅读C++ primer第三章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2024/05/31/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/05/24/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/05/24/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" itemprop="url">变量和基本类型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-05-24T00:00:00+08:00">
+                2024-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-primer/" itemprop="url" rel="index">
+                    <span itemprop="name">C++ primer</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>本文为阅读C++ primer第二章的读书笔记，仅作为查找以及防止遗忘对应知识点作用，不可替代原书。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2024/05/24/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1106,7 +1756,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1117,7 +1767,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
