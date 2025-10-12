@@ -81,7 +81,7 @@
 
 <meta name="description" content="回声客户端的完美实现服务端没有问题 回声客户端的问题实际上就是没有考虑拆包和粘包的情况。 回声客户端问题的解决方法解决方法的核心：提前确定接收数据的大小。 客户端上一次使用 write 从套接字发送了多少字节，紧接着就使用 read 从套接字读取多少字节。 程序示例见 echo_client2.c 定义应用层协议上面的回声客户端中，提前就知道要接收的数据长度，但是一般是不知道的。这种情况下，要解决">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于TCP的服务器端和客户端-1">
+<meta property="og:title" content="基于TCP的服务器端和客户端-2">
 <meta property="og:url" content="https://snccekl.github.io/2024/06/08/%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF-2/index.html">
 <meta property="og:site_name" content="Snccekl">
 <meta property="og:description" content="回声客户端的完美实现服务端没有问题 回声客户端的问题实际上就是没有考虑拆包和粘包的情况。 回声客户端问题的解决方法解决方法的核心：提前确定接收数据的大小。 客户端上一次使用 write 从套接字发送了多少字节，紧接着就使用 read 从套接字读取多少字节。 程序示例见 echo_client2.c 定义应用层协议上面的回声客户端中，提前就知道要接收的数据长度，但是一般是不知道的。这种情况下，要解决">
@@ -89,7 +89,7 @@
 <meta property="og:image" content="https://edgeone.51shazhu.com/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251011/bMlH/456X158/run_op-client.png">
 <meta property="og:image" content="https://edgeone.51shazhu.com/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251011/fPlt/741X292/true_IO_in_TCP.png">
 <meta property="article:published_time" content="2024-06-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-12T06:21:24.744Z">
+<meta property="article:modified_time" content="2025-10-12T06:50:53.388Z">
 <meta property="article:author" content="snccekl">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="网络编程">
@@ -130,7 +130,7 @@
 
 
 
-  <title>基于TCP的服务器端和客户端-1 | Snccekl</title>
+  <title>基于TCP的服务器端和客户端-2 | Snccekl</title>
   
 
 
@@ -328,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">基于TCP的服务器端和客户端-1</h1>
+          <h1 class="post-title" itemprop="name headline">基于TCP的服务器端和客户端-2</h1>
         
 
         <div class="post-meta">
@@ -472,7 +472,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://snccekl.github.io/2024/06/08/%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF-2/" title="基于TCP的服务器端和客户端-1">https://snccekl.github.io/2024/06/08/%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF-2/</a>
+    <a href="https://snccekl.github.io/2024/06/08/%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF-2/" title="基于TCP的服务器端和客户端-2">https://snccekl.github.io/2024/06/08/%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF-2/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -512,8 +512,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2024/06/09/%E5%9F%BA%E4%BA%8EUDP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="prev" title="基于TCP的服务器端和客户端-1">
-                基于TCP的服务器端和客户端-1 <i class="fa fa-chevron-right"></i>
+              <a href="/2024/06/09/%E5%9F%BA%E4%BA%8EUDP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="prev" title="基于UDP的服务器端和客户端">
+                基于UDP的服务器端和客户端 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -591,7 +591,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
