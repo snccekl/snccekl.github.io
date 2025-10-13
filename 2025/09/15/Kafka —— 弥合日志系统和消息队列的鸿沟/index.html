@@ -86,11 +86,13 @@
 <meta property="og:site_name" content="Snccekl">
 <meta property="og:description" content="一个崭新的针对日志处理的消息系统，名为 Kafka。Kafka 兼顾了日志聚合需求和消息队列需求。一方面来说，Kafka 是一个支持平滑扩展，支持高吞吐的分布式系统；另一方面，Kafka 提供了类似于消息队列的 API，并且允许应用对日志消息进行实时消费。 论文发表时，Kafka 已经在 LinkedIn 上线了六个多月，只用一个系统就满足了我们两大方面的需求，从而极大简化了我们的基础设施">
 <meta property="og:locale">
+<meta property="og:image" content="https://dl.z.wiki/autoupload/fr/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251013/4iob/1246X827/kafka_structure.png">
 <meta property="article:published_time" content="2025-09-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-13T12:15:18.052Z">
+<meta property="article:modified_time" content="2025-10-13T13:54:33.560Z">
 <meta property="article:author" content="snccekl">
 <meta property="article:tag" content="java and Compiler security">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dl.z.wiki/autoupload/fr/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251013/4iob/1246X827/kafka_structure.png">
 
 
 
@@ -423,7 +425,7 @@
 
 <p>消费者通过创建一个或多个流来订阅 topic，被发布到相应 topic 的消息会渐次进入这些消费者创建的订阅流。</p>
 <p>在语言层面，我们将每个消息流抽象为一个迭代器（Iterator）， 消费者利用该迭代器取出一条条消息的消息体以进行处理。和一般的迭代器不同，我们的迭代器永不停止，当无新消息到来时，迭代器就会一直阻塞。我们同时支持两种消费模式，既可以一组消费者对某个 topic 进行<strong>互斥</strong>消费，也可以每个消费者对同一个主题进行<strong>独立</strong>消费。</p>
-<h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p>![[kafka structure.png]]<br>Kafka 是分布式系统，因此一个 Kafka 集群中会包含多个 broker 机器。为了均摊负载，每个 topic 被切分成多个分片（Partition），每个 broker 机器持有其中的一个或多个分片。多个生产者和消费者可以同时进行消息的生产和消费</p>
+<h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="https://dl.z.wiki/autoupload/fr/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251013/4iob/1246X827/kafka_structure.png" alt="1246X827&#x2F;kafka_structure.png"><br>Kafka 是分布式系统，因此一个 Kafka 集群中会包含多个 broker 机器。为了均摊负载，每个 topic 被切分成多个分片（Partition)，每个 broker 机器持有其中的一个或多个分片。多个生产者和消费者可以同时进行消息的生产和消费</p>
 <h2 id="单个分区的效率"><a href="#单个分区的效率" class="headerlink" title="单个分区的效率"></a>单个分区的效率</h2><h3 id="极简的存储设计"><a href="#极简的存储设计" class="headerlink" title="极简的存储设计"></a>极简的存储设计</h3><p>一个 topic 的每个分区就是逻辑上的一段日志。具体到物理上，为了防止分区文件过大，我们会将其进一步分成数据段（segment）</p>
 <p>每次数据往最新的数据段中写，写到设定容量（比如说 1G）后，就会新建一个段文件继续写。此外，为了提高写入性能，我们会将日志记录在内存中进行缓存，只有日志数量达到设定值或者缓存数据的大小达到设定值时，才会将数据刷到外存中。为了保证可靠性，只有数据刷到了外存后，才会将其暴露给消费者。</p>
 <p>Kafka存储的每条消息没有显式的消息ID，而仅通过该条消息在分片中的偏移量（offset）来定位。这样我们省却了为了随机查找而建立的索引的额外开销。值得一提的是，我们的偏移量并不是连续的，而是类似于 TCP 中的 SEQ 的字节 offset—— 为了计算下一条消息的偏移量，我们需要将当前消息偏移量加上当前消息长度</p>
