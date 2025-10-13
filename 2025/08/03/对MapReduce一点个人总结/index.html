@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MapReduce 是谷歌 2004 年（Google 内部是从 03 年写出第一个版本）发表的论文里提出的一个概念。虽然已经过去 15 年了，但现在回顾这个大数据时代始祖级别概念的背景、原理和实现，仍能获得对分布式系统的很多直觉性的启发，所谓温故而知新。 本人在学习hadoop和MapReduce以及了解了Spark，并且完成了一个小的项目后，决定写一个总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Map和Reduce个人总结">
+<meta property="og:url" content="https://snccekl.github.io/2025/08/03/%E5%AF%B9MapReduce%E4%B8%80%E7%82%B9%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Snccekl">
+<meta property="og:description" content="MapReduce 是谷歌 2004 年（Google 内部是从 03 年写出第一个版本）发表的论文里提出的一个概念。虽然已经过去 15 年了，但现在回顾这个大数据时代始祖级别概念的背景、原理和实现，仍能获得对分布式系统的很多直觉性的启发，所谓温故而知新。 本人在学习hadoop和MapReduce以及了解了Spark，并且完成了一个小的项目后，决定写一个总结">
+<meta property="og:locale">
+<meta property="og:image" content="https://edgeone.51shazhu.com/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251013/gJdB/1263X915/Execution_overview.png">
+<meta property="article:published_time" content="2025-08-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-13T09:08:07.251Z">
+<meta property="article:author" content="snccekl">
+<meta property="article:tag" content="java and Compiler security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edgeone.51shazhu.com/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251013/gJdB/1263X915/Execution_overview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://snccekl.github.io/2025/08/03/对MapReduce一点个人总结/"/>
+
+
+
+
+
+  <title>Map和Reduce个人总结 | Snccekl</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Snccekl</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/08/03/%E5%AF%B9MapReduce%E4%B8%80%E7%82%B9%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Map和Reduce个人总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-08-03T00:00:00+08:00">
+                2025-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%EF%BC%8C-hadoop/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据， hadoop</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span id="busuanzi_value_page_pv"></span>次阅读
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MapReduce 是谷歌 2004 年（Google 内部是从 03 年写出第一个版本）发表的论文里提出的一个概念。虽然已经过去 15 年了，但现在回顾这个大数据时代始祖级别概念的背景、原理和实现，仍能获得对分布式系统的很多直觉性的启发，所谓温故而知新。</p>
+<p>本人在学习hadoop和MapReduce以及了解了Spark，并且完成了一个小的项目后，决定写一个总结</p>
+<span id="more"></span>
+<h1 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h1><p>在 Google 的语境里，MapReduce 既是一种编程模型，也是支持该模型的一种分布式系统实现。</p>
+<p>它的提出，让没有分布式系统背景的开发者，也能较轻松的利用大规模集群以高吞吐量的方式来处理海量数据。</p>
+<p>其解决问题思路很值得借鉴：找到需求的痛点（如海量索引如何维护，更新和排名），对处理关键流程进行高阶抽象（分片 Map，按需 Reduce），以进行高效的系统实现（所谓量体裁衣）。</p>
+<p>这其中，如何找到一个合适的计算抽象，是最难的部分，既要对需求有直觉般的了解，又要具有极高的计算机科学素养</p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>谷歌当时作为互联网的最大入口，维护着世界全网索引，最早触到了数据量的天花板。即，哪怕针对很简单的业务逻辑：如从爬虫数据中生成倒排索引、将图状网页集合用不同方式组织、计算每个主机爬取的网页数量、给定日期的高频查询词汇等等，在全球互联网数据的尺度的加成下，也变的异常复杂。</p>
+<p>这些复杂性包括：输入数据分散在非常多的主机上、计算耗资源太多单机难以完成、输出数据需要跨主机进行重新组织。为此，不得不针对每个需求重复构造专用系统，并耗费大量代码在分发数据和代码、调度和并行任务、应对机器故障和处理通信失败等问题上。</p>
+<h1 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h1><p>map 和 reduce 的抽象灵感来自于函数式编程语言 Lisp，为什么选定这两个概念呢？这来源于谷歌人对其业务的高度提炼：</p>
+<ol>
+<li>输入可以切分成一个个逻辑的记录 （record）</li>
+<li>对每个record执行某种<strong>映射</strong> （map）操作，生成一些键值对组成的中间结果（为什么要分键和值呢？为最后一步做铺垫，允许用户将中间结果以任意指定的方式 —— 键，来进行组织规约）</li>
+<li>最后在具有相同键的中间结果子集上执行规约（reduce，包括排序，统计，提取最值等等）操作。</li>
+</ol>
+<p>另一个关键的特点在于对Map操作实现的约束，规定用户应该实现一个无副作用的map 操作。如此限制，好处有二，一是可以进行大规模并行执行，二是可以通过换地儿重试来屏蔽主机故障。</p>
+<h2 id="抽象实现"><a href="#抽象实现" class="headerlink" title="抽象实现"></a>抽象实现</h2><p>map和reduce都是用户自定义函数。</p>
+<p>map函数接收一个record,不过为了灵活，一般也组织为键值对，然后经过一定的操作后得到List&lt;key，value&gt;。</p>
+<p>reduce 函数接受一个 key 和该 key 对应的所有中间结果 List &lt; value &gt;</p>
+<p>考虑示例级程序：word_count</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">map(String key, String value):</span><br><span class="line">    <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents</span></span><br><span class="line">    <span class="keyword">for</span> each word w in value:</span><br><span class="line">      EmitIntermediate(w, <span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values):</span><br><span class="line">    <span class="comment">// key: a word</span></span><br><span class="line">    <span class="comment">// values: a list of counts</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">      result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>有两个比较重要的点：</p>
+<ol>
+<li>中间变量需要网络传输，必然涉及到序列化。MapReduce 的最初版本选择是一切解释权归<strong>运行时的</strong>用户代码所有，我只是传 string。即，规定用户在 map 中将任何输出的中间结果对象都转换为 string，然后在 reduce 函数中接收该 Iterator &lt; string &gt;后，自行解析为自己想要的格式。当然，在后来的模仿框架如 Hadoop 中，序列化和解序列化部分被拿了出来，可以由用户来自定义实现来满足功能或性能上的需求</li>
+<li>reduce接收的value集合被组织成迭代器。它是一个很简单的接口，包括 next 和 stop 两个语义。配合 for loop ，构成一个很强大的抽象。不管你底层是一个内存中的 List、还是文件内容、还是网络 IO 流，只要能在运行时知道如何得到下一条记录，什么时候时候停止，都能被 for 循环来利用，进行逐一处理。迭代器抽象的一个好处在于，不必将待迭代的内容一次加载到内存，可以对数据增量式的<strong>惰性加载</strong>。MapReduce 框架的此处实现也正是利用了该特性。</li>
+</ol>
+<h1 id="实现一览"><a href="#实现一览" class="headerlink" title="实现一览"></a>实现一览</h1><h2 id="流程概览"><a href="#流程概览" class="headerlink" title="流程概览"></a>流程概览</h2><p>输入由用户指定切分大小后，切分成M份，然后分散到不同机器上 (由于 GFS 的存在，也可能该输入 Block 本来就在那台机器上）。</p>
+<p>然后每个机器并行跑用户定义的map，输出的中间结果由用户指定的key值范围切分为R份，</p>
+<p>对于每个中间结果，通过 node label &#x3D; hash(key) mod R 决定其去处。<br><img src="https://edgeone.51shazhu.com/autoupload/f/RuvdRZQ0l1ljDPQRlKtxANiO_OyvX7mIgxFBfDMDErs/20251013/gJdB/1263X915/Execution_overview.png" alt="1263X915&#x2F;Execution_overview.png"></p>
+<ol>
+<li>首先将输入切分M份，每份通常16-64M，然后把这些分片分散到不同机器上（如果有 GFS 这种分布式文件系统配合的话，可能本来就分散着）。然后在每个机器上 fork 一份用户的代码<blockquote>
+<pre><code>[!NOTE] 由于语言的区别，分发不同
+比如谷歌的 C++，可能传输的是动态链接库；比如 Hadoop 的 Java 传的可能是 jar 包 （当然， 所有依赖也得传）；如果是 PySpark 的 Python 呢，可能用的就是神奇的 cloudpickle；总之，不同语言需要考虑的传输机制是不一样的，比如说动态语言和静态语言；此外，全局变量和外部依赖也是需要考虑的点
+</code></pre>
+</blockquote>
+</li>
+<li>对于Master节点，它的程序并不是用户的运行代码，而是负责安排这 M 个 map 任务和 R 个 reduce 任务。这需要考虑的是，worker 执行每个用户代码是单独启动一个进程，还是插入到系统 loop 中去执行。</li>
+<li>对于执行Mapper任务的Worker，会读取被分配到的输入切片，解析出键值对流，送给用户定义的 map 函数。map 后产生的临时结果首先会缓存在内存中。</li>
+<li>缓存的中间结果会被定期在执行 Map Task 的<strong>机器本地</strong>进行刷盘，并且按用户指定的 Partition 函数拆分成 R 个块，然后将这些位置信息发给 Master 节点。Master 负责通知相应的 Reduce Worker 以拉取对应数据。</li>
+<li>Reduce Worker 收到这些中间结果的位置信息后，会通过 RPC 来拉取其对应的 Partition 的数据。对于某个 Reduce Worker 来说，待<strong>所有数据</strong>拉取完成后，会将其按照 key 来进行排序<blockquote>
+<pre><code>[!NOTE] shuffle
+ 第4和第5步合起来就是Shuffle，涉及到外部排序、多机数据传输等耗时的操作。当数据量小的时候随便搞，但是大的时候就必须要优化
+</code></pre>
+</blockquote>
+</li>
+<li>等到中间数据排好序后，Reduce Woker 会对其进行扫描，然后将一个个 key 和其对应的值集合，即 &lt;k2, list (v2)&gt; 传给用户定制的 reduce 函数，然后将生成的结果追加到最终输出文件。对于谷歌来说，一般来说就是支持并行 append 的文件系统 GFS，好处在于可以多进程同时写结果</li>
+<li>当所有 reduce 任务完成后，master 会唤醒用户进程，即在用户代码的视角，MapReduce 任务是阻塞的。</li>
+</ol>
+<p>一般而言，用户无需将最终结果的R个Partition合并，而是将其直接作为下一个 MapReduce 任务的输入。Spark RDD 的 partition 就是将这一特点<strong>概念化</strong>了，并且将每一步 MapReduce 输出也放内存中，不进行落盘，以降低连续 MapReduce 任务的延迟。</p>
+<h2 id="局部性"><a href="#局部性" class="headerlink" title="局部性"></a>局部性</h2><p>在 MapReduce 系统中，我们也会充分利用输入数据的 locality。只不过这次，<em>不是将数据加载过来，而是将程序调度过去</em>（<em><strong>Moving Computation is Cheaper than Moving Data</strong></em>）。</p>
+<p>如果输入存在 GFS 上，表现形式将为一系列的逻辑 Block，每个 Block 可能会有几个（一般是三个）物理副本。对于输入每个逻辑 Block，我们可以在其某个物理副本所在机器上运行 Map Task（如果失败，就再换一个副本），由此来尽量减小网络数据传输。从而降低了延迟，节约了带宽。</p>
+<h2 id="单点的Master"><a href="#单点的Master" class="headerlink" title="单点的Master"></a>单点的Master</h2><p>在分布式系统中，一个比较忌讳的问题就是单点。因为是牵一发而动全身，而 Master 就是这样一个单点。</p>
+<p>当然单个机器的统计平均故障率并不高，但是一旦故障，那么整个集群都将不可用。但同时，有一个 Leader 节点会大大简化分布式系统的的设计；因此采用单点 Master 的系统反而是主流，</p>
+<p>那势必需要开发一些其他手段来强化 master 的容错能力，比如说log + snapshot、比如说主从备份、比如说每次从 worker 心跳进行状态重建、比如说用其他实现了分布式一致性协议的系统来保存元信息等等。</p>
+<h2 id="容错"><a href="#容错" class="headerlink" title="容错"></a>容错</h2><h3 id="Worker"><a href="#Worker" class="headerlink" title="Worker"></a>Worker</h3><p>Worker 由于数量大，有机器故障概率较大。</p>
+<p>在分布式系统中，Master 获取 Workers 的信息，最常见便是<strong>心跳</strong>，既可以是 master ping worker，也可以反过来，也可以兼而有之。master 通过心跳发现某些 worker 不可到达后（可能是 worker 死掉了，也可能是网络出问题了等），就会将该 Worker 打个<strong>故障</strong>（failed）的标记。</p>
+<p>之前已经调度到该故障 Worker 上的任务（Task） 很显然有两种类型： Map Task 和 Reduce Task。</p>
+<ol>
+<li><strong>对于 Map Task</strong>（<em>以下所提的 Task，肯定是从属于未结束的 Job</em>） ，不管成功与否，我们都要进行重试，因为一旦该 Worker 变为不可达，存于其上的中间结果也随之无法被 Reduce Task 获取。当然，我们可以在 Master 中多记点状态来减少对已完成的 Map Task 进行重试的概率。比如记下某个 Map Task 的输出是否已经都被 Reduce Task 拉取，以决定要不要对正常完成的 Map Task 进行重试</li>
+<li>对于 <strong>Reduce Task</strong>，未完成的无疑要进行重试，已经完成的，由于其输出结果我们假设会写到全局分布式系统文件中（即某些机器挂了也不影响），就不会重试。</li>
+</ol>
+<h3 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h3><p>如果在实践中 Master 确实很少死掉，并且偶尔死掉造成所有正在运行的任务失败的后果也可以接受，那么就可以粗暴的实现为如果 Master 死掉，就简单通知所有正在运行的任务的用户代码任务失败了（比如返回非 0 值），然后有用户代码自行决定丢弃任务还是待集群重启后进行重试：</p>
+<p>如果不能接受，那以下是增加容错性的办法：</p>
+<ol>
+<li><strong>snapshot + log</strong>：将 Master 的内存数据结构定期做快照（snapshot）同步到一个持久存储，可以写到外部或者同步到其他节点，可以一份也可以多份，但是时间间隔不好选，间隔太长容易造成恢复时状态丢失过多；间隔过短会加重系统负载。常用的辅助手段是记log，即对每个会改变系统的状态的操作进行记录，这样就可以选择长一点的快照间隔，恢复时，先加载快照，再叠加上快照点之后的日志。</li>
+<li>主从备份：比如 Hadoop 原先的 secondary namenode，用属于不同容错阈两台机器都作为 Master，只不过一个用来响应请求，另一个用来实时同步状态。等某台机器故障发生时，立即将流量切换到另一个机器上。至于其同步机制，则是另一个可以考量的点。</li>
+<li>状态外存：如果元数据量不大，可以用 Zookeeper 或者 etcd 这种实现了分布式一致性协议的集群来保存。由于这些集群本身具有容错能力，因此可以认为避免了单点故障。</li>
+<li><strong>心跳恢复</strong>：重新启动一个 Master 后，利用所有 Worker 报上来的信息进行 Master 数据结构的重建。</li>
+</ol>
+<p><strong>容错也需要用户侧代码做配合</strong>。因为框架会对不成功的 map&#x2F;reduce 用户代码进行重试。这就要求，用户提供的 map&#x2F;reduce 逻辑符合<strong>确定性</strong>（<strong>Deterministic</strong>）：即函数的输出依赖且仅依赖于输入，而不取决任何其他隐形的输入或者状态。当然，这个蕴含了<strong>幂等性</strong>（<strong>Idempotency</strong>）：多次执行和一次执行效果一样；但是幂等性并不能推出确定性；假设有这么一个函数，它第一次执行造成了一些状态改变（比如某些释放资源的 dispose 函数），而后续发现状态已经改变过了就不再改变该状态，那么它符合幂等性；但是由于其含有隐式状态输入，不是确定性的。</p>
+<p>如果 map&#x2F;reudce 函数是确定性的，那么框架就可以放心大胆重试了。某些条件下，幂等性也可以接受，比如保存隐式状态的地方很牢靠。举个栗子，我们依赖于一个文件锁做判断某个函数执行了一次或多次，如果该文件锁所依赖的文件系统很稳定，并且提供分布式一致性，那么就完全可以。如果是用 nfs 的一个文件做锁，来实现的所谓幂等性就值得商榷了</p>
+<p>如果 map&#x2F;reduce 函数是确定性的，框架会通过其输出提交的原子性来进行幂等性保证。即，即使重试了多次，也和只执行了一次一样。具体来说，对于 Map Task，会产生 R 个临时文件，并在结束时将其位置发送给 Master；Master 在收到多次同一分片（split） 的位置信息时，如果该分片前面某次结果来源仍可用或者已经被消费，那么就忽略掉该请求后面的所有请求。对于 Reduce Task，其生成的结果也会先写成临时文件，然后依赖于底层文件系统的原子性的改名操作（<strong>原子性改名</strong>也是一个多进程竞争的经典的操作，因为生成文件过程比较长，不容易做成原子的，但是<strong>判断具有某名字的文件是否存在并改名</strong>却很容易做成原子的），在处理完成时改变为目的文件名。如果发现已经有一个具有该目的文件名的文件了，就放弃改名操作，从而保证了该 Reduce Task 只有一个成功输出的最终文件</p>
+<h2 id="任务粒度"><a href="#任务粒度" class="headerlink" title="任务粒度"></a>任务粒度</h2><p>一个 MapReduce Job 中会产生 M+R 个 Task，具体 M 和 R 的值在运行之前可以由人进行配置。不同的系统实现可能会有发挥出最佳系统性能的不同配比；但是同时要兼顾业务需求，比如输入大小，输出文件个数等等。</p>
+<h2 id="备份任务"><a href="#备份任务" class="headerlink" title="备份任务"></a>备份任务</h2><p>在实际业务中，由于某些主机原因常会出现<strong>长尾效应</strong>，即少数几个 Map&#x2F;Reduce Task 总是会巨慢的拖到最后，甚至拖得时间甚至是其他任务的几倍。</p>
+<p>造成这些主机拖后腿的原因可以举出很多， 比如某个机器硬盘老化，读写速度变慢；调度器调度有问题，导致某些机器负载太高；又比如软件 bug 导致某些主机变慢等等</p>
+<p>只要确定这些问题只发生在<strong>少数</strong>某些主机上，那么解决方法也很简单。在<strong>任务接近尾声</strong>的时候（比如统计剩余 task 的占比小于一个阈值时），对于每个仍然在跑的任务，分别额外调度一份到其他主机上，那么大概率会让这些任务提前完成，同一任务跑多次的处理逻辑，和容错重试造成跑多次是一致的，可以复用</p>
+<h1 id="其他细节"><a href="#其他细节" class="headerlink" title="其他细节"></a>其他细节</h1><h2 id="Partitioner"><a href="#Partitioner" class="headerlink" title="Partitioner"></a>Partitioner</h2><p>默认来说，对 Map 输出的中间结果进行划分会使用类似于 hash(key) mod R这种应用无关的划分算法。但是有时候用户有需求将特定的一些 keys 路由到同一个 Reduce Task，比如说中间结果的 key 是 URL， 用户想按网站 host 进行汇总处理。这时候就需要将系统的这部分路由功能开放给用户，以满足用户的定制需求。</p>
+<h2 id="Combiner"><a href="#Combiner" class="headerlink" title="Combiner"></a>Combiner</h2><p>如果该 Job 针对所有中间结果的 reduce 的操作满足<strong>结合律</strong>，那么指定 Combiner 会很能提高效率。拿的 Word Count 来说，数值的加法无疑满足结合律，也就是说，同一个单词的频次，在 Map Task 输出后进行加和（在 Map Work 上），还是在 Reduce Task 中进行加和（在 Reduce Worker 上），结果保持一致；而这样一来，由于一些中间结果对进行了 combine，Map Task 到 Reduce Task 间的传输数据量会小很多，从而提高整个 Job 的效率。</p>
+<p>也可以看出，combine 函数一般和 reduce 函数是一样的，因为他们本质上是对 value set 执行了同一种操作，只不过执行时，执行的地点不一样，结合的顺序不一样。目的是为了减少中间结果传输量，加速任务执行过程。</p>
+<h2 id="Reader-Writer"><a href="#Reader-Writer" class="headerlink" title="Reader&#x2F;Writer"></a>Reader&#x2F;Writer</h2><p>如果不将定制输入输出的能力开放给用户，那么系统显然只能处理有限几种默认约定的格式。因此，<em>reader</em> 和 <em>writer</em> 接口本质上是系统和现实繁杂的业务之间的<strong>适配器（Adaptor）</strong>。它们让用户可以自行指定数据的_来源和去处_、<em>按需要理解输入内容_和_自由定制输出格式</em>。</p>
+<p>一般来说，系统会内置提供一些常见的 Reader 和 Writer 的实现；包括按行读文本文件，读文件中键值，读数据库等等。然后用户可以实现这两个接口，进行更具体的定制。<em>系统常通过类似这种常用脚手架 + 进一步定制能力来提供 API</em>，下面的 Counter 也是如此。</p>
+<h2 id="副作用"><a href="#副作用" class="headerlink" title="副作用"></a>副作用</h2><p>有些用户实现的 map&#x2F;reduce 函数会有一些副作用，比如说在执行任务中间输出一些文件、写一些数据库条目等等。一般来说这些副作用的原子性和幂等性需要用户自己来处理。因为如果输出介质不纳入 MapReduce 系统，系统是没有办法保证这些输出的幂等性和原子性的。</p>
+<p>不过有的系统就这么干的，提供一些某种类型 &#x2F; 介质的状态或者数据存储，纳入系统中，并且提供一些容错和幂等的性质。好像 MillWheel 有类似的做法。但这样会大大加重系统的复杂性</p>
+<h2 id="跳过坏记录"><a href="#跳过坏记录" class="headerlink" title="跳过坏记录"></a>跳过坏记录</h2><p>如果用户代码有 bug 或者某些输入有问题，会导致 Map 或者 Reduce 任务在运行时崩溃。当然这些 bug 或者输入能修则修，但是有些情况由于第三方库或者输入的原因，不能够进行修复。而在某些类型的任务，比如说训练数据集清洗、大型统计任务，丢几个是可以容忍的。针对这种情况，系统会提供一种模式，在这种模式中会跳过这些 Record 记录的执行。</p>
+<p>具体实现上来说，也比较简单。可以给每个输入 Record 给个<strong>唯一编号</strong>（单次任务内唯一就行）；如果某个 Record 处理时挂掉了，就将其编号汇报给 Master。如果 Master 收到了某个 Record 超过一次的处理失败信息，就将其跳过。做的再细一点，还可以记下错误类型和信息进行比对，来确定这是否是一个确定性（deterministic）的错误，进而决定是否将其跳过。</p>
+<h2 id="单机执行"><a href="#单机执行" class="headerlink" title="单机执行"></a>单机执行</h2><p>众所周知，分布式系统很难跟踪、调试；因为一个 Job 可能同时分散在数千台机器上进行执行。因此系统提供了本地运行 Job 的能力。可以针对小数据集输入对代码的正确性进行测试。由于在单机运行，<strong>就可以比较方便通过调试工具进行断点追踪</strong>。</p>
+<h2 id="全局计数器"><a href="#全局计数器" class="headerlink" title="全局计数器"></a>全局计数器</h2><p>系统提供了一种计数服务，以统计某种事件的发生频次。比如用户想统计 Word Count 示例中所处理的全大写单词的总数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Counter* uppercase;</span><br><span class="line">uppercase = GetCounter(<span class="string">&quot;uppercase&quot;</span>);</span><br><span class="line"></span><br><span class="line">map(String name, String contents):</span><br><span class="line">  <span class="keyword">for</span> each word w in contents:</span><br><span class="line">    <span class="keyword">if</span> (IsCapitalized(w)):</span><br><span class="line">      uppercase-&gt;Increment();</span><br><span class="line">    EmitIntermediate(w, <span class="string">&quot;1&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>从代码可以大致猜测其实现：定义的时候，需要给 Counter 指定一个 Id。然后在 Map&#x2F;Reudce 代码中可以通过该 Id 获取该 Counter 然后进行计数。每个 worker 机器上的计数信息会汇总到 Master 上，然后按 Counter 的 ID 进行加和，并且最终返回给用户</p>
+<p><strong>系统会自动维持一些计数器</strong>，比如说所有已经处理的键值对的数量和所有已经产生的键值对数量。全局计数操作对于某些应用用处很大，比如说有的应用要求所有输入键值对和输出键值对的数量一样，如果没有全局计数，就无从验证；或者统计一些数据的全局比例等等。</p>
+<h1 id="重排Shuffle操作"><a href="#重排Shuffle操作" class="headerlink" title="重排Shuffle操作"></a>重排Shuffle操作</h1><p>自 Spark 成名之后，shuffle 这个 MapReduce 中的语义得到了很多研究和实践。这是一个多机传输的耗时操作，其实现的高效性对系统的性能有着至关重要的作用，因此单独拿出一节来聊聊。</p>
+<p>在 MapReduce 中就是指 Map Task 分片输出到 Reduce Task 按需拉取的这么一个过程。还拿 Word Count 为例，你想统计某个单词在所有文档中的总频次，但是这些单词分布在不同机器上的不同的 Map Task 输出里；而只有将所有同样单词的频次对聚集到同一台机器上，才能对其加和。<strong>这种将机器和子数据集对应关系按 key 打乱重组的操作，我们姑且称之为 shuffle。</strong></p>
+<h2 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h2><p>Spark上基本继承了该语义，并且更通用化了。一个常见的例子是 join，即将两个 Table 间具有相同 key 的记录路由到同一台机器上，从而在所有机器上按 key 分片进行并行 join，从而大幅提高效率。类似于 join 这样的高阶操作，会使得底层的 Partition 不能继续在本机运行而不与其他 Partition 发生联系，因此 shuffle 也是 Spark 中划分 Stage 的一个分水岭</p>
+<h2 id="MapReducer"><a href="#MapReducer" class="headerlink" title="MapReducer"></a>MapReducer</h2><ol>
+<li>Map任务输出数据先放入内存缓冲区，缓冲区大小可用通过参数调整，默认100M，超过或者Map结束就写入磁盘</li>
+<li>写入磁盘过程中，调用Partitioner进行分组和针对Key排序，按key的哈希值分配给Reduce节点</li>
+<li>合并过程中也会进行排序等操作</li>
+<li>Reduce根据自己的分区号，向Map任务机器上领取数据</li>
+<li>领取到同一个分区来自不同map任务的结果文件后，采用归并排序进行合并</li>
+<li>合并成大文件后，Shuffle阶段结束。开始Reduce的逻辑阶段</li>
+</ol>
+<p>可以使用Combiner组件</p>
+<h1 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h1><ul>
+<li>缺点：它是一个高吞吐，但是也高延迟的批量处理系统。并且不支持迭代。这也是后续 Spark，Flink 这样系统火热的动机。</li>
+<li>文件系统：MapReduce 只有和 GFS 这样支持分块、多进程并发写的大文件系统配合才能发挥出更大的优势，优化输入和输出的性能。此外，这种分布式文件系统还会屏蔽底层节点故障</li>
+<li>组织形式： MapReduce 是一个系统，需要部署到集群上，但它同时又是一个库，让用户代码和分布式集群进行交互而不太用关心分布式环境中的问题的一个库。每个任务需要写任务描述，然后提交给系统 —— 这是库常用的一种提交任务的手段。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    snccekl
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://snccekl.github.io/2025/08/03/%E5%AF%B9MapReduce%E4%B8%80%E7%82%B9%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/" title="Map和Reduce个人总结">https://snccekl.github.io/2025/08/03/%E5%AF%B9MapReduce%E4%B8%80%E7%82%B9%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/07/25/day5/" rel="next" title="7-25 代码随想录之哈希表">
+                <i class="fa fa-chevron-left"></i> 7-25 代码随想录之哈希表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2025/09/15/Kafka%20%E2%80%94%E2%80%94%20%E5%BC%A5%E5%90%88%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E7%9A%84%E9%B8%BF%E6%B2%9F/" rel="prev" title="Kafka —— 弥合日志系统和消息队列的鸿沟">
+                Kafka —— 弥合日志系统和消息队列的鸿沟 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/snccekl" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="jksnc@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%AD%90"><span class="nav-number">1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.1.</span> <span class="nav-text">抽象实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E8%A7%88"><span class="nav-number">4.</span> <span class="nav-text">实现一览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%A6%82%E8%A7%88"><span class="nav-number">4.1.</span> <span class="nav-text">流程概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E6%80%A7"><span class="nav-number">4.2.</span> <span class="nav-text">局部性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E7%82%B9%E7%9A%84Master"><span class="nav-number">4.3.</span> <span class="nav-text">单点的Master</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E9%94%99"><span class="nav-number">4.4.</span> <span class="nav-text">容错</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Worker"><span class="nav-number">4.4.1.</span> <span class="nav-text">Worker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Master"><span class="nav-number">4.4.2.</span> <span class="nav-text">Master</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%B2%92%E5%BA%A6"><span class="nav-number">4.5.</span> <span class="nav-text">任务粒度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.6.</span> <span class="nav-text">备份任务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%BB%86%E8%8A%82"><span class="nav-number">5.</span> <span class="nav-text">其他细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Partitioner"><span class="nav-number">5.1.</span> <span class="nav-text">Partitioner</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Combiner"><span class="nav-number">5.2.</span> <span class="nav-text">Combiner</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reader-Writer"><span class="nav-number">5.3.</span> <span class="nav-text">Reader&#x2F;Writer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%AF%E4%BD%9C%E7%94%A8"><span class="nav-number">5.4.</span> <span class="nav-text">副作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%B3%E8%BF%87%E5%9D%8F%E8%AE%B0%E5%BD%95"><span class="nav-number">5.5.</span> <span class="nav-text">跳过坏记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E6%89%A7%E8%A1%8C"><span class="nav-number">5.6.</span> <span class="nav-text">单机执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">5.7.</span> <span class="nav-text">全局计数器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E6%8E%92Shuffle%E6%93%8D%E4%BD%9C"><span class="nav-number">6.</span> <span class="nav-text">重排Shuffle操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark"><span class="nav-number">6.1.</span> <span class="nav-text">Spark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReducer"><span class="nav-number">6.2.</span> <span class="nav-text">MapReducer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">7.</span> <span class="nav-text">特点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">snccekl</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

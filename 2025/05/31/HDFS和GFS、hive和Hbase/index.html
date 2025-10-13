@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MapReduce知识的复习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS和GFS、hive和Hbase复习">
+<meta property="og:url" content="https://snccekl.github.io/2025/05/31/HDFS%E5%92%8CGFS%E3%80%81hive%E5%92%8CHbase/index.html">
+<meta property="og:site_name" content="Snccekl">
+<meta property="og:description" content="MapReduce知识的复习">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-05-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-13T11:38:29.600Z">
+<meta property="article:author" content="snccekl">
+<meta property="article:tag" content="java and Compiler security">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://snccekl.github.io/2025/05/31/HDFS和GFS、hive和Hbase/"/>
+
+
+
+
+
+  <title>HDFS和GFS、hive和Hbase复习 | Snccekl</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Snccekl</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/05/31/HDFS%E5%92%8CGFS%E3%80%81hive%E5%92%8CHbase/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HDFS和GFS、hive和Hbase复习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-05-31T00:00:00+08:00">
+                2025-05-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span id="busuanzi_value_page_pv"></span>次阅读
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MapReduce知识的复习</p>
+<span id="more"></span>
+<h1 id="Google-GFS的基本设计原则"><a href="#Google-GFS的基本设计原则" class="headerlink" title="Google GFS的基本设计原则"></a>Google GFS的基本设计原则</h1><ul>
+<li>廉价本地磁盘分布存储</li>
+<li>多数据自动备份解决可靠性</li>
+<li>为上层MapReduce框架提供支持</li>
+</ul>
+<h1 id="Google-GFS的基本构架和工作原理"><a href="#Google-GFS的基本构架和工作原理" class="headerlink" title="Google GFS的基本构架和工作原理"></a>Google GFS的基本构架和工作原理</h1><h2 id="GFS-Master的主要作用"><a href="#GFS-Master的主要作用" class="headerlink" title="GFS Master的主要作用"></a>GFS Master的主要作用</h2><ul>
+<li>保存命名空间（整个分布式文件系统的目录结构）</li>
+<li>Chunk与文件名的映射表</li>
+<li>Chunk副本的位置信息</li>
+</ul>
+<h2 id="GFS-ChunkServer的主要作用"><a href="#GFS-ChunkServer的主要作用" class="headerlink" title="GFS ChunkServer的主要作用"></a>GFS ChunkServer的主要作用</h2><p>保存大量实际数据的数据服务器</p>
+<h2 id="GFS-数据访问工作过程"><a href="#GFS-数据访问工作过程" class="headerlink" title="GFS 数据访问工作过程"></a>GFS 数据访问工作过程</h2><ul>
+<li>在运行前，数据已经存储在GFS文件系统中，运行时程序会告诉GFS server要访问的文件名和数据块索引</li>
+<li>GFS server根据文件名和数据块索引在文件目录空间中查找该文件或者数据块，并找到具体在哪些Chunk server上，将这些位置信息返回给程序</li>
+<li>程序根据位置信息，直接访问对应的Chunk server</li>
+<li>程序根据位置信息，读取指定位置的数据并做处理</li>
+</ul>
+<h2 id="GFS-的系统管理技术"><a href="#GFS-的系统管理技术" class="headerlink" title="GFS 的系统管理技术"></a>GFS 的系统管理技术</h2><ul>
+<li>大规模集群安装技术</li>
+<li>故障检测技术</li>
+<li>节点动态加入技术</li>
+<li>节能技术</li>
+</ul>
+<h1 id="Bigtable"><a href="#Bigtable" class="headerlink" title="Bigtable"></a>Bigtable</h1><h2 id="基本作用和设计理想"><a href="#基本作用和设计理想" class="headerlink" title="基本作用和设计理想"></a>基本作用和设计理想</h2><p>为应用程序提供比文件系统更方便、更高层的数据操作能力。主要解决一些大型媒体数据的结构化存储问题</p>
+<h2 id="BigTable设计动机"><a href="#BigTable设计动机" class="headerlink" title="BigTable设计动机"></a>BigTable设计动机</h2><ul>
+<li>存储管理海量的结构化半结构化数据</li>
+<li>海量的服务请求</li>
+<li>商用数据库无法适用</li>
+</ul>
+<h2 id="设计目标"><a href="#设计目标" class="headerlink" title="设计目标"></a>设计目标</h2><ul>
+<li>广泛的适用性</li>
+<li>很强的可扩展性</li>
+<li>高吞吐量数据访问</li>
+<li>高可用性和容错性</li>
+<li>自动管理能力</li>
+<li>简单些</li>
+</ul>
+<h2 id="多维表"><a href="#多维表" class="headerlink" title="多维表"></a>多维表</h2><ul>
+<li>行关键字：</li>
+<li>列关键字</li>
+<li>时间戳</li>
+</ul>
+<h2 id="基本架构"><a href="#基本架构" class="headerlink" title="基本架构"></a>基本架构</h2><ul>
+<li>主服务器：新子表分配、子表监控、元数据操作、负载均衡； </li>
+<li>子表服务器：数据存储和访问操作 </li>
+<li>基本存储结构SSTable，存储在GFS文件系统中。一个SSTable对应GFS一个 64MB 的数据块，一个SSTable里面可以划分64KB的子块，还有Index索引。 </li>
+<li>子表寻址：3级B+树</li>
+</ul>
+<h1 id="Hadoop-分布式文件系统HDFS"><a href="#Hadoop-分布式文件系统HDFS" class="headerlink" title="Hadoop 分布式文件系统HDFS"></a>Hadoop 分布式文件系统HDFS</h1><h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><ul>
+<li>大规模数据分布存储能力</li>
+<li>高并发访问能力</li>
+<li>强大的容错能力</li>
+<li>顺序式文件访问</li>
+<li>简单的一致性模型</li>
+<li>基于块的文件存储，默认的块的大小是64MB。减少元数据的量。利于顺序读写（在磁盘上数据顺序存放） </li>
+<li>多副本数据块形式存储，按照块的方式随机选择存储节点， 默认副本数目是3</li>
+</ul>
+<h2 id="NameNode的作用"><a href="#NameNode的作用" class="headerlink" title="NameNode的作用"></a>NameNode的作用</h2><p>保存文件系统三种元数据：命名空间、数据块与文件名的映射表、每个数据块副本的位置信息</p>
+<h2 id="可靠性与出错恢复"><a href="#可靠性与出错恢复" class="headerlink" title="可靠性与出错恢复"></a>可靠性与出错恢复</h2><ul>
+<li>DataNode节点的检测 <ul>
+<li>心跳：NameNode 不断检测DataNode是否有效。若失效，则寻找新的节点替代，将失效节点数据重新分布</li>
+</ul>
+</li>
+<li>数据一致性: 校验和</li>
+<li>安全模式启动：与DataNode通信获取信息，检查数据块，退出安全模式的时候才 进行文件操作等</li>
+</ul>
+<h1 id="基本构架与工作过程"><a href="#基本构架与工作过程" class="headerlink" title="基本构架与工作过程"></a>基本构架与工作过程</h1><h2 id="JobTracker的作用"><a href="#JobTracker的作用" class="headerlink" title="JobTracker的作用"></a>JobTracker的作用</h2><p>并行计算框架的主控节点，管理和调度作业执行</p>
+<h2 id="TaskTracker的作用"><a href="#TaskTracker的作用" class="headerlink" title="TaskTracker的作用"></a>TaskTracker的作用</h2><p>管理每个节点计算任务的执行</p>
+<h1 id="容错处理和性能优化"><a href="#容错处理和性能优化" class="headerlink" title="容错处理和性能优化"></a>容错处理和性能优化</h1><p>由Hadoop系统自己解决。主要方法是将失败的任务进行再次执行<br>TaskTracker会把状态信息汇报给JobTracker，最终由 JobTracker决定重新执行哪一个任务<br>为了加快执行的速度，Hadoop也会自动重复执行同一个任 务，以最先执行成功的为准（投机执行）</p>
+<h1 id="HBase-基本工作原理"><a href="#HBase-基本工作原理" class="headerlink" title="HBase 基本工作原理"></a>HBase 基本工作原理</h1><h2 id="HBase的设计目标"><a href="#HBase的设计目标" class="headerlink" title="HBase的设计目标"></a>HBase的设计目标</h2><p>针对HDFS缺少结构化半结构化数据存储访问能力的缺陷，和传统数据库在容量和数据格式上都难以适应非结构化半结构化的处理，提供分布式数据管理系统，解决大规模结构化和半结构化数据存储访问问题</p>
+<h2 id="功能特点"><a href="#功能特点" class="headerlink" title="功能特点"></a>功能特点</h2><ul>
+<li>列式存储</li>
+<li>通过一个行关键字、列关键字和时间戳进行索引，时间戳允许多版本</li>
+<li>读写严格一致</li>
+<li>提供很高的数据读写速度</li>
+<li>良好的线性可扩展性</li>
+<li>提供海量数据存储能力</li>
+<li>数据可以用户也可以自动分片</li>
+<li>自动失效与检测恢复能力</li>
+<li>提供hdfs和MapReduce集成</li>
+</ul>
+<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>逻辑数据模型是分布式多维映射表，物理模型为按列存储的稀疏行&#x2F;列矩阵。物理存储格式上按逻辑模型中的行进行分割，并按照列族存储</p>
+<h2 id="基本构架"><a href="#基本构架" class="headerlink" title="基本构架"></a>基本构架</h2><p>由一个MasterServer和由一组子表数据区服务器RegionServer构成， 分别存储逻辑大表中的部分数据。大表中的底层数据存于HDFS中</p>
+<h1 id="Hive基本工作原理"><a href="#Hive基本工作原理" class="headerlink" title="Hive基本工作原理"></a>Hive基本工作原理</h1><h2 id="Hive组成模块"><a href="#Hive组成模块" class="headerlink" title="Hive组成模块"></a>Hive组成模块</h2><ul>
+<li>HiveQL：Hive的数据查询语言，提供与用户的接口，包括CLI，数据库访问编程接口JDBC和web界面的网络接口</li>
+<li>Driver：执行驱动程序，包括会话的处理，查询获取以及执行驱动</li>
+<li>Compiler：编译器，编译HiveQL，包括分析、执行计划生产和优化等</li>
+<li>执行引擎：在Driver的驱动下完成操作，包括MapReduce、HDFS操作或者元数据操作</li>
+<li>MetaStore：用以存储元数据，包括存储操作的数据对象的格式信息，在HDFS中的存储位置信息及其他用于数据转换的信息等</li>
+</ul>
+<h2 id="数据模型-1"><a href="#数据模型-1" class="headerlink" title="数据模型"></a>数据模型</h2><ul>
+<li>Tables：Hive的数据模型由数据表组成，数据表中的列是有类型的，可以是int、float等，也可以是复合类型</li>
+<li>Partitions：数据表可以按照一定的规则划分</li>
+<li>Buckets：数据存储的桶，在一定范围内的数据按照Hash的方式划分</li>
+</ul>
+<h2 id="元数据存储：Metastore"><a href="#元数据存储：Metastore" class="headerlink" title="元数据存储：Metastore"></a>元数据存储：Metastore</h2><p>Hive中一系列的数据表格组成一个命名空间，这个命名空间的描述信息保存在MetaStore中。元数据使用SQL的形式存储在传统的关系数据库中</p>
+<h2 id="物理分布情况"><a href="#物理分布情况" class="headerlink" title="物理分布情况"></a>物理分布情况</h2><p>Hive在HDFS中有特定的位置，通常放置在HDFS中如下目录：&#x2F;home&#x2F;hive&#x2F;warehouse。每个数据表被存放在warehouse的子目录中。</p>
+<h1 id="Hive-一般有什么调优方式"><a href="#Hive-一般有什么调优方式" class="headerlink" title="Hive 一般有什么调优方式"></a>Hive 一般有什么调优方式</h1><p>Hive 的调优方式有多种，以下是一些常见的方法。</p>
+<ul>
+<li><strong>查询语句优化</strong>：合理设计查询语句，避免不必要的子查询和全表扫描。例如，在连接表时，确保连接条件正确且使用合适的连接类型。对于大表关联，可以使用<code>map join</code>将小表加载到内存中，在<code>map</code>阶段进行连接，减少数据传输和<code>shuffle</code>。</li>
+<li><strong>数据格式优化</strong>：选择合适的数据格式，如 ORC、Parquet 等列式存储格式，它们具有更好的压缩比和查询性能，能减少 I&#x2F;O 开销。</li>
+<li><strong>分区和桶化</strong>：对表进行分区，根据业务需求按照时间、地域等维度划分，查询时可以只扫描相关分区，提高查询效率。桶化则是对数据进行更细粒度的划分，基于哈希值将数据分散到不同的桶中，有助于提高某些查询的性能，如等值查询。</li>
+<li><strong>资源配置优化</strong>：根据集群的资源情况和查询的特点，合理调整 Hive 的内存、CPU 等资源分配。例如，增加<code>map</code>和<code>reduce</code>任务的内存分配，以避免任务因内存不足而失败或性能低下。</li>
+<li><strong>执行计划优化</strong>：可以通过<code>EXPLAIN</code>命令查看查询的执行计划，分析是否存在不合理的地方，如过多的<code>shuffle</code>操作或低效的算子组合，然后针对性地进行调整</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    snccekl
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://snccekl.github.io/2025/05/31/HDFS%E5%92%8CGFS%E3%80%81hive%E5%92%8CHbase/" title="HDFS和GFS、hive和Hbase复习">https://snccekl.github.io/2025/05/31/HDFS%E5%92%8CGFS%E3%80%81hive%E5%92%8CHbase/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/05/28/MapReduce/" rel="next" title="Spark复习">
+                <i class="fa fa-chevron-left"></i> Spark复习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2025/06/02/Spark/" rel="prev" title="Spark复习">
+                Spark复习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/snccekl" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="jksnc@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Google-GFS%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">Google GFS的基本设计原则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Google-GFS%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%9E%B6%E5%92%8C%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">Google GFS的基本构架和工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS-Master%E7%9A%84%E4%B8%BB%E8%A6%81%E4%BD%9C%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">GFS Master的主要作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS-ChunkServer%E7%9A%84%E4%B8%BB%E8%A6%81%E4%BD%9C%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">GFS ChunkServer的主要作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">GFS 数据访问工作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS-%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86%E6%8A%80%E6%9C%AF"><span class="nav-number">2.4.</span> <span class="nav-text">GFS 的系统管理技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bigtable"><span class="nav-number">3.</span> <span class="nav-text">Bigtable</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%9C%E7%94%A8%E5%92%8C%E8%AE%BE%E8%AE%A1%E7%90%86%E6%83%B3"><span class="nav-number">3.1.</span> <span class="nav-text">基本作用和设计理想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BigTable%E8%AE%BE%E8%AE%A1%E5%8A%A8%E6%9C%BA"><span class="nav-number">3.2.</span> <span class="nav-text">BigTable设计动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87"><span class="nav-number">3.3.</span> <span class="nav-text">设计目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BB%B4%E8%A1%A8"><span class="nav-number">3.4.</span> <span class="nav-text">多维表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">3.5.</span> <span class="nav-text">基本架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop-%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9FHDFS"><span class="nav-number">4.</span> <span class="nav-text">Hadoop 分布式文件系统HDFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81"><span class="nav-number">4.1.</span> <span class="nav-text">特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NameNode%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text">NameNode的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%B8%8E%E5%87%BA%E9%94%99%E6%81%A2%E5%A4%8D"><span class="nav-number">4.3.</span> <span class="nav-text">可靠性与出错恢复</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%9E%B6%E4%B8%8E%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">基本构架与工作过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JobTracker%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">JobTracker的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TaskTracker%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">TaskTracker的作用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E9%94%99%E5%A4%84%E7%90%86%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">6.</span> <span class="nav-text">容错处理和性能优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HBase-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">HBase 基本工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87"><span class="nav-number">7.1.</span> <span class="nav-text">HBase的设计目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9"><span class="nav-number">7.2.</span> <span class="nav-text">功能特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.3.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%9E%B6"><span class="nav-number">7.4.</span> <span class="nav-text">基本构架</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hive%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">Hive基本工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive%E7%BB%84%E6%88%90%E6%A8%A1%E5%9D%97"><span class="nav-number">8.1.</span> <span class="nav-text">Hive组成模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B-1"><span class="nav-number">8.2.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%EF%BC%9AMetastore"><span class="nav-number">8.3.</span> <span class="nav-text">元数据存储：Metastore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%88%86%E5%B8%83%E6%83%85%E5%86%B5"><span class="nav-number">8.4.</span> <span class="nav-text">物理分布情况</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hive-%E4%B8%80%E8%88%AC%E6%9C%89%E4%BB%80%E4%B9%88%E8%B0%83%E4%BC%98%E6%96%B9%E5%BC%8F"><span class="nav-number">9.</span> <span class="nav-text">Hive 一般有什么调优方式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">snccekl</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
