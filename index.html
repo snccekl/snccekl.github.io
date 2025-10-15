@@ -602,6 +602,218 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" itemprop="url">CAP及相关理论初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-08-02T00:00:00+08:00">
+                2025-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h1><p>其中C代表一致性 (Consistency)，A代表可用性 (Availability)，P代表分区容错性 (Partition tolerance)。</p>
+<ul>
+<li>一致性：如果一个写操作返回成功，那么之后的读请求都必须到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。</li>
+<li>可用性：对数据更新具备高可用性，即使出现节点失效，请求也能够及时处理，不会一直等待</li>
+<li>分区容错性：能容忍网络分区，在网络断开的情况下，被分隔的节点仍能正常对外提供服务</li>
+</ul>
+<h2 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h2><p>想想两个副本处于分区两侧，即两个副本之间的网络断开，不能通信</p>
+<ul>
+<li>如果允许其中一个副本更新，则会导致数据不一致，即丧失了C性质。</li>
+<li>如果为了保证一致性，将分区某一侧的副本设置为不可用，那么又丧失了A性质。</li>
+<li>除非两个副本可以互相通信，才能既保证C又保证A，这又会导致丧失P性质。</li>
+</ul>
+<h1 id="PACELC理论"><a href="#PACELC理论" class="headerlink" title="PACELC理论"></a>PACELC理论</h1><p>A 中是有一定争议的，很长时间才返回，虽然可用，但是业务上可能不能接受。并且，系统大部分时间下，分区都是平稳运行的，并不会出错，在这种情况下，系统设计要均衡的其实是延迟与数据一致性的问题，为了保证数据一致性，写入与读取的延迟就会增高。这就引出了 PACELC 理论。 PAC就是CAP，E是else，L是Latency延迟，C是 Consistency。<br><img src="/2025/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/img/CAP-PACELC.png" alt="CAP-PACELC"><br>如果发生了P ，那么只能保 A or C</p>
+<p>如果没有发生P， 那么就在 L 和 C之前权衡，如果保证了低延时，数据一致性就会降低（副本数量少），如果保证了较高的数据一致性，就会带来相对较高的延时问题（需要同步的副本多）</p>
+<h3 id="例子1"><a href="#例子1" class="headerlink" title="例子1"></a>例子1</h3><p><img src="/2025/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/img/PACELC%20eaxmple1.png" alt="PACELC eaxmple1"><br>在强一致性复制场景下，需要三副本都下盘才能返回OK确认信息给client端，假设Master节点向 Slave 节点复制数据，时延的限制是 20ms，有时候，slave 2 硬盘或网络出现故障，Master 往 Slave 复制数据的时延超过 了20ms，这个时候如果还一直等待 slave 2 返回结果再通知给client就会出现性能和时延抖动，而且这种抖动是经常会发生的长尾效应。</p>
+<p>依据PACELC理论，我们可以在 consistency和Latency之间做个取舍，比如 slave 2 节点的时延超过 20ms了，就不等待slave 2 返回，master 和 slave 1 返回结果给client即可（此时同步节点大于总结点数的一半），如果 slave 2 出现 超时的次数超过 5次那么就认为这个节点可能出现故障，打个故障标签，进行后续的处理。采用这种方式可以消除写时的长尾抖动，获得更优雅的写时性能曲线。</p>
+<h3 id="主从同步"><a href="#主从同步" class="headerlink" title="主从同步"></a>主从同步</h3><p>举个日常例子，主从同步。</p>
+<p>我们业务代码经常可能存在数据写入后立刻查询的操作，因为线上数据库上读写分离，在业务高峰期，存在主从延迟，解决方案一般有两种：</p>
+<ul>
+<li>写操作完后Sleep一段微小时间，让数据库完成主从同步</li>
+<li>写操作后完后，直接通过数据库访问层的中间件指定读操作读主库数据</li>
+</ul>
+<p>这里就存在在时延（Latency）和一致性（Consistency）上做了权衡，选择方案一，偏向一致性，选择方案二，偏向于低时延</p>
+<p>以MySQL主从复制为例，提供了三种模式：</p>
+<ol>
+<li>异步模式：主库执行完客户端提交的事务，立即将结果返回给客户端，不关心从库是否已经接收并。由于数据同步的延时，客户端在从库上可能读不到最新数据。这种模式对MySQL是性能最佳的，但是用户需要权衡，业务能否忍受这种延时</li>
+<li>全同步复制：主库执行完客户端提交的事务，所有的从库都执行了该事务才返回结果，这样保证强一致性，但是响应时间变长了</li>
+<li>半同步复制：主库在执行完客户端提交的事务后，等待至少一个从库接收到并写到 relay log 中，才返回给客户端，这样做延迟小了很多，相比于异步复制，数据更加不容易丢失</li>
+</ol>
+<h3 id="eureka属于AP系统吗？它明明没有放弃一致性啊"><a href="#eureka属于AP系统吗？它明明没有放弃一致性啊" class="headerlink" title="eureka属于AP系统吗？它明明没有放弃一致性啊"></a>eureka属于AP系统吗？它明明没有放弃一致性啊</h3><p>描述AP和CP时，通常都会以eureka和zookeeper来具体。eureka是AP的代表作，zookeeper则是CP的代表作。二者之所以这样归类，是因为：</p>
+<ul>
+<li>eureka各节点互相独立、平等的。各节点都提供自我查询和注册服务（读写请求）。当发生网络分区，eureka各节点依旧可以接收和注册服务。并且当丢失过多客户端时，节点会进入自我保护（接收新服务注册、不删除过期服务）。在该种模式下，eureka集群剩下最后一个节点，也可以向外提供服务。尽管向外提供的数据可能是过期的数据。</li>
+<li>zookeeper采用的过半原则，由leader处理写请求。当发生网络分区时，leader由于丢失过半的follower，从而处理不了客户端的请求，需要重新选举新leader，期间服务将不可用。糟糕的是，如果集群中没有过半的节点存活，将选举不出新leader，服务将一直处于不可用状态</li>
+</ul>
+<p>而在A、C之间的抉择需要二选一的情况下，一定是发生了网络分区的情况。eureka集群正常运行时，各节点之间可以正常通讯、保持心跳、复制数据，以此保持数据的一致性。但发生网络分区时，eureka确实选择了可用性，而放弃了一致性。</p>
+<h1 id="FLP不可能定理"><a href="#FLP不可能定理" class="headerlink" title="FLP不可能定理"></a>FLP不可能定理</h1><p>这是最重要的定理之一，给出了一个非常重要的结论：在网络可靠且存在节点失效的异步模型中，不存在一个可以解决一致性问题的确定性算法。</p>
+<p>不要浪费时间去为异步分布式系统设计在任意场景上都能够实现共识的算法，异步系统完全没有办法保证能在有限时间内达成一致。</p>
+<h1 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h1><p>这是CAP理论的延伸，核心思想是即使无法做到强一致性（CAP的一致性），但应用可以采用适合的方式达到最终一致性（Eventual Consitency）</p>
+<p><strong>Basically Available</strong>（基本可用）分布式系统在出现不可预知故障的时候，允许损失部分可用性</p>
+<p><strong>Soft state</strong>（软状态）软状态也称为弱状态，和硬状态相对，是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时。</p>
+<p><strong>Eventually consistent</strong>（最终一致性）最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性</p>
+<h1 id="CAP与BASE关系"><a href="#CAP与BASE关系" class="headerlink" title="CAP与BASE关系"></a>CAP与BASE关系</h1><p>BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的结论，是基于CAP定理逐步演化而来的，其核心思想是通过业务，牺牲强一致性而获得可用性，并允许数据在一段时间内是不一致的，但是最终达到一致性状态。</p>
+<h1 id="CAP与ACID关系"><a href="#CAP与ACID关系" class="headerlink" title="CAP与ACID关系"></a>CAP与ACID关系</h1><p>ACID 是传统数据库常用的设计理念，追求强一致性模型。BASE 支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性。</p>
+<p>数据库中多个事务并发会有以下问题：</p>
+<ul>
+<li>脏读：事务T1读取了T2更改的x，但是T2在实际存储数据时可能出错回滚了，这时T1读取的实际是无效的数据，这种情况下就是脏读</li>
+<li>不可重复读：是说在T1读取x时，由于中间T2更改了x，所以T1前后两次读取的x值不相同，这就是所谓的不可重复读</li>
+<li>幻读：在T1读取符合某个条件的所有记录时，T2增加了一条符合该条件的记录，这就导致T1执行过程中前后读取的记录可能不一致，即T2之后读取时会多出一条记录。</li>
+</ul>
+<p>为了解决这些问题，事务提出四种隔离级别来规避上述问题。而解决的就是ACID中的C（一致性），所以ACID中的C（一致性）可以理解为不出现脏读、幻读、不可重复读的问题。可以把它称为“内部一致性”，解决的是数据库内部的一致性问题。</p>
+<p>CP中的C（一致性），相对好理解，我把它理解为“外部一致性”。就分布式系统而言的，针对客户端的请求，无论访问那个节点，都能获得最新的相同的值。</p>
+<p>ACID 和 BASE 代表了两种截然相反的设计哲学，在分布式系统设计的场景中，系统组件对一致性要求是不同的，因此 ACID 和 BASE 又会结合使用。</p>
+<h1 id="NWR策略-Quorum协议"><a href="#NWR策略-Quorum协议" class="headerlink" title="NWR策略-Quorum协议"></a>NWR策略-Quorum协议</h1><p>NWR是一种在分布式存储系统中用于控制一致性级别的一种策略。这个三个字母分别代表着：</p>
+<ul>
+<li>N：分布式系统中，一个有多少个副本数据</li>
+<li>W：处理一次写请求，需要更新多少个副本数据</li>
+<li>R：处理一次读请求，需要读取多少个副本数据</li>
+</ul>
+<p>分别设置不同的值时，将产生不同的一致性效果</p>
+<ul>
+<li>W+R&gt;N：整个系统对于客户端的请求能保证强一致性。因为写请求和读请求一定存在一个相交的副本，读取的时候返回该副本的数据即可。</li>
+<li>W+R&lt;&#x3D;N，整个系统对于客户端的请求则不能保证强一致性</li>
+</ul>
+<p>W、R的大小，直接影响其对应的处理效率。主要注意，读写请求的效率取决于最慢的副本处理速度</p>
+<p>这种就将PACELC均衡权力交给了用户</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/25/day5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1708,167 +1920,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/21/day1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/21/day1/" itemprop="url">7-21 代码随想录之数组</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-21T00:00:00+08:00">
-                2025-07-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
-                    <span itemprop="name">算法刷题</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="704-二分查找-力扣（LeetCode）"><a href="#704-二分查找-力扣（LeetCode）" class="headerlink" title="704. 二分查找 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-search/description/">704. 二分查找 - 力扣（LeetCode）</a></h1><p>这是二分查找的模版题。二分查找两种思路：左闭右开和左闭右闭。</p>
-<p>在进行二分查找的循环中，循环的条件就是查找的区间要是合法的，即区间内至少有1个元素，例如，在左闭右闭的方法中，[1, 1]中至少有“1”这个元素，区间合法；而对于左闭右开，[1, 1)中没有元素，这个区间就是非法的。</p>
-<p>在确认区间合法后，才在区间中取中间值</p>
-<p>对于左闭右闭：由于每一次查找都需要在合法区间中寻找，且此次循环的合法区间不能包含上一次循环中已经筛除的值，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标-1。</p>
-<p>对于左闭右开：与上面一样，但是此时区间的右端点不在区间内，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标。</p>
-<p>注意<br>无论是左闭右闭还是左闭右开，在初始化时都必须要让数组中的所有元素都在初始合法区间内，例如数组nums为{1， 2， 3， 4}， 对于左闭右闭，那么初始的合法区间为[0, nums.size() - 1]，而对于左闭右开，初始的合法区间应该为[0, nums.size())</p>
-<p>给出代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//左闭右开</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//左闭右闭</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="27-移除元素-力扣（LeetCode）"><a href="#27-移除元素-力扣（LeetCode）" class="headerlink" title="27. 移除元素 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-element/description/">27. 移除元素 - 力扣（LeetCode）</a></h1><p>双指针，慢的指向最后一个非val的下一个元素，快的就一直遍历。每遇到一个非val的元素，就把它赋值给慢指针对应的位置</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[r] == val)&#123;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                nums[l] = nums[r];</span><br><span class="line">                l++;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="977-有序数组的平方-力扣（LeetCode）"><a href="#977-有序数组的平方-力扣（LeetCode）" class="headerlink" title="977. 有序数组的平方 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/squares-of-a-sorted-array/description/">977. 有序数组的平方 - 力扣（LeetCode）</a></h1><p>最开始想的是从数组左右两边遍历，然后将大的放在右边，小的放在左边。但是如果全是负数就会出错，因为不会有任何一个数的绝对值小于数组最右边那个数，则一旦最右边那个数至于最左边后就不会再交换了。</p>
-<p>所以初始一个新的数组，然后从后往前填空，但是不改变原数组元素的顺序</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortedSquares</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">result</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        <span class="type">int</span> pos = r;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">abs</span>(nums[r]) &gt; <span class="built_in">abs</span>(nums[l]))&#123;</span><br><span class="line">                result[pos--] = nums[r] * nums[r];</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                result[pos--] = nums[l] * nums[l];</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1919,7 +1970,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1930,7 +1981,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1941,7 +1992,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -296,6 +296,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/21/day1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/21/day1/" itemprop="url">7-21 代码随想录之数组</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-07-21T00:00:00+08:00">
+                2025-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" itemprop="url" rel="index">
+                    <span itemprop="name">算法刷题</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="704-二分查找-力扣（LeetCode）"><a href="#704-二分查找-力扣（LeetCode）" class="headerlink" title="704. 二分查找 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-search/description/">704. 二分查找 - 力扣（LeetCode）</a></h1><p>这是二分查找的模版题。二分查找两种思路：左闭右开和左闭右闭。</p>
+<p>在进行二分查找的循环中，循环的条件就是查找的区间要是合法的，即区间内至少有1个元素，例如，在左闭右闭的方法中，[1, 1]中至少有“1”这个元素，区间合法；而对于左闭右开，[1, 1)中没有元素，这个区间就是非法的。</p>
+<p>在确认区间合法后，才在区间中取中间值</p>
+<p>对于左闭右闭：由于每一次查找都需要在合法区间中寻找，且此次循环的合法区间不能包含上一次循环中已经筛除的值，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标-1。</p>
+<p>对于左闭右开：与上面一样，但是此时区间的右端点不在区间内，所以在更新左右端点的值时，左端点的下标为中点下标+1，右端点的下标为中点下标。</p>
+<p>注意<br>无论是左闭右闭还是左闭右开，在初始化时都必须要让数组中的所有元素都在初始合法区间内，例如数组nums为{1， 2， 3， 4}， 对于左闭右闭，那么初始的合法区间为[0, nums.size() - 1]，而对于左闭右开，初始的合法区间应该为[0, nums.size())</p>
+<p>给出代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//左闭右开</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//左闭右闭</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span>(nums[mid] == target)&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target)&#123;</span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                right = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="27-移除元素-力扣（LeetCode）"><a href="#27-移除元素-力扣（LeetCode）" class="headerlink" title="27. 移除元素 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-element/description/">27. 移除元素 - 力扣（LeetCode）</a></h1><p>双指针，慢的指向最后一个非val的下一个元素，快的就一直遍历。每遇到一个非val的元素，就把它赋值给慢指针对应的位置</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeElement</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r &lt; nums.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[r] == val)&#123;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                nums[l] = nums[r];</span><br><span class="line">                l++;</span><br><span class="line">                r++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="977-有序数组的平方-力扣（LeetCode）"><a href="#977-有序数组的平方-力扣（LeetCode）" class="headerlink" title="977. 有序数组的平方 - 力扣（LeetCode）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/squares-of-a-sorted-array/description/">977. 有序数组的平方 - 力扣（LeetCode）</a></h1><p>最开始想的是从数组左右两边遍历，然后将大的放在右边，小的放在左边。但是如果全是负数就会出错，因为不会有任何一个数的绝对值小于数组最右边那个数，则一旦最右边那个数至于最左边后就不会再交换了。</p>
+<p>所以初始一个新的数组，然后从后往前填空，但是不改变原数组元素的顺序</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortedSquares</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> r = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">result</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        <span class="type">int</span> pos = r;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">abs</span>(nums[r]) &gt; <span class="built_in">abs</span>(nums[l]))&#123;</span><br><span class="line">                result[pos--] = nums[r] * nums[r];</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                result[pos--] = nums[l] * nums[l];</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2025/07/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0-%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1779,232 +1940,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/07/11/%E4%BC%98%E4%BA%8Eselect%E7%9A%84epoll/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Snccekl">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/07/11/%E4%BC%98%E4%BA%8Eselect%E7%9A%84epoll/" itemprop="url">优于select的epoll</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-07-11T00:00:00+08:00">
-                2024-07-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="epoll理解和应用"><a href="#epoll理解和应用" class="headerlink" title="epoll理解和应用"></a>epoll理解和应用</h1><h2 id="select的缺点"><a href="#select的缺点" class="headerlink" title="select的缺点"></a>select的缺点</h2><ol>
-<li>每次调用 select 函数前都要向操作系统传递监视对象信息；</li>
-<li>调用完 select 函数后需要循环获取发生变化的文件描述符；</li>
-<li>select 函数可以监视的最大文件描述符数量有限；</li>
-</ol>
-<p>前两个原因导致基于 select 函数的 I&#x2F;O 复用速度较慢。</p>
-<h2 id="实现epoll时必要的函数和结构体"><a href="#实现epoll时必要的函数和结构体" class="headerlink" title="实现epoll时必要的函数和结构体"></a>实现epoll时必要的函数和结构体</h2><p>epoll 服务器端实现要用到 3 个函数和一个结构体。</p>
-<p>3个函数：</p>
-<ol>
-<li>epoll_create：创建保存 epoll 文件描述符的空间。</li>
-<li>epoll_ctl：向空间注册并注销文件描述符。</li>
-<li>epoll_wait：与 select 函数类似，等待文件描述符发生变化。</li>
-</ol>
-<h3 id="epoll-event结构体"><a href="#epoll-event结构体" class="headerlink" title="epoll_event结构体"></a>epoll_event结构体</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">__uint32_t</span> events;</span><br><span class="line">    <span class="type">epoll_data_t</span> data;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> <span class="title">epoll_data</span>  // 注意：<span class="title">epoll_data</span> 是一个联合不是结构体</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">void</span>* ptr;</span><br><span class="line">    <span class="type">int</span> fd;</span><br><span class="line">    <span class="type">__uint32_t</span> u32;</span><br><span class="line">    <span class="type">__uint64_t</span> u64;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>epoll_event 结构体在 epoll_ctl 和 epoll_wait 函数中都要用到，作用分别如下：</p>
-<ol>
-<li>在 epoll_ctl 中：指定向 epoll 例程注册文件描述符所关注的事件。用到的是 epoll_event 中的 events 成员。</li>
-<li>在 epoll_wait 中：保存发生事件的文件描述符集合。用到的是 epoll_event 中的 data 成员的 fd 成员。</li>
-</ol>
-<h3 id="epoll-create函数"><a href="#epoll-create函数" class="headerlink" title="epoll_create函数"></a>epoll_create函数</h3><p>epoll 中由操作系统保存要监视的文件描述符，使用 epoll_create 函数向操作系统申请创建保存文件描述符的空间。这对应使用 select 函数时声明 fd_set 变量来保存要监视的文件描述符。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">epoll_create</span><span class="params">(<span class="type">int</span> size)</span>;</span><br><span class="line">        <span class="comment">// 功能：申请 size 大小的 epoll 例程（调用 epoll_create 函数创建的文件描述符保存空间称为 epoll 例程）</span></span><br><span class="line">        <span class="comment">// 参数：size：申请的 epoll 例程的大小</span></span><br><span class="line">        <span class="comment">// 返回值：成功时返回 epoll例程文件描述符，失败时返回 -1。</span></span><br></pre></td></tr></table></figure>
-<p>注意：Linux 2.6.8 之后的内核会完全忽略 size 参数，它会自己根据情况调整 epoll 例程的大小。因此调用时只需将 size 设为 0 即可。</p>
-<h3 id="epoll-ctl函数"><a href="#epoll-ctl函数" class="headerlink" title="epoll_ctl函数"></a>epoll_ctl函数</h3><p>生成 epoll 例程后，就要调用 epoll_ctl 函数在其内部注册监视对象文件描述符。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">epoll_ctl</span><span class="params">(<span class="type">int</span> epfd, <span class="type">int</span> op, <span class="type">int</span> fd, <span class="keyword">struct</span> epoll_event* event)</span>;</span><br><span class="line">        <span class="comment">// 功能：在 epoll 例程内部注册要监视的文件描述符</span></span><br><span class="line">        <span class="comment">// 参数：epfd：epoll 例程的文件描述符；op：指定监视对象的添加、删除或更改等操作。fd：需要注册的监视对象文件描述符。event：监视对象的事件类型</span></span><br><span class="line">        <span class="comment">// 返回值：成功时返回 0，失败时返回 -1</span></span><br></pre></td></tr></table></figure>
-<p>参数 op 的可取值：</p>
-<ol>
-<li>EPOLL_CTL_ADD：将文件描述符注册到 epoll 例程。</li>
-<li>EPOLL_CTL_DEL：从 epoll 例程中删除文件描述符。如果 fd 取此值，则第四个参数 event 应为 NULL。</li>
-<li>EPOLL_CTL_MOD：更改注册的文件描述符的关注事件发生情况。</li>
-</ol>
-<p>参数 event 的使用：这里用到的是 epoll_event 结构体的 events 成员，events 成员用来指明关注的事件类型。</p>
-<p>events 可以指明的事件类型不止 3 种，它的可取值如下：</p>
-<ol>
-<li>EPOLLIN：需要读取数据的情况。</li>
-<li>EPOLLOUT：输出缓冲为空，可以立即发送数据的情况。</li>
-<li>EPOLLPRI：收到 OOB 数据的情况。</li>
-<li>EPOLLDHUP：断开连接或半关闭的情况，在边缘触发模式下很有用。</li>
-<li>EPOLLERR：发送错误的情况。</li>
-<li>EPOLLET：以边缘触发的情况得到事件通知。</li>
-<li>EPOLLONESHOT：发送一次事件后，相应的文件描述符不再收到事件通知。因此需要向 epoll_ctl 函数的第二个参数传递 EPOLL_CTL_MOD，再次设置事件。</li>
-</ol>
-<p>可以通过位运算同时传递多个上述参数。</p>
-<p>&#x2F;&#x2F; 例如：同时传递 EPOLLIN 和 EPOLLOUT<br>event.events &#x3D; EPOLLIN | EPOLLOUT;</p>
-<h3 id="epoll-wait函数"><a href="#epoll-wait函数" class="headerlink" title="epoll_wait函数"></a>epoll_wait函数</h3><p>epoll_wait 函数与 select 函数类似，用于等待文件描述符发生变化。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">epoll_wait</span><span class="params">(<span class="type">int</span> epfd, <span class="keyword">struct</span> epoll_event* events, <span class="type">int</span> maxevents, <span class="type">int</span> timeout)</span>;</span><br><span class="line">        <span class="comment">// 功能：监视发生事件的文件描述符</span></span><br><span class="line">        <span class="comment">// 参数：epfd：epoll 例程的文件描述符；events：保存发生事件的文件描述符集合的结构体地址；maxevents：最多监听的事件数，必须大于 0；</span></span><br><span class="line">                <span class="comment">// timeout：超时时间，以 ms 为单位。如果 timeout 为 -1，则一直等待到事件发生。（注意类型为 int，和 select 函数中的不同）</span></span><br><span class="line">        <span class="comment">// 返回值：成功时返回发生事件的文件描述符数量，失败时返回 -1。</span></span><br></pre></td></tr></table></figure>
-<p>第二个参数 events 应该是一个 epoll_event 类型数组的地址。数组应该足够大，保证能够容下所有的文件描述符，可以取和第三个参数 maxevents 一样的值。</p>
-<h1 id="条件触发和边缘触发"><a href="#条件触发和边缘触发" class="headerlink" title="条件触发和边缘触发"></a>条件触发和边缘触发</h1><p>epoll 中有两种触发方式：条件触发 LT(Level Trigger) 和边缘触发 ET(Edge Trigger)。</p>
-<p>条件触发又称电平触发或水平触发。</p>
-<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>条件触发：只要输入缓冲中有数据就一直通知该事件。</p>
-<p>边缘触发：只有当输入缓冲收到数据时注册一次该事件，之后即使输入缓冲中还有数据也不会再注册。</p>
-<p>epoll 默认以条件触发方式工作。select 函数也是以条件触发方式工作的。</p>
-<h2 id="边缘触发的服务器实现中要注意两点"><a href="#边缘触发的服务器实现中要注意两点" class="headerlink" title="边缘触发的服务器实现中要注意两点"></a>边缘触发的服务器实现中要注意两点</h2><ol>
-<li>通过 errno 变量验证错误原因。</li>
-<li>为了完成非阻塞 I&#x2F;O，更改套接字的属性为非阻塞模式。</li>
-</ol>
-<h3 id="errno"><a href="#errno" class="headerlink" title="errno"></a>errno</h3><p>Linux 的套接字相关函数返回 -1 以通知发生了错误，同时会设置变量 errno 的值来提示产生错误的原因。</p>
-<p>访问 errno 变量需要引入 errno.h，errno 类型为 int，是一个全局变量。</p>
-<p>非阻塞模式下，当 read 函数发现输入缓冲中没有数据可读时返回 -1，同时将 errno 的值设为常量 EAGAIN 的值</p>
-<h3 id="将文件（套接字）更改为非阻塞模式"><a href="#将文件（套接字）更改为非阻塞模式" class="headerlink" title="将文件（套接字）更改为非阻塞模式"></a>将文件（套接字）更改为非阻塞模式</h3><p>使用 fcntl 函数来完成</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span> </span></span><br><span class="line"><span class="type">int</span> <span class="title function_">fcntl</span><span class="params">(<span class="type">int</span> filedes, <span class="type">int</span> cmd, ...)</span>; </span><br><span class="line">	<span class="comment">// 功能：更改或读取文件属性。 </span></span><br><span class="line">	<span class="comment">// 参数：filedes：要更改属性的文件描述符；cmd：指明函数调用的目的；...：可变参数，根据 cmd 的不同值会有不同情况。</span></span><br></pre></td></tr></table></figure>
-
-<p>cmd 的可取值（包括但不限于以下）：</p>
-<ol>
-<li>F_GETFL：取此值时，fcntl 函数用于获取文件描述符 filedes 的属性（会返回相应值）。</li>
-<li>F_SETFL：更改文件描述符属性。</li>
-</ol>
-<p>将文件（套接字）改为非阻塞模式要使用如下的两条语句：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> flag = fcntl(fd, F_GETFL, <span class="number">0</span>); <span class="comment">// 获取之前的属性 </span></span><br><span class="line">fcntl(fd, F_SETFL, flag|O_NONBLOCK); <span class="comment">// 在此基础上添加非阻塞 O_NONBLOCK 标志。</span></span><br></pre></td></tr></table></figure>
-
-<p>此后使用 read 对文件 fd 进行读取时都是非阻塞模式。</p>
-<h1 id="程序示例"><a href="#程序示例" class="headerlink" title="程序示例"></a>程序示例</h1><h2 id="echo-epollserv-c"><a href="#echo-epollserv-c" class="headerlink" title="echo_epollserv.c"></a>echo_epollserv.c</h2><p>这是基于 epoll 的回声服务器端（工作模式默认情况下是条件出发模式）。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 100</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EPOLL_SIZE 50</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *buf)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> serv_sock, clnt_sock;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> serv_adr, clnt_adr;</span><br><span class="line">    <span class="type">socklen_t</span> adr_sz;</span><br><span class="line">    <span class="type">int</span> str_len, i;</span><br><span class="line">    <span class="type">char</span> buf[BUF_SIZE];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">epoll_event</span> *ep_events; <span class="comment">// 是个 epoll_event 类型的数组，用于存储发生事件的文件描述符的集合。</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">epoll_event</span> event;      <span class="comment">// 是个变量，用于向 epoll 例程注册文集描述符时指明关注的事项。</span></span><br><span class="line">    <span class="type">int</span> epfd, event_cnt;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage : %s &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serv_sock = <span class="built_in">socket</span>(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">memset</span>(&amp;serv_adr, <span class="number">0</span>, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">    serv_adr.sin_family = AF_INET;</span><br><span class="line">    serv_adr.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);</span><br><span class="line">    serv_adr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">1</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">bind</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;serv_adr, <span class="built_in">sizeof</span>(serv_adr)) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;bind() error&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">listen</span>(serv_sock, <span class="number">5</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;listen() error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    epfd = <span class="built_in">epoll_create</span>(EPOLL_SIZE); <span class="comment">// 创建 epoll 例程</span></span><br><span class="line">    ep_events = <span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(<span class="keyword">struct</span> epoll_event) * EPOLL_SIZE); </span><br><span class="line"></span><br><span class="line">    event.events = EPOLLIN; <span class="comment">// 关注的是输入事件</span></span><br><span class="line">    event.data.fd = serv_sock;</span><br><span class="line">    <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, serv_sock, &amp;event); <span class="comment">// 向 epoll 例程注册套接字</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        event_cnt = <span class="built_in">epoll_wait</span>(epfd, ep_events, EPOLL_SIZE, <span class="number">-1</span>); <span class="comment">// 监视事件的发生</span></span><br><span class="line">        <span class="keyword">if</span> (event_cnt == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">puts</span>(<span class="string">&quot;epoll_wait() error&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; event_cnt; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (ep_events[i].data.fd == serv_sock) <span class="comment">// 服务器套接字用于接受新的连接请求</span></span><br><span class="line">            &#123;</span><br><span class="line">                adr_sz = <span class="built_in">sizeof</span>(clnt_adr);</span><br><span class="line">                clnt_sock =</span><br><span class="line">                    <span class="built_in">accept</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;clnt_adr, &amp;adr_sz);</span><br><span class="line">                event.events = EPOLLIN;</span><br><span class="line">                event.data.fd = clnt_sock;</span><br><span class="line">                <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, clnt_sock, &amp;event);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;connected client: %d \n&quot;</span>, clnt_sock);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="comment">// 其他套接字用于提供回声服务</span></span><br><span class="line">            &#123;</span><br><span class="line">                str_len = <span class="built_in">read</span>(ep_events[i].data.fd, buf, BUF_SIZE);</span><br><span class="line">                <span class="keyword">if</span> (str_len == <span class="number">0</span>) <span class="comment">// close request!</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">epoll_ctl</span>(</span><br><span class="line">                        epfd, EPOLL_CTL_DEL, ep_events[i].data.fd, <span class="literal">NULL</span>);</span><br><span class="line">                    <span class="built_in">close</span>(ep_events[i].data.fd);</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;closed client: %d \n&quot;</span>, ep_events[i].data.fd);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">write</span>(ep_events[i].data.fd, buf, str_len); <span class="comment">// echo!</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(serv_sock);</span><br><span class="line">    <span class="built_in">close</span>(epfd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(buf, stderr);</span><br><span class="line">    <span class="built_in">fputc</span>(<span class="string">&#x27;\n&#x27;</span>, stderr);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="echo-EPLTserv-c"><a href="#echo-EPLTserv-c" class="headerlink" title="echo_EPLTserv.c"></a>echo_EPLTserv.c</h2><p>以条件触发模式工作的回声服务器端。</p>
-<p>此程序和 echo_epollserv.c 差不多，只是将 read 函数的输入缓冲区大小缩小为 4 字节，使得一次 read 不会读完接收缓冲中的数据。由此证明条件触发情况下只要接收缓冲中还有数据，就会一直通知该事件</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 4 <span class="comment">// 调用 read 函数时使用 4 字节的缓冲区，保证不会一次读完接收缓存中的内容</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EPOLL_SIZE 50</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *buf)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> serv_sock, clnt_sock;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> serv_adr, clnt_adr;</span><br><span class="line">    <span class="type">socklen_t</span> adr_sz;</span><br><span class="line">    <span class="type">int</span> str_len, i;</span><br><span class="line">    <span class="type">char</span> buf[BUF_SIZE];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">epoll_event</span> *ep_events;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">epoll_event</span> event;</span><br><span class="line">    <span class="type">int</span> epfd, event_cnt;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage : %s &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serv_sock = <span class="built_in">socket</span>(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">memset</span>(&amp;serv_adr, <span class="number">0</span>, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">    serv_adr.sin_family = AF_INET;</span><br><span class="line">    serv_adr.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);</span><br><span class="line">    serv_adr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">1</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">bind</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;serv_adr, <span class="built_in">sizeof</span>(serv_adr)) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;bind() error&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">listen</span>(serv_sock, <span class="number">5</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;listen() error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    epfd = <span class="built_in">epoll_create</span>(EPOLL_SIZE);</span><br><span class="line">    ep_events = <span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(<span class="keyword">struct</span> epoll_event) * EPOLL_SIZE);</span><br><span class="line"></span><br><span class="line">    event.events = EPOLLIN;</span><br><span class="line">    event.data.fd = serv_sock;</span><br><span class="line">    <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, serv_sock, &amp;event);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        event_cnt = <span class="built_in">epoll_wait</span>(epfd, ep_events, EPOLL_SIZE, <span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">if</span> (event_cnt == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">puts</span>(<span class="string">&quot;epoll_wait() error&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;return epoll_wait&quot;</span>); <span class="comment">// 每调用一次 epoll_wait，打印一次。</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; event_cnt; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (ep_events[i].data.fd == serv_sock)</span><br><span class="line">            &#123;</span><br><span class="line">                adr_sz = <span class="built_in">sizeof</span>(clnt_adr);</span><br><span class="line">                clnt_sock = <span class="built_in">accept</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;clnt_adr, &amp;adr_sz);</span><br><span class="line">                event.events = EPOLLIN;</span><br><span class="line">                event.data.fd = clnt_sock;</span><br><span class="line">                <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, clnt_sock, &amp;event);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;connected client: %d \n&quot;</span>, clnt_sock);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                str_len = <span class="built_in">read</span>(ep_events[i].data.fd, buf, BUF_SIZE);</span><br><span class="line">                <span class="keyword">if</span> (str_len == <span class="number">0</span>) <span class="comment">// close request!</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_DEL, ep_events[i].data.fd, <span class="literal">NULL</span>);</span><br><span class="line">                    <span class="built_in">close</span>(ep_events[i].data.fd);</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;closed client: %d \n&quot;</span>, ep_events[i].data.fd);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">write</span>(ep_events[i].data.fd, buf, str_len); <span class="comment">// echo!</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(serv_sock);</span><br><span class="line">    <span class="built_in">close</span>(epfd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(buf, stderr);</span><br><span class="line">    <span class="built_in">fputc</span>(<span class="string">&#x27;\n&#x27;</span>, stderr);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="echo-EPETserv-c"><a href="#echo-EPETserv-c" class="headerlink" title="echo_EPETserv.c"></a>echo_EPETserv.c</h2><p>以边缘触发模式工作的回声服务器端。</p>
-<p>注意其中和条件触发模式的区别，主要区别的地方在从套接字读取数据的方式，这里多了个 while 循环。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 4</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EPOLL_SIZE 50</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setnonblockingmode</span><span class="params">(<span class="type">int</span> fd)</span></span>; <span class="comment">// 此函数用于将文件设为非阻塞模式</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *buf)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> serv_sock, clnt_sock;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> serv_adr, clnt_adr;</span><br><span class="line">    <span class="type">socklen_t</span> adr_sz;</span><br><span class="line">    <span class="type">int</span> str_len, i;</span><br><span class="line">    <span class="type">char</span> buf[BUF_SIZE];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">epoll_event</span> *ep_events;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">epoll_event</span> event;</span><br><span class="line">    <span class="type">int</span> epfd, event_cnt;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage : %s &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serv_sock = <span class="built_in">socket</span>(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">memset</span>(&amp;serv_adr, <span class="number">0</span>, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">    serv_adr.sin_family = AF_INET;</span><br><span class="line">    serv_adr.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);</span><br><span class="line">    serv_adr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">1</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">bind</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;serv_adr, <span class="built_in">sizeof</span>(serv_adr)) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;bind() error&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">listen</span>(serv_sock, <span class="number">5</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;listen() error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    epfd = <span class="built_in">epoll_create</span>(EPOLL_SIZE);</span><br><span class="line">    ep_events = <span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(<span class="keyword">struct</span> epoll_event) * EPOLL_SIZE);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setnonblockingmode</span>(serv_sock); <span class="comment">// 将服务器套接字设为非阻塞模式</span></span><br><span class="line">    event.events = EPOLLIN;        <span class="comment">// 监听服务器套接字的输入事件</span></span><br><span class="line">    event.data.fd = serv_sock;</span><br><span class="line">    <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, serv_sock, &amp;event);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        event_cnt = <span class="built_in">epoll_wait</span>(epfd, ep_events, EPOLL_SIZE, <span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">if</span> (event_cnt == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="built_in">puts</span>(<span class="string">&quot;epoll_wait() error&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;return epoll_wait&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; event_cnt; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ep_events[i].data.fd == serv_sock) &#123;</span><br><span class="line">                adr_sz = <span class="built_in">sizeof</span>(clnt_adr);</span><br><span class="line">                clnt_sock = <span class="built_in">accept</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;clnt_adr, &amp;adr_sz);</span><br><span class="line">                <span class="built_in">setnonblockingmode</span>(clnt_sock);    <span class="comment">// 将用于连接客户的套接字设为非阻塞模式</span></span><br><span class="line">                event.events = EPOLLIN | EPOLLET; <span class="comment">// 以边缘触发方式监听用于连接客户的套接字上的输入事件</span></span><br><span class="line">                event.data.fd = clnt_sock;</span><br><span class="line">                <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, clnt_sock, &amp;event);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;connected client: %d \n&quot;</span>, clnt_sock);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">while</span> (<span class="number">1</span>) <span class="comment">// 当有输入时，循环读取数据。条件触发中没有此循环。</span></span><br><span class="line">                &#123;</span><br><span class="line">                    str_len = <span class="built_in">read</span>(ep_events[i].data.fd, buf, BUF_SIZE);</span><br><span class="line">                    <span class="keyword">if</span> (str_len == <span class="number">0</span>) <span class="comment">// close request! </span></span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="built_in">epoll_ctl</span>(epfd, EPOLL_CTL_DEL, ep_events[i].data.fd, <span class="literal">NULL</span>);</span><br><span class="line">                        <span class="built_in">close</span>(ep_events[i].data.fd);</span><br><span class="line">                        <span class="built_in">printf</span>(<span class="string">&quot;closed client: %d \n&quot;</span>, ep_events[i].data.fd);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (str_len &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (errno == EAGAIN) <span class="comment">// 当没有数据可读时跳出循环，完成读取</span></span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="built_in">write</span>(ep_events[i].data.fd, buf, str_len); <span class="comment">// echo!</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(serv_sock);</span><br><span class="line">    <span class="built_in">close</span>(epfd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setnonblockingmode</span><span class="params">(<span class="type">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> flag = <span class="built_in">fcntl</span>(fd, F_GETFL, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">fcntl</span>(fd, F_SETFL, flag | O_NONBLOCK);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *buf)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(buf, stderr);</span><br><span class="line">    <span class="built_in">fputc</span>(<span class="string">&#x27;\n&#x27;</span>, stderr);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2055,7 +1990,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2066,7 +2001,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2077,7 +2012,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

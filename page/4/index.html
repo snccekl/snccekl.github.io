@@ -296,6 +296,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/06/09/%E5%9F%BA%E4%BA%8EUDP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Snccekl">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/09/%E5%9F%BA%E4%BA%8EUDP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF/" itemprop="url">基于UDP的服务器端和客户端</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-06-09T00:00:00+08:00">
+                2024-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="理解UDP"><a href="#理解UDP" class="headerlink" title="理解UDP"></a>理解UDP</h1><p>区分 TCP 与 UDP 的一个典型比喻：UDP 好比寄信，TCP 好比打电话：</p>
+<ol>
+<li>UDP：寄信前要在信封上填好寄信人和收信人的地址，然后放进邮筒。不能确认对方是否收到信件，并且邮寄过程中信件可能丢失。</li>
+<li>TCP：首先要拨打电话号码，打通后才能开始通话，但打通后的通话是可靠的。</li>
+</ol>
+<p>TCP 和 UDP 最重要的区别在于流控制。</p>
+<p>理解：这里的流控制应该包含了 TCP 的可靠传输、流量控制、拥塞控制等机制，这些机制都是在流上实现的。</p>
+<p>TCP 比 UDP 更可靠，UDP 更简洁，速度更快。</p>
+<h2 id="UDP使用"><a href="#UDP使用" class="headerlink" title="UDP使用"></a>UDP使用</h2><p>网络实时传输多媒体数据一般使用 UDP。</p>
+<p>TCP 比 UDP 慢的两个原因：</p>
+<ol>
+<li>TCP 数据传输前后要进行连接的建立与释放。</li>
+<li>TCP 数据传输过程中为了保证可靠性而添加的流控制。</li>
+</ol>
+<p>当收发的数据量小但需要频繁连接时，UDP 的高效体现地更明显。</p>
+<h1 id="实现基于UDP的服务器端-客户端"><a href="#实现基于UDP的服务器端-客户端" class="headerlink" title="实现基于UDP的服务器端&#x2F;客户端"></a>实现基于UDP的服务器端&#x2F;客户端</h1><p>因为 UDP 是无连接的，所以在编程时不需要调用 listen 函数和 accept 函数。</p>
+<p>UDP 套接字编程中只有创建套接字和数据交换两个过程。</p>
+<h2 id="UDP服务器端和客户端均只需-1-个套接字"><a href="#UDP服务器端和客户端均只需-1-个套接字" class="headerlink" title="UDP服务器端和客户端均只需 1 个套接字"></a>UDP服务器端和客户端均只需 1 个套接字</h2><p>TCP 中，服务器端和客户端的套接字是一对一的关系，服务器端每向一个客户端提供服务，就需要分配一个新的套接字。</p>
+<p>而 UDP 的服务器端和客户端均只需 1 个套接字，服务器端只要有一个 UDP 套接字就可以和多台主机通信。</p>
+<h2 id="基于UDP的数据IO函数"><a href="#基于UDP的数据IO函数" class="headerlink" title="基于UDP的数据IO函数"></a>基于UDP的数据IO函数</h2><p>UDP 套接字不会保持连接状态，因此每次传输数据时都要添加目标地址信息（相当于寄信前在信封上写收信地址）。</p>
+<h3 id="发送UDP数据的函数"><a href="#发送UDP数据的函数" class="headerlink" title="发送UDP数据的函数"></a>发送UDP数据的函数</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span> </span></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">sendto</span><span class="params">(<span class="type">int</span> sock, <span class="type">void</span>* buff, <span class="type">size_t</span> nbytes, <span class="type">int</span> flags, <span class="keyword">struct</span> sockaddr* to, <span class="type">socklen_t</span> addrlen)</span></span>; </span><br><span class="line">	<span class="comment">// 功能：向 to 中所指明的目标地址发送数据。 </span></span><br><span class="line">	<span class="comment">// 参数：sock：UDP 套接字文件描述符; buff：用户保存接收的数据; nbytes：可接收的最大字节数; </span></span><br><span class="line">	<span class="comment">// flags：可选项参数，没有则为 0; to：包含目标地址信息; addrlen：包含目标地址信息的结构体变量的长度 </span></span><br><span class="line">	<span class="comment">// 返回值：成功时返回接收的字节数，失败时返回 -1。</span></span><br></pre></td></tr></table></figure>
+<h3 id="接收-UDP-数据的函数"><a href="#接收-UDP-数据的函数" class="headerlink" title="接收 UDP 数据的函数"></a>接收 UDP 数据的函数</h3><p>理解：接收端本来是不知道发送端的地址的，但调用完 recvfrom 函数后，发送端的地址信息就会存储到参数 from 指向的结构体中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span> </span></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">recvfrom</span><span class="params">(<span class="type">int</span> sock, <span class="type">void</span>* buff, <span class="type">size_t</span> nbytes, <span class="type">int</span> flags, <span class="keyword">struct</span> sockaddr* from, <span class="type">socklen_t</span> *addrlen)</span></span>; </span><br><span class="line">	<span class="comment">// 功能：从 from 中所指明的地址接收数据。 </span></span><br><span class="line">	<span class="comment">// 参数：sock：UDP 套接字文件描述符; buff：待传输的数据; nbytes：待传输的数据长度（单位是字节）; </span></span><br><span class="line">	<span class="comment">// flags：可选项参数，没有则为 0; from：用来存储发送端的地址信息; addrlen：包含发送端地址信息的结构体变量的长度 </span></span><br><span class="line">	<span class="comment">// 返回值：成功时返回传输的字节数，失败时返回 -1。</span></span><br></pre></td></tr></table></figure>
+<h2 id="UDP客户端套接字的地址分配"><a href="#UDP客户端套接字的地址分配" class="headerlink" title="UDP客户端套接字的地址分配"></a>UDP客户端套接字的地址分配</h2><p>在 TCP 的客户端中 conncect 函数会自动完成给套接字分配 IP 地址和端口号的过程，UDP 中则是 sendto 函数来完成此功能。</p>
+<p>如果调用 sendto 函数时发现尚未给套接字分配地址信息，就会在首次调用 sendto 函数时给套接字分配 IP 地址和端口。</p>
+<h1 id="UDP的数据传输特性和调用connect函数"><a href="#UDP的数据传输特性和调用connect函数" class="headerlink" title="UDP的数据传输特性和调用connect函数"></a>UDP的数据传输特性和调用connect函数</h1><h2 id="存在数据边界的UDP套接字"><a href="#存在数据边界的UDP套接字" class="headerlink" title="存在数据边界的UDP套接字"></a>存在数据边界的UDP套接字</h2><p>UDP 套接字编程时，接收端输入函数的调用次数必须和发送端输出函数的调用次数相同，这样才能接收完发送端发送的数据。</p>
+<h2 id="已连接UDP套接字和未连接UDP套接字"><a href="#已连接UDP套接字和未连接UDP套接字" class="headerlink" title="已连接UDP套接字和未连接UDP套接字"></a>已连接UDP套接字和未连接UDP套接字</h2><p>通过 sendto 函数传输数据的过程包括三个阶段：</p>
+<ol>
+<li>向UDP套接字注册目标IP和端口号（注意：是将 UDP 套接字与目标的地址信息相关联，不是给 UDP 分配地址信息。前者每次 sendto 都会执行，后者只有首次调用且套接字尚未分配地址时才会执行一次）。</li>
+<li>传输数据</li>
+<li>删除UDP套接字中注册的目标地址信息</li>
+</ol>
+<p>当多次通过 sendto 向同一个目标发送信息时，每次 sendto 都进行上面的步骤 1 和 3，就会很浪费时间。</p>
+<p>因此当要长时间与同一主机通信时，将 UDP 变为已连接套接字会提高效率。</p>
+<h2 id="创建已连接UDP套接字"><a href="#创建已连接UDP套接字" class="headerlink" title="创建已连接UDP套接字"></a>创建已连接UDP套接字</h2><p>使用 connect 函数创建已连接 UDP 套接字。</p>
+<p><code>connect(sock, (struct sockaddr*)&amp;adr, sizeof(adr)); // 注意：adr 是目标的地址信息</code></p>
+<p>使用已连接的 UDP 套接字进行通信时， sendto 函数就不会再执行步骤 1 和步骤 3，每次只要传输数据即可。</p>
+<p>并且已连接的 UDP 套接字也可以通过 write、read 函数进行通信。</p>
+<p>使用已连接 UPD 套接字的例子见程序实例中的 uecho_con_client.c。</p>
+<h1 id="windows实现"><a href="#windows实现" class="headerlink" title="windows实现"></a>windows实现</h1><p>Windows 下也有 sendto 和 recvfrom 函数，用法和 linux 下的版本一样。</p>
+<h1 id="程序示例"><a href="#程序示例" class="headerlink" title="程序示例"></a>程序示例</h1><h2 id="uecho-server-c"><a href="#uecho-server-c" class="headerlink" title="uecho_server.c"></a>uecho_server.c</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 30</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *message)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> serv_sock;</span><br><span class="line">    <span class="type">char</span> message[BUF_SIZE];</span><br><span class="line">    <span class="type">int</span> str_len;</span><br><span class="line">    <span class="type">socklen_t</span> clnt_adr_sz;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> serv_adr, clnt_adr;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage : %s &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serv_sock = <span class="built_in">socket</span>(PF_INET, SOCK_DGRAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (serv_sock == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;UDP socket creation error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;serv_adr, <span class="number">0</span>, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">    serv_adr.sin_family = AF_INET;</span><br><span class="line">    serv_adr.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);</span><br><span class="line">    serv_adr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">1</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">bind</span>(serv_sock, (<span class="keyword">struct</span> sockaddr *)&amp;serv_adr, <span class="built_in">sizeof</span>(serv_adr)) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;bind() error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        clnt_adr_sz = <span class="built_in">sizeof</span>(clnt_adr);</span><br><span class="line">        str_len = <span class="built_in">recvfrom</span>(serv_sock, message, BUF_SIZE, <span class="number">0</span>, (<span class="keyword">struct</span> sockaddr *)&amp;clnt_adr, clnt_adr_sz); <span class="comment">// 接收数据同时获取发送端地址</span></span><br><span class="line">        <span class="built_in">sendto</span>(serv_sock, message, str_len, <span class="number">0</span>, (<span class="keyword">struct</span> sockaddr *)&amp;clnt_adr, clnt_adr_sz);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(serv_sock); <span class="comment">// 上面的 while 是无限循环，这里的 colse 函数没什么实际意义。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *message)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(message, stderr);</span><br><span class="line">    <span class="built_in">fputc</span>(<span class="string">&#x27;\n&#x27;</span>, stderr);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="xxxxxxxxxx93-1-include-2-include-3-include-4-include-5-include-6-include-7​8-define-BUF-SIZE-509-define-OPSZ-410void-error-handling-char-message-11int-calculate-int-operand-count-int-operands-char-operator-12​13int-main-int-argc-char-argv-14-15-int-serv-sock-clnt-sock-16-struct-sockaddr-in-serv-addr-clnt-addr-17-int-clnt-addr-sz-18-char-message-BUF-SIZE-19​20-if-argc-2-21-22-printf-“Usage-s-“-argv-0-23-exit-1-24-25​26-serv-sock-socket-PF-INET-SOCK-STREAM-0-27​28-memset-serv-addr-0-sizeof-serv-addr-29-serv-addr-sin-family-AF-INET-30-serv-addr-sin-addr-s-addr-htonl-INADDR-ANY-31-serv-addr-sin-port-htons-atoi-argv-1-32​33-if-bind-serv-sock-struct-sockaddr-serv-addr-sizeof-serv-addr-1-34-error-handling-“bind-error”-35​36-if-listen-serv-sock-5-1-37-error-handling-“listen-error”-38​39-clnt-addr-sz-sizeof-clnt-addr-40-for-int-i-0-i-5-i-41-42-if-clnt-sock-accept-serv-sock-struct-sockaddr-clnt-addr-clnt-addr-sz-1-43-error-handling-“accept-error”-44​45-char-op-cnt-char-46-int-operand-count-47-read-clnt-sock-op-cnt-char-1-读取1个字节到-char-变量中48-operand-count-int-op-cnt-char-然后再转换为-int49​50-char-operands-BUF-SIZE-51-for-int-i-0-i-operand-count-i-52-53-read-clnt-sock-operands-i-OPSZ-OPSZ-根据操作数数量，依次读取操作数54-55​56-char-operator-57-read-clnt-sock-operator-1-读取运算符58​59-int-result-calculate-operand-count-int-operands-operator-60-write-clnt-sock-char-result-sizeof-result-发送计算结果61-close-clnt-sock-62-63-close-serv-sock-64-return-0-65-66​67int-calculate-int-operand-count-int-operands-char-operator-68-69-int-result-operands-0-70-switch-operator-71-72-case-‘-’-73-for-int-i-1-i-operand-count-i-74-result-operands-i-75-break-76-case-‘-‘-77-for-int-i-1-i-operand-count-i-78-result-operands-i-79-break-80-case-‘‘-81-for-int-i-1-i-operand-count-i-82-result-operands-i-83-break-84-85-return-result-86-87​88void-error-handling-char-message-89-90-fputs-message-stderr-91-fputc-‘-n’-stderr-92-exit-1-93-cpp"><a href="#xxxxxxxxxx93-1-include-2-include-3-include-4-include-5-include-6-include-7​8-define-BUF-SIZE-509-define-OPSZ-410void-error-handling-char-message-11int-calculate-int-operand-count-int-operands-char-operator-12​13int-main-int-argc-char-argv-14-15-int-serv-sock-clnt-sock-16-struct-sockaddr-in-serv-addr-clnt-addr-17-int-clnt-addr-sz-18-char-message-BUF-SIZE-19​20-if-argc-2-21-22-printf-“Usage-s-“-argv-0-23-exit-1-24-25​26-serv-sock-socket-PF-INET-SOCK-STREAM-0-27​28-memset-serv-addr-0-sizeof-serv-addr-29-serv-addr-sin-family-AF-INET-30-serv-addr-sin-addr-s-addr-htonl-INADDR-ANY-31-serv-addr-sin-port-htons-atoi-argv-1-32​33-if-bind-serv-sock-struct-sockaddr-serv-addr-sizeof-serv-addr-1-34-error-handling-“bind-error”-35​36-if-listen-serv-sock-5-1-37-error-handling-“listen-error”-38​39-clnt-addr-sz-sizeof-clnt-addr-40-for-int-i-0-i-5-i-41-42-if-clnt-sock-accept-serv-sock-struct-sockaddr-clnt-addr-clnt-addr-sz-1-43-error-handling-“accept-error”-44​45-char-op-cnt-char-46-int-operand-count-47-read-clnt-sock-op-cnt-char-1-读取1个字节到-char-变量中48-operand-count-int-op-cnt-char-然后再转换为-int49​50-char-operands-BUF-SIZE-51-for-int-i-0-i-operand-count-i-52-53-read-clnt-sock-operands-i-OPSZ-OPSZ-根据操作数数量，依次读取操作数54-55​56-char-operator-57-read-clnt-sock-operator-1-读取运算符58​59-int-result-calculate-operand-count-int-operands-operator-60-write-clnt-sock-char-result-sizeof-result-发送计算结果61-close-clnt-sock-62-63-close-serv-sock-64-return-0-65-66​67int-calculate-int-operand-count-int-operands-char-operator-68-69-int-result-operands-0-70-switch-operator-71-72-case-‘-’-73-for-int-i-1-i-operand-count-i-74-result-operands-i-75-break-76-case-‘-‘-77-for-int-i-1-i-operand-count-i-78-result-operands-i-79-break-80-case-‘‘-81-for-int-i-1-i-operand-count-i-82-result-operands-i-83-break-84-85-return-result-86-87​88void-error-handling-char-message-89-90-fputs-message-stderr-91-fputc-‘-n’-stderr-92-exit-1-93-cpp" class="headerlink" title="xxxxxxxxxx93 1#include &lt;stdio.h&gt;2#include &lt;stdlib.h&gt;3#include &lt;string.h&gt;4#include &lt;unistd.h&gt;5#include &lt;arpa&#x2F;inet.h&gt;6#include &lt;sys&#x2F;socket.h&gt;7​8#define BUF_SIZE 509#define OPSZ 410void error_handling(char *message);11int calculate(int operand_count, int operands[], char operator);12​13int main(int argc, char *argv[])14{15    int serv_sock, clnt_sock;16    struct sockaddr_in serv_addr, clnt_addr;17    int clnt_addr_sz;18    char message[BUF_SIZE];19​20    if (argc !&#x3D; 2)21    {22        printf(“Usage : %s “, argv[0]);23        exit(1);24    }25​26    serv_sock &#x3D; socket(PF_INET, SOCK_STREAM, 0);27​28    memset(&amp;serv_addr, 0, sizeof(serv_addr));29    serv_addr.sin_family &#x3D; AF_INET;30    serv_addr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);31    serv_addr.sin_port &#x3D; htons(atoi(argv[1]));32​33    if (bind(serv_sock, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) &#x3D;&#x3D; -1)34        error_handling(“bind() error”);35​36    if (listen(serv_sock, 5) &#x3D;&#x3D; -1)37        error_handling(“listen() error”);38​39    clnt_addr_sz &#x3D; sizeof(clnt_addr);40    for (int i &#x3D; 0; i &lt; 5; i++)41    {42        if ((clnt_sock &#x3D; accept(serv_sock, (struct sockaddr *)&amp;clnt_addr, &amp;clnt_addr_sz)) &#x3D;&#x3D; -1)43            error_handling(“accept() error”);44​45        char op_cnt_char;46        int operand_count;47        read(clnt_sock, &amp;op_cnt_char, 1); &#x2F;&#x2F; 读取1个字节到 char 变量中48        operand_count &#x3D; (int)op_cnt_char; &#x2F;&#x2F; 然后再转换为 int49​50        char operands[BUF_SIZE];51        for (int i &#x3D; 0; i &lt; operand_count; i++)52        {53            read(clnt_sock, &amp;operands[i * OPSZ], OPSZ); &#x2F;&#x2F; 根据操作数数量，依次读取操作数54        }55​56        char operator;57        read(clnt_sock, &amp;operator, 1); &#x2F;&#x2F; 读取运算符58​59        int result &#x3D; calculate(operand_count, (int *)operands, operator);60        write(clnt_sock, (char )&amp;result, sizeof(result)); &#x2F;&#x2F; 发送计算结果61        close(clnt_sock);62    }63    close(serv_sock);64    return 0;65}66​67int calculate(int operand_count, int operands[], char operator)68{69    int result &#x3D; operands[0];70    switch (operator)71    {72    case ‘+’:73        for (int i &#x3D; 1; i &lt; operand_count; i++)74            result +&#x3D; operands[i];75        break;76    case ‘-‘:77        for (int i &#x3D; 1; i &lt; operand_count; i++)78            result -&#x3D; operands[i];79        break;80    case ‘‘:81        for (int i &#x3D; 1; i &lt; operand_count; i++)82            result *&#x3D; operands[i];83        break;84    }85    return result;86}87​88void error_handling(char *message)89{90    fputs(message, stderr);91    fputc(‘\n’, stderr);92    exit(1);93}cpp"></a>xxxxxxxxxx93 1#include &lt;stdio.h&gt;2#include &lt;stdlib.h&gt;3#include &lt;string.h&gt;4#include &lt;unistd.h&gt;5#include &lt;arpa&#x2F;inet.h&gt;6#include &lt;sys&#x2F;socket.h&gt;7​8#define BUF_SIZE 509#define OPSZ 410void error_handling(char *message);11int calculate(int operand_count, int operands[], char operator);12​13int main(int argc, char *argv[])14{15    int serv_sock, clnt_sock;16    struct sockaddr_in serv_addr, clnt_addr;17    int clnt_addr_sz;18    char message[BUF_SIZE];19​20    if (argc !&#x3D; 2)21    {22        printf(“Usage : %s <port>“, argv[0]);23        exit(1);24    }25​26    serv_sock &#x3D; socket(PF_INET, SOCK_STREAM, 0);27​28    memset(&amp;serv_addr, 0, sizeof(serv_addr));29    serv_addr.sin_family &#x3D; AF_INET;30    serv_addr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);31    serv_addr.sin_port &#x3D; htons(atoi(argv[1]));32​33    if (bind(serv_sock, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) &#x3D;&#x3D; -1)34        error_handling(“bind() error”);35​36    if (listen(serv_sock, 5) &#x3D;&#x3D; -1)37        error_handling(“listen() error”);38​39    clnt_addr_sz &#x3D; sizeof(clnt_addr);40    for (int i &#x3D; 0; i &lt; 5; i++)41    {42        if ((clnt_sock &#x3D; accept(serv_sock, (struct sockaddr *)&amp;clnt_addr, &amp;clnt_addr_sz)) &#x3D;&#x3D; -1)43            error_handling(“accept() error”);44​45        char op_cnt_char;46        int operand_count;47        read(clnt_sock, &amp;op_cnt_char, 1); &#x2F;&#x2F; 读取1个字节到 char 变量中48        operand_count &#x3D; (int)op_cnt_char; &#x2F;&#x2F; 然后再转换为 int49​50        char operands[BUF_SIZE];51        for (int i &#x3D; 0; i &lt; operand_count; i++)52        {53            read(clnt_sock, &amp;operands[i * OPSZ], OPSZ); &#x2F;&#x2F; 根据操作数数量，依次读取操作数54        }55​56        char operator;57        read(clnt_sock, &amp;operator, 1); &#x2F;&#x2F; 读取运算符58​59        int result &#x3D; calculate(operand_count, (int *)operands, operator);60        write(clnt_sock, (char <em>)&amp;result, sizeof(result)); &#x2F;&#x2F; 发送计算结果61        close(clnt_sock);62    }63    close(serv_sock);64    return 0;65}66​67int calculate(int operand_count, int operands[], char operator)68{69    int result &#x3D; operands[0];70    switch (operator)71    {72    case ‘+’:73        for (int i &#x3D; 1; i &lt; operand_count; i++)74            result +&#x3D; operands[i];75        break;76    case ‘-‘:77        for (int i &#x3D; 1; i &lt; operand_count; i++)78            result -&#x3D; operands[i];79        break;80    case ‘</em>‘:81        for (int i &#x3D; 1; i &lt; operand_count; i++)82            result *&#x3D; operands[i];83        break;84    }85    return result;86}87​88void error_handling(char *message)89{90    fputs(message, stderr);91    fputc(‘\n’, stderr);92    exit(1);93}cpp</port></h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 30</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *message)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> sock;</span><br><span class="line">    <span class="type">char</span> message[BUF_SIZE];</span><br><span class="line">    <span class="type">int</span> str_len;</span><br><span class="line">    <span class="type">socklen_t</span> adr_sz;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> serv_adr, from_adr;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage : %s &lt;IP&gt; &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sock = <span class="built_in">socket</span>(PF_INET, SOCK_DGRAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;socket() error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;serv_adr, <span class="number">0</span>, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">    serv_adr.sin_family = AF_INET;</span><br><span class="line">    serv_adr.sin_addr.s_addr = <span class="built_in">inet_addr</span>(argv[<span class="number">1</span>]);</span><br><span class="line">    serv_adr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">2</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fputs</span>(<span class="string">&quot;Insert message(q to quit): &quot;</span>, stdout);</span><br><span class="line">        <span class="built_in">fgets</span>(message, <span class="built_in">sizeof</span>(message), stdin);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(message, <span class="string">&quot;q\n&quot;</span>) || !<span class="built_in">strcmp</span>(message, <span class="string">&quot;Q\n&quot;</span>))</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">sendto</span>(sock, message, <span class="built_in">strlen</span>(message), <span class="number">0</span>, (<span class="keyword">struct</span> sockaddr *)&amp;serv_adr, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">        adr_sz = <span class="built_in">sizeof</span>(from_adr);</span><br><span class="line">        str_len = <span class="built_in">recvfrom</span>(sock, message, BUF_SIZE, <span class="number">0</span>, (<span class="keyword">struct</span> sockaddr *)&amp;from_adr, &amp;adr_sz);</span><br><span class="line">        message[str_len] = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Message from server: %s&quot;</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(sock);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *message)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(message, stderr);</span><br><span class="line">    <span class="built_in">fputc</span>(<span class="string">&#x27;\n&#x27;</span>, stderr);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="uecho-con-client-c"><a href="#uecho-con-client-c" class="headerlink" title="uecho_con_client.c"></a>uecho_con_client.c</h2><p>这是一个使用已连接 UDP 套接字的例子，在前面的 uecho_client.c 的基础上修改得到。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 30</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *message)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> sock;</span><br><span class="line">    <span class="type">char</span> message[BUF_SIZE];</span><br><span class="line">    <span class="type">int</span> str_len;</span><br><span class="line">    <span class="type">socklen_t</span> adr_sz; <span class="comment">// 实际上已不需要这个变量</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> serv_adr, from_adr; <span class="comment">// from_adr 也不再需要</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage : %s &lt;IP&gt; &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sock = <span class="built_in">socket</span>(PF_INET, SOCK_DGRAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">error_handling</span>(<span class="string">&quot;socket() error&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;serv_adr, <span class="number">0</span>, <span class="built_in">sizeof</span>(serv_adr));</span><br><span class="line">    serv_adr.sin_family = AF_INET;</span><br><span class="line">    serv_adr.sin_addr.s_addr = <span class="built_in">inet_addr</span>(argv[<span class="number">1</span>]);</span><br><span class="line">    serv_adr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">2</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="built_in">connect</span>(sock, (<span class="keyword">struct</span> sockaddr *)&amp;serv_adr, <span class="built_in">sizeof</span>(serv_adr)); <span class="comment">// 将套接字变为已连接套接字</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fputs</span>(<span class="string">&quot;Insert message(q to quit): &quot;</span>, stdout);</span><br><span class="line">        <span class="built_in">fgets</span>(message, <span class="built_in">sizeof</span>(message), stdin);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(message, <span class="string">&quot;q\n&quot;</span>) || !<span class="built_in">strcmp</span>(message, <span class="string">&quot;Q\n&quot;</span>))</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">write</span>(sock, message, <span class="built_in">strlen</span>(message));  <span class="comment">// 使用 write 代替了 sendto 函数</span></span><br><span class="line">        str_len = <span class="built_in">read</span>(sock, message, <span class="built_in">sizeof</span>(message) - <span class="number">1</span>); <span class="comment">// 使用 read 代替了 recvfrom 函数</span></span><br><span class="line"></span><br><span class="line">        message[str_len] = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Message from server: %s&quot;</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(sock);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">error_handling</span><span class="params">(<span class="type">char</span> *message)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(message, stderr);</span><br><span class="line">    <span class="built_in">fputc</span>(<span class="string">&#x27;\n&#x27;</span>, stderr);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://snccekl.github.io/2024/06/08/%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1779,7 +1969,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1790,7 +1980,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1801,7 +1991,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
